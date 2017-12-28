@@ -48,9 +48,8 @@ public class ActividadView extends javax.swing.JFrame {
     /**
      * Creates new form ActividadView
      */
-    public ActividadView(ActividadController controller) {
+    public ActividadView() {
         initComponents();
-        //init();
     }
     
     private String getSelectedHorario(){
@@ -361,8 +360,10 @@ public class ActividadView extends javax.swing.JFrame {
         jTFLugarHorario = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jSHInicio = new javax.swing.JSpinner();
+        SAUtils.initSpinnerHourEditor(jSHInicio);
         jLabel13 = new javax.swing.JLabel();
         jSHFin = new javax.swing.JSpinner();
+        SAUtils.initSpinnerHourEditor(jSHFin);
         jPHorariosActividad = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTQHActividad = new javax.swing.JTable();

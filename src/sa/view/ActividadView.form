@@ -539,6 +539,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSHInicio">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="SAUtils.initSpinnerHourEditor(jSHInicio);"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel13">
                   <Properties>
@@ -546,6 +549,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JSpinner" name="jSHFin">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="SAUtils.initSpinnerHourEditor(jSHFin);"/>
+                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>
