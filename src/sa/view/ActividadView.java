@@ -52,12 +52,12 @@ public class ActividadView extends javax.swing.JFrame {
         initComponents();
     }
     
-    private String getSelectedHorario(){
+    public String getSelectedHorario(){
         int selectedRow = jTQHActividad.getSelectedRow();
         return selectedRow != -1 ? jTQHActividad.getValueAt(selectedRow, 0).toString() : null;
     }
     
-    private void setHorarioToView(HorarioTO horario){
+    public void setHorarioToView(HorarioTO horario){
         if(horario == null)
             return;
         jTFIdHorario.setText(String.valueOf(horario.getIdHorario()));
@@ -67,7 +67,7 @@ public class ActividadView extends javax.swing.JFrame {
         jDCFechaHorario.setDate(horario.getFecha());
     }
     
-    private HorarioTO getHorarioFromView(){
+    public HorarioTO getHorarioFromView(){
         String id = jTFIdHorario.getText().trim();
         return new HorarioTO(
                 SAUtils.isValidString(id) ? Integer.parseInt(id) : 0, 
@@ -79,7 +79,7 @@ public class ActividadView extends javax.swing.JFrame {
         );
     }
     
-    private void setActividadToView(ActividadTO actividad){
+    public void setActividadToView(ActividadTO actividad){
         if(actividad == null)
             return;
         jTFIdActividad.setText(actividad.getIdActividad());
@@ -90,7 +90,7 @@ public class ActividadView extends javax.swing.JFrame {
         jCBHoras.setSelectedItem(String.valueOf(actividad.getHoras()));
     }
 
-    private ActividadTO getActividadFromView() {
+    public ActividadTO getActividadFromView() {
         return new ActividadTO(
                 jTFIdActividad.getText().trim(), 
                 jTFNombre.getText().trim(), 
@@ -101,18 +101,18 @@ public class ActividadView extends javax.swing.JFrame {
         );
     }
 
-    private String getSelectedActividad(){
+    public String getSelectedActividad(){
         int selectedRow = jTQActividades.getSelectedRow();
         return selectedRow != -1 ? jTQActividades.getValueAt(selectedRow, 0).toString() : null;
     }
     
-    private String getSelectedInstructor() {
+    public String getSelectedInstructor() {
         int selectedRow = jTRInstructores.getSelectedRow();
         return selectedRow != -1 ? jTRInstructores.getValueAt(selectedRow, 0).toString() : null;
     }
 
-    private void selectInstructor(InstructorTO instructor) {
-            jTFInstructor.setText(instructor != null ? instructor.getIdInstructor() : "");
+    public void selectInstructor(InstructorTO instructor) {
+        jTFInstructor.setText(instructor != null ? instructor.getIdInstructor() : "");
     }
 
     public JButton getjBtnEliminarActividad() {
