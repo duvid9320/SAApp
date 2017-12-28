@@ -1,13 +1,37 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * The MIT License
+ *
+ * Copyright 2017 David Rodríguez <duvid9320@gmail.com>.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package sa.view;
 
+import com.toedter.calendar.JDateChooser;
 import java.util.Calendar;
 import java.util.Date;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import sa.controller.ActividadController;
 import sa.model.to.ActividadTO;
@@ -26,26 +50,7 @@ public class ActividadView extends javax.swing.JFrame {
      */
     public ActividadView(ActividadController controller) {
         initComponents();
-        jBtnQueryInstructores.addActionListener(e -> controller.getAllInstructores(jTRInstructores));
-        jTRInstructores.getSelectionModel().addListSelectionListener(e -> selectInstructor(controller.getInstructor(getSelectedInstructor())));
-        jBtnRegistrarActividad.addActionListener(e -> controller.createActividad(getActividadFromView()));
-        jBtnModificarActividad.addActionListener(e -> controller.updateActividad(getActividadFromView()));
-        jBtnEliminarActividad.addActionListener(e -> controller.deleteActividad(getActividadFromView()));
-        jBtnQueryActividades.addActionListener(e -> controller.showAllActividades(jTQActividades));
-        jTQActividades.getSelectionModel().addListSelectionListener(e -> setActividadToView(controller.getActividad(getSelectedActividad())));
-        jBtnRegistrarHorario.addActionListener(e -> controller.createHorario(getHorarioFromView()));
-        jBtnQHorarios.addActionListener(e -> controller.showAllHorarios(getActividadFromView(), jTQHActividad));
-        jTQHActividad.getSelectionModel().addListSelectionListener(e -> setHorarioToView(controller.getHorario(getSelectedHorario())));
-        jBtnEliminarHorario.addActionListener(e -> controller.deleteHorario(getHorarioFromView()));
-        jBtnModificarHorario.addActionListener(e -> controller.updateHorario(getHorarioFromView()));
-        init();
-    }
-    
-    private void init(){
-        jSHFin.setModel(getHourModel());
-        jSHFin.setEditor(new JSpinner.DateEditor(jSHFin, "HH:mm:ss"));
-        jSHInicio.setModel(getHourModel());
-        jSHInicio.setEditor(new JSpinner.DateEditor(jSHInicio, "HH:mm:ss"));
+        //init();
     }
     
     private String getSelectedHorario(){
@@ -57,8 +62,8 @@ public class ActividadView extends javax.swing.JFrame {
         if(horario == null)
             return;
         jTFIdHorario.setText(String.valueOf(horario.getIdHorario()));
-        jSHInicio.setValue(SAUtils.getHourDate(horario.getHoraInicio()));
-        jSHFin.setValue(SAUtils.getHourDate(horario.getHoraFin()));
+        jSHInicio.setValue(SAUtils.getTimeFromString(horario.getHoraInicio()));
+        jSHFin.setValue(SAUtils.getTimeFromString(horario.getHoraFin()));
         jTFLugarHorario.setText(horario.getLugar());
         jDCFechaHorario.setDate(horario.getFecha());
     }
@@ -111,9 +116,199 @@ public class ActividadView extends javax.swing.JFrame {
             jTFInstructor.setText(instructor != null ? instructor.getIdInstructor() : "");
     }
 
-    private SpinnerDateModel getHourModel(){
-        return new SpinnerDateModel(new Date(), null, null, Calendar.HOUR_OF_DAY);
+    public JButton getjBtnEliminarActividad() {
+        return jBtnEliminarActividad;
     }
+
+    public void setjBtnEliminarActividad(JButton jBtnEliminarActividad) {
+        this.jBtnEliminarActividad = jBtnEliminarActividad;
+    }
+
+    public JButton getjBtnEliminarHorario() {
+        return jBtnEliminarHorario;
+    }
+
+    public void setjBtnEliminarHorario(JButton jBtnEliminarHorario) {
+        this.jBtnEliminarHorario = jBtnEliminarHorario;
+    }
+
+    public JButton getjBtnHorario() {
+        return jBtnHorario;
+    }
+
+    public void setjBtnHorario(JButton jBtnHorario) {
+        this.jBtnHorario = jBtnHorario;
+    }
+
+    public JButton getjBtnModificarActividad() {
+        return jBtnModificarActividad;
+    }
+
+    public void setjBtnModificarActividad(JButton jBtnModificarActividad) {
+        this.jBtnModificarActividad = jBtnModificarActividad;
+    }
+
+    public JButton getjBtnModificarHorario() {
+        return jBtnModificarHorario;
+    }
+
+    public void setjBtnModificarHorario(JButton jBtnModificarHorario) {
+        this.jBtnModificarHorario = jBtnModificarHorario;
+    }
+
+    public JButton getjBtnQHorarios() {
+        return jBtnQHorarios;
+    }
+
+    public void setjBtnQHorarios(JButton jBtnQHorarios) {
+        this.jBtnQHorarios = jBtnQHorarios;
+    }
+
+    public JButton getjBtnQueryActividades() {
+        return jBtnQueryActividades;
+    }
+
+    public void setjBtnQueryActividades(JButton jBtnQueryActividades) {
+        this.jBtnQueryActividades = jBtnQueryActividades;
+    }
+
+    public JButton getjBtnQueryInstructores() {
+        return jBtnQueryInstructores;
+    }
+
+    public void setjBtnQueryInstructores(JButton jBtnQueryInstructores) {
+        this.jBtnQueryInstructores = jBtnQueryInstructores;
+    }
+
+    public JButton getjBtnRegistrarActividad() {
+        return jBtnRegistrarActividad;
+    }
+
+    public void setjBtnRegistrarActividad(JButton jBtnRegistrarActividad) {
+        this.jBtnRegistrarActividad = jBtnRegistrarActividad;
+    }
+
+    public JButton getjBtnRegistrarHorario() {
+        return jBtnRegistrarHorario;
+    }
+
+    public void setjBtnRegistrarHorario(JButton jBtnRegistrarHorario) {
+        this.jBtnRegistrarHorario = jBtnRegistrarHorario;
+    }
+
+    public JComboBox<String> getjCBHoras() {
+        return jCBHoras;
+    }
+
+    public void setjCBHoras(JComboBox<String> jCBHoras) {
+        this.jCBHoras = jCBHoras;
+    }
+
+    public JComboBox<String> getjCBTipo() {
+        return jCBTipo;
+    }
+
+    public void setjCBTipo(JComboBox<String> jCBTipo) {
+        this.jCBTipo = jCBTipo;
+    }
+
+    public JDateChooser getjDCFechaHorario() {
+        return jDCFechaHorario;
+    }
+
+    public void setjDCFechaHorario(JDateChooser jDCFechaHorario) {
+        this.jDCFechaHorario = jDCFechaHorario;
+    }
+
+    public JSpinner getjSHFin() {
+        return jSHFin;
+    }
+
+    public void setjSHFin(JSpinner jSHFin) {
+        this.jSHFin = jSHFin;
+    }
+
+    public JSpinner getjSHInicio() {
+        return jSHInicio;
+    }
+
+    public void setjSHInicio(JSpinner jSHInicio) {
+        this.jSHInicio = jSHInicio;
+    }
+
+    public JTextArea getjTADescripcion() {
+        return jTADescripcion;
+    }
+
+    public void setjTADescripcion(JTextArea jTADescripcion) {
+        this.jTADescripcion = jTADescripcion;
+    }
+
+    public JTextField getjTFIdActividad() {
+        return jTFIdActividad;
+    }
+
+    public void setjTFIdActividad(JTextField jTFIdActividad) {
+        this.jTFIdActividad = jTFIdActividad;
+    }
+
+    public JTextField getjTFIdHorario() {
+        return jTFIdHorario;
+    }
+
+    public void setjTFIdHorario(JTextField jTFIdHorario) {
+        this.jTFIdHorario = jTFIdHorario;
+    }
+
+    public JTextField getjTFInstructor() {
+        return jTFInstructor;
+    }
+
+    public void setjTFInstructor(JTextField jTFInstructor) {
+        this.jTFInstructor = jTFInstructor;
+    }
+
+    public JTextField getjTFLugarHorario() {
+        return jTFLugarHorario;
+    }
+
+    public void setjTFLugarHorario(JTextField jTFLugarHorario) {
+        this.jTFLugarHorario = jTFLugarHorario;
+    }
+
+    public JTextField getjTFNombre() {
+        return jTFNombre;
+    }
+
+    public void setjTFNombre(JTextField jTFNombre) {
+        this.jTFNombre = jTFNombre;
+    }
+
+    public JTable getjTQActividades() {
+        return jTQActividades;
+    }
+
+    public void setjTQActividades(JTable jTQActividades) {
+        this.jTQActividades = jTQActividades;
+    }
+
+    public JTable getjTQHActividad() {
+        return jTQHActividad;
+    }
+
+    public void setjTQHActividad(JTable jTQHActividad) {
+        this.jTQHActividad = jTQHActividad;
+    }
+
+    public JTable getjTRInstructores() {
+        return jTRInstructores;
+    }
+
+    public void setjTRInstructores(JTable jTRInstructores) {
+        this.jTRInstructores = jTRInstructores;
+    }
+    
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
