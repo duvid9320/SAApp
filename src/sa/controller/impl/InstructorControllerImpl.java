@@ -24,6 +24,7 @@
 package sa.controller.impl;
 
 
+import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,6 +61,35 @@ public class InstructorControllerImpl implements DocumentListener{
     
     private void initView(){
         addDocumentListener();
+        addButtonsListeners();
+    }
+    
+    private void addButtonsListeners(){
+        view.getjBtnEliminarInstructor().addActionListener(this::deleteInstructor);
+        view.getjBtnRegistrarInstructor().addActionListener(this::createInstructor);
+        view.getjBtnModificarInstructor().addActionListener(this::updateInstructor);
+        view.getjBtnBuscarInstructores().addActionListener(this::buscarInstructores);
+    }
+    
+    private void createInstructor(ActionEvent e){
+        if(instructorDAO.createInstructor(view.getInstructor()))
+            SAOutput.showInformationMessage("El instructor se registró");
+        else
+            SAOutput.showErrorMessage("El instructor no se pudo registrar");
+    }
+    
+    private void deleteInstructor (ActionEvent e){
+        if(instructorDAO.deleteInstructor(view.getInstructor()))
+            SAOutput.showInformationMessage("El instructor se eliminó");
+        else 
+            SAOutput.showErrorMessage("El instructor no se pudo eliminar");
+    }
+    
+    private void updateInstructor(ActionEvent e){
+        if(instructorDAO.updateInstructor(view.getInstructor()))
+            SAOutput.showInformationMessage("El instructor se modificó");
+        else
+            SAOutput.showErrorMessage("El instructor no se pudo modificar");
     }
     
     private void addDocumentListener(){
@@ -69,50 +99,8 @@ public class InstructorControllerImpl implements DocumentListener{
         view.getjTAGradoInstructor().getDocument().addDocumentListener(this);
     }
     
-    public void createInstructor(InstructorTO instructor) {
-        if(!instructor.isValid())
-            SAOutput.showErrorMessage("La información del instructor no es valida");
-        else if(InstructorDAO.getInstance().createInstructor(instructor))
-            SAOutput.showInformationMessage("El instructor se registrar correctamente");
-        else 
-            SAOutput.showErrorMessage("El instructor no se pudo registrar");
-    }
-    
-    public void updateInstructor(InstructorTO instructor) {
-        if(!instructor.isValid())
-            SAOutput.showErrorMessage("La información del instructor no es valida");
-        else if(InstructorDAO.getInstance().updateInstructor(instructor))
-            SAOutput.showInformationMessage("El instructor se modifico correctamente");
-        else
-            SAOutput.showErrorMessage("El instructor no se pudo modificar");
-    }
-
-    public void deleteInstructor(InstructorTO instructor) {
-        if(!instructor.isValid())
-            SAOutput.showErrorMessage("Carga el instructor desde la tabla");
-        else if(InstructorDAO.getInstance().deleteInstructor(instructor))
-            SAOutput.showInformationMessage("El instructor se elimino correctamente");
-        else 
-            SAOutput.showErrorMessage("El instructor no se pudo eliminar");
-    }
-
-    
-    public void buscarTodos(JTable jTAResults) {
-        try {
-            jTAResults.setModel(
-                    TableManager.getDefaultTableModelFromResultSet(
-                            MySQLManager.getInstance().getResultSetFromQuery(
-                                    "SELECT * FROM Instructor"
-                            )
-                    )
-            );
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(InstructorControllerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public InstructorTO getInstructor(String id) {
-        return id != null ? InstructorDAO.getInstance().getInstructor(id) : null;
+    public void buscarInstructores(ActionEvent e) {
+        view.getjTAQueryInstructores().setModel(instructorDAO.getDTM("SELECT * FROM Instructor"));
     }
     
     private void editIdInstructor(){
@@ -141,6 +129,7 @@ public class InstructorControllerImpl implements DocumentListener{
             view.setNombresInstructor();
         else if(e == view.getjTAGradoInstructor())
             view.setGradoInstructor();
+        enableButtons();
     }
 
     @Override
