@@ -34,7 +34,7 @@ import sa.model.to.InstructorTO;
  * @author dave
  */
 public class InstructorView extends javax.swing.JFrame {
-    private InstructorTO instructor;
+    private  InstructorTO instructor;
     
     public InstructorView() {
         initComponents();
