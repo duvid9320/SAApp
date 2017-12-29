@@ -1,28 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
-  <NonVisualComponents>
-    <Container class="javax.swing.JPanel" name="jPanel2">
-
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
-          </Group>
-        </DimensionLayout>
-      </Layout>
-    </Container>
-    <Component class="javax.swing.JButton" name="jButton2">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jButton2"/>
-      </Properties>
-    </Component>
-  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>
@@ -66,25 +44,25 @@
             <Property name="rows" type="int" value="4"/>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="jBtnRegistrar">
+            <Component class="javax.swing.JButton" name="jBtnRegistrarInstructor">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Registrar"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBtnRegistrarActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBtnRegistrarInstructorActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="jBtnModificar">
+            <Component class="javax.swing.JButton" name="jBtnModificarInstructor">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Modificar"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jBtnEliminar">
+            <Component class="javax.swing.JButton" name="jBtnEliminarInstructor">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Eliminar"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jBtnBuscar">
+            <Component class="javax.swing.JButton" name="jBtnBuscarInstructores">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Buscar"/>
               </Properties>
@@ -114,15 +92,15 @@
                           <Group type="102" attributes="0">
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTFId" pref="155" max="32767" attributes="0"/>
+                              <Component id="jTFIdInstructor" pref="155" max="32767" attributes="0"/>
                               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                              <Component id="jTFNombres" pref="155" max="32767" attributes="0"/>
+                              <Component id="jTFNombresInstructor" pref="155" max="32767" attributes="0"/>
                               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="jTFApellidos" pref="155" max="32767" attributes="0"/>
+                              <Component id="jTFApellidosInstructor" pref="155" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
@@ -140,11 +118,11 @@
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTFNombres" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jTFNombresInstructor" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTFApellidos" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jTFApellidosInstructor" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTFId" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jTFIdInstructor" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -162,9 +140,9 @@
                 <Property name="text" type="java.lang.String" value="Nombres"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="jTFNombres">
+            <Component class="javax.swing.JTextField" name="jTFNombresInstructor">
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTFNombresActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTFNombresInstructorActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel2">
@@ -172,7 +150,7 @@
                 <Property name="text" type="java.lang.String" value="Apellidos"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="jTFApellidos">
+            <Component class="javax.swing.JTextField" name="jTFApellidosInstructor">
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel3">
               <Properties>
@@ -186,7 +164,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTextArea" name="jTAGrado">
+                <Component class="javax.swing.JTextArea" name="jTAGradoInstructor">
                   <Properties>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="rows" type="int" value="5"/>
@@ -199,7 +177,7 @@
                 <Property name="text" type="java.lang.String" value="Id"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="jTFId">
+            <Component class="javax.swing.JTextField" name="jTFIdInstructor">
             </Component>
           </SubComponents>
         </Container>
@@ -231,7 +209,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="jTAResults">
+            <Component class="javax.swing.JTable" name="jTAQueryInstructores">
               <Properties>
                 <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                 <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">

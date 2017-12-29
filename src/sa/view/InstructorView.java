@@ -1,11 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * The MIT License
+ *
+ * Copyright 2017 David Rodríguez <duvid9320@gmail.com>.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package sa.view;
 
-import sa.controller.InstructorController;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import sa.model.to.InstructorTO;
 
 /**
@@ -13,43 +34,77 @@ import sa.model.to.InstructorTO;
  * @author dave
  */
 public class InstructorView extends javax.swing.JFrame {
-
-    /**
-     * Creates new form InstructorView
-     */
-    public InstructorView(InstructorController controller) {
+    private InstructorTO instructor;
+    
+    public InstructorView() {
         initComponents();
-        jBtnRegistrar.addActionListener(e -> controller.createInstructor(getInstructorFromView()));
-        jBtnModificar.addActionListener(e -> controller.updateInstructor(getInstructorFromView()));
-        jBtnEliminar.addActionListener(e -> controller.deleteInstructor(getInstructorFromView()));
-        jBtnBuscar.addActionListener(e -> controller.buscarTodos(jTAResults));
-        jTAResults.getSelectionModel().addListSelectionListener(e -> setInstructorToView(controller.getInstructor(getSelectedInstructor())));
-        setVisible(true);
+        instructor = new InstructorTO();
     }
     
-    private void setInstructorToView(InstructorTO instructor) {
-        if(instructor == null)
-            return;
-        jTFId.setText(instructor.getIdInstructor());
-        jTFNombres.setText(instructor.getNombres());
-        jTFApellidos.setText(instructor.getApellidos());
-        jTAGrado.setText(instructor.getGrado());
+    public void setNombresInstructor(){
+        instructor.setNombres(jTFNombresInstructor.getText().trim());
     }
     
-    private String getSelectedInstructor(){
-        int selectedRow = jTAResults.getSelectedRow();
-        return selectedRow != -1 ? jTAResults.getValueAt(selectedRow, 0).toString() : null;
+    public void setGradoInstructor(){
+        instructor.setGrado(jTAGradoInstructor.getText().trim());
     }
     
-    private InstructorTO getInstructorFromView(){
-        return new InstructorTO(
-                jTFId.getText().trim(), 
-                jTFNombres.getText().trim(), 
-                jTFApellidos.getText().trim(), 
-                jTAGrado.getText().trim()
-        );
+    public void setIdInstructor(){
+        instructor.setIdInstructor(getIdInstructor());
+    }
+    
+    public String getIdInstructor(){
+        return jTFIdInstructor.getText().trim();
+    }
+    
+    public void setApellidosInstructor(){
+        instructor.setApellidos(jTFApellidosInstructor.getText().trim());
     }
 
+    public InstructorTO getInstructor() {
+        return instructor;
+    }
+
+    public void setInstructor(InstructorTO instructor) {
+        this.instructor = instructor;
+    }
+
+    public JButton getjBtnBuscarInstructores() {
+        return jBtnBuscarInstructores;
+    }
+
+    public JButton getjBtnEliminarInstructor() {
+        return jBtnEliminarInstructor;
+    }
+
+    public JButton getjBtnModificarInstructor() {
+        return jBtnModificarInstructor;
+    }
+
+    public JButton getjBtnRegistrarInstructor() {
+        return jBtnRegistrarInstructor;
+    }
+
+    public JTextArea getjTAGradoInstructor() {
+        return jTAGradoInstructor;
+    }
+
+    public JTable getjTAQueryInstructores() {
+        return jTAQueryInstructores;
+    }
+
+    public JTextField getjTFApellidosInstructor() {
+        return jTFApellidosInstructor;
+    }
+
+    public JTextField getjTFIdInstructor() {
+        return jTFIdInstructor;
+    }
+
+    public JTextField getjTFNombresInstructor() {
+        return jTFNombresInstructor;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -59,40 +114,25 @@ public class InstructorView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
         jPFormInstructor = new javax.swing.JPanel();
         jPFormControls = new javax.swing.JPanel();
-        jBtnRegistrar = new javax.swing.JButton();
-        jBtnModificar = new javax.swing.JButton();
-        jBtnEliminar = new javax.swing.JButton();
-        jBtnBuscar = new javax.swing.JButton();
+        jBtnRegistrarInstructor = new javax.swing.JButton();
+        jBtnModificarInstructor = new javax.swing.JButton();
+        jBtnEliminarInstructor = new javax.swing.JButton();
+        jBtnBuscarInstructores = new javax.swing.JButton();
         jPFormFields = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTFNombres = new javax.swing.JTextField();
+        jTFNombresInstructor = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTFApellidos = new javax.swing.JTextField();
+        jTFApellidosInstructor = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTAGrado = new javax.swing.JTextArea();
+        jTAGradoInstructor = new javax.swing.JTextArea();
         jLabel4 = new javax.swing.JLabel();
-        jTFId = new javax.swing.JTextField();
+        jTFIdInstructor = new javax.swing.JTextField();
         jPQueryResults = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTAResults = new javax.swing.JTable();
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
-        jButton2.setText("jButton2");
+        jTAQueryInstructores = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -100,32 +140,32 @@ public class InstructorView extends javax.swing.JFrame {
 
         jPFormControls.setLayout(new java.awt.GridLayout(4, 1));
 
-        jBtnRegistrar.setText("Registrar");
-        jBtnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+        jBtnRegistrarInstructor.setText("Registrar");
+        jBtnRegistrarInstructor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBtnRegistrarActionPerformed(evt);
+                jBtnRegistrarInstructorActionPerformed(evt);
             }
         });
-        jPFormControls.add(jBtnRegistrar);
+        jPFormControls.add(jBtnRegistrarInstructor);
 
-        jBtnModificar.setText("Modificar");
-        jPFormControls.add(jBtnModificar);
+        jBtnModificarInstructor.setText("Modificar");
+        jPFormControls.add(jBtnModificarInstructor);
 
-        jBtnEliminar.setText("Eliminar");
-        jPFormControls.add(jBtnEliminar);
+        jBtnEliminarInstructor.setText("Eliminar");
+        jPFormControls.add(jBtnEliminarInstructor);
 
-        jBtnBuscar.setText("Buscar");
-        jPFormControls.add(jBtnBuscar);
+        jBtnBuscarInstructores.setText("Buscar");
+        jPFormControls.add(jBtnBuscarInstructores);
 
         jPFormInstructor.add(jPFormControls, java.awt.BorderLayout.LINE_END);
 
-        jPFormFields.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nuevo Instructor", 2, 1));
+        jPFormFields.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nuevo Instructor", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_TOP));
 
         jLabel1.setText("Nombres");
 
-        jTFNombres.addActionListener(new java.awt.event.ActionListener() {
+        jTFNombresInstructor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTFNombresActionPerformed(evt);
+                jTFNombresInstructorActionPerformed(evt);
             }
         });
 
@@ -133,9 +173,9 @@ public class InstructorView extends javax.swing.JFrame {
 
         jLabel3.setText("Grado");
 
-        jTAGrado.setColumns(20);
-        jTAGrado.setRows(5);
-        jScrollPane1.setViewportView(jTAGrado);
+        jTAGradoInstructor.setColumns(20);
+        jTAGradoInstructor.setRows(5);
+        jScrollPane1.setViewportView(jTAGradoInstructor);
 
         jLabel4.setText("Id");
 
@@ -149,15 +189,15 @@ public class InstructorView extends javax.swing.JFrame {
                     .addGroup(jPFormFieldsLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(18, 18, 18)
-                        .addComponent(jTFId, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                        .addComponent(jTFIdInstructor, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(jTFNombres, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                        .addComponent(jTFNombresInstructor, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTFApellidos, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                        .addComponent(jTFApellidosInstructor, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
                     .addGroup(jPFormFieldsLayout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -170,11 +210,11 @@ public class InstructorView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPFormFieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTFNombres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFNombresInstructor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(jTFApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFApellidosInstructor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(jTFId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTFIdInstructor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPFormFieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
@@ -186,12 +226,12 @@ public class InstructorView extends javax.swing.JFrame {
 
         getContentPane().add(jPFormInstructor, java.awt.BorderLayout.NORTH);
 
-        jPQueryResults.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Buscar Instructores Registrados", 2, 1));
+        jPQueryResults.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Buscar Instructores Registrados", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_TOP));
         jPQueryResults.setLayout(new java.awt.GridLayout(1, 0));
 
-        jTAResults.setAutoCreateRowSorter(true);
-        jTAResults.getTableHeader().setReorderingAllowed(false);
-        jScrollPane2.setViewportView(jTAResults);
+        jTAQueryInstructores.setAutoCreateRowSorter(true);
+        jTAQueryInstructores.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(jTAQueryInstructores);
 
         jPQueryResults.add(jScrollPane2);
 
@@ -200,21 +240,20 @@ public class InstructorView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTFNombresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFNombresActionPerformed
+    private void jTFNombresInstructorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFNombresInstructorActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTFNombresActionPerformed
+    }//GEN-LAST:event_jTFNombresInstructorActionPerformed
 
-    private void jBtnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnRegistrarActionPerformed
+    private void jBtnRegistrarInstructorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnRegistrarInstructorActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jBtnRegistrarActionPerformed
+    }//GEN-LAST:event_jBtnRegistrarInstructorActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jBtnBuscar;
-    private javax.swing.JButton jBtnEliminar;
-    private javax.swing.JButton jBtnModificar;
-    private javax.swing.JButton jBtnRegistrar;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jBtnBuscarInstructores;
+    private javax.swing.JButton jBtnEliminarInstructor;
+    private javax.swing.JButton jBtnModificarInstructor;
+    private javax.swing.JButton jBtnRegistrarInstructor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -223,14 +262,13 @@ public class InstructorView extends javax.swing.JFrame {
     private javax.swing.JPanel jPFormFields;
     private javax.swing.JPanel jPFormInstructor;
     private javax.swing.JPanel jPQueryResults;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTAGrado;
-    private javax.swing.JTable jTAResults;
-    private javax.swing.JTextField jTFApellidos;
-    private javax.swing.JTextField jTFId;
-    private javax.swing.JTextField jTFNombres;
+    private javax.swing.JTextArea jTAGradoInstructor;
+    private javax.swing.JTable jTAQueryInstructores;
+    private javax.swing.JTextField jTFApellidosInstructor;
+    private javax.swing.JTextField jTFIdInstructor;
+    private javax.swing.JTextField jTFNombresInstructor;
     // End of variables declaration//GEN-END:variables
 
 }
