@@ -71,12 +71,17 @@ public class InstructorController implements DocumentListener{
         view.getjBtnBuscarInstructores().addActionListener(this::queryInstructores);
     }
     
+    private void cleanView(){
+        showUpdatedInstructor();
+        view.resetView();
+    }
+    
     private void createInstructor(ActionEvent e){
         if(instructorDAO.createInstructor(view.getInstructor()))
             SAOutput.showInformationMessage("El instructor se registró");
         else
             SAOutput.showErrorMessage("El instructor no se pudo registrar");
-        showUpdatedInstructor();
+        cleanView();
     }
     
     private void deleteInstructor (ActionEvent e){
@@ -84,7 +89,7 @@ public class InstructorController implements DocumentListener{
             SAOutput.showInformationMessage("El instructor se eliminó");
         else 
             SAOutput.showErrorMessage("El instructor no se pudo eliminar");
-        showUpdatedInstructor();
+        cleanView();
     }
     
     private void updateInstructor(ActionEvent e){
@@ -92,7 +97,7 @@ public class InstructorController implements DocumentListener{
             SAOutput.showInformationMessage("El instructor se modificó");
         else
             SAOutput.showErrorMessage("El instructor no se pudo modificar");
-        showUpdatedInstructor();
+        cleanView();
     }
     
     private void addDocumentListener(){

@@ -41,6 +41,13 @@ public class InstructorView extends javax.swing.JFrame {
         instructor = new InstructorTO();
     }
     
+    public void resetView(){
+        jTFApellidosInstructor.setText("");
+        jTFIdInstructor.setText("");
+        jTFNombresInstructor.setText("");
+        jTAGradoInstructor.setText("");
+    }
+    
     public void setNombresInstructor(){
         instructor.setNombres(jTFNombresInstructor.getText().trim());
     }
@@ -67,6 +74,11 @@ public class InstructorView extends javax.swing.JFrame {
 
     public void setInstructor(InstructorTO instructor) {
         this.instructor = instructor;
+        jTFApellidosInstructor.setText(instructor.getApellidos());
+        jTFNombresInstructor.setText(instructor.getNombres());
+        jTAGradoInstructor.setText(instructor.getGrado());
+        if(instructor.getIdInstructor().compareTo(jTFIdInstructor.getText()) != 0)
+            jTFIdInstructor.setText(instructor.getIdInstructor());
     }
 
     public JButton getjBtnBuscarInstructores() {
