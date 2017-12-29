@@ -33,17 +33,13 @@ import sa.model.to.InstructorTO;
 import sa.utils.SAOutput;
 import sa.view.InstructorView;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
  * @author dave
  */
 public class InstructorController implements DocumentListener{
+    
     private final InstructorView view;
     private final InstructorDAO instructorDAO;
 
@@ -120,7 +116,6 @@ public class InstructorController implements DocumentListener{
     }
     
     private void editIdInstructor(){
-        System.out.println("Editando a id instructor");
         InstructorTO instructor = instructorDAO.getInstructor(view.getIdInstructor());
         if(instructor != null)
             view.setInstructor(instructor);
