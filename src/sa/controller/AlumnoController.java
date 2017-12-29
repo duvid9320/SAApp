@@ -5,7 +5,6 @@
  */
 package sa.controller;
 
-import java.awt.event.WindowListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
 import sa.model.to.AlumnoTO;
@@ -20,7 +19,7 @@ public interface AlumnoController{
 
     public DefaultComboBoxModel<String> getModelCarreras();
 
-    public void busarTodos(JTable jTAAlumnos);
+    public void buscarTodos(JTable jTAAlumnos);
 
     public AlumnoTO getAlumno(String selectionFromView);
 

@@ -5,9 +5,7 @@
  */
 package sa.controller.impl;
 
-import java.awt.event.WindowEvent;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -17,7 +15,6 @@ import sa.controller.AlumnoController;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
 import sa.model.to.AlumnoTO;
-import sa.model.to.CarreraTO;
 import sa.utils.SAOutput;
 import sa.utils.TableManager;
 import sa.view.AlumnoView;
@@ -56,7 +53,7 @@ public class AlumnoControllerImpl implements AlumnoController{
     }
 
     @Override
-    public void busarTodos(JTable jTAAlumnos) {
+    public void buscarTodos(JTable jTAAlumnos) {
         try {
             jTAAlumnos.setModel(
                     TableManager.getDefaultTableModelFromResultSet(

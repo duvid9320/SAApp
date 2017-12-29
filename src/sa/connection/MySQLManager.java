@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sa.utils.SAOutput;
 
 /**
  *
@@ -22,13 +23,13 @@ import java.util.logging.Logger;
  */
 public class MySQLManager {
     private static final String USER;
-    private static final String PASSWORD;
+    private static String PASSWORD;
     private static final String DATABASE;
     private static final String HOST;
     
     static{
         USER = "root";
-        PASSWORD = "root";
+        PASSWORD = SAOutput.showInputDialog("introdusca la contraseña de usuario root MySQL");
         DATABASE = "itzDB";
         HOST = "localhost";
     }
