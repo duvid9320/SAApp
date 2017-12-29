@@ -8,13 +8,10 @@ public class LoginView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
     
-    private boolean isAlumno(int i){
-        return i==0;
+    private boolean isAlumno(){
+        return jCBUsuario.getSelectedIndex()==0;
     }
     
-    private byte[] Huella(){
-        return String.valueOf(jPFClave.getPassword()).getBytes();
-    }
     
     //posción del mouse
     int x,y;
