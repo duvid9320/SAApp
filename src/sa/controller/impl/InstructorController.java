@@ -25,17 +25,12 @@ package sa.controller.impl;
 
 
 import java.awt.event.ActionEvent;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import sa.connection.MySQLManager;
+import javax.swing.event.ListSelectionEvent;
 import sa.model.dao.InstructorDAO;
 import sa.model.to.InstructorTO;
 import sa.utils.SAOutput;
-import sa.utils.TableManager;
 import sa.view.InstructorView;
 
 /*
@@ -62,6 +57,15 @@ public class InstructorController implements DocumentListener{
     private void initView(){
         addDocumentListener();
         addButtonsListeners();
+        addListSelectionListeners();
+    }
+    
+    private void addListSelectionListeners(){
+        view.getjTAQueryInstructores().getSelectionModel().addListSelectionListener(this::doSelectedInstructor);
+    }
+    
+    private void doSelectedInstructor(ListSelectionEvent e){
+        view.setInstructor(instructorDAO.getInstructor(view.getSelectedInstructor()));
     }
     
     private void addButtonsListeners(){

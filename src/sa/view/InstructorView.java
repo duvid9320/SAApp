@@ -41,6 +41,11 @@ public class InstructorView extends javax.swing.JFrame {
         instructor = new InstructorTO();
     }
     
+    public String getSelectedInstructor(){
+        int selectedRow = jTAQueryInstructores.getSelectedRow();
+        return selectedRow != -1 ? String.valueOf(jTAQueryInstructores.getValueAt(selectedRow, 0)) : null;
+    }
+    
     public void resetView(){
         jTFApellidosInstructor.setText("");
         jTFIdInstructor.setText("");
@@ -73,6 +78,8 @@ public class InstructorView extends javax.swing.JFrame {
     }
 
     public void setInstructor(InstructorTO instructor) {
+        if(instructor == null)
+            return;
         this.instructor = instructor;
         jTFApellidosInstructor.setText(instructor.getApellidos());
         jTFNombresInstructor.setText(instructor.getNombres());
