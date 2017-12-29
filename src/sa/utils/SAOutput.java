@@ -27,4 +27,8 @@ public class SAOutput {
     public static void showInformationMessage(String msg){
         showInformationMessage(msg, "Operación realizada con éxito");
     }
+    
+    public static String showInputDialog(String msg){
+        return JOptionPane.showInputDialog(null, msg);
+    }
 }

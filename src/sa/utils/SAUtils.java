@@ -5,6 +5,7 @@
  */
 package sa.utils;
 
+import java.awt.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -16,7 +17,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sa.model.to.AlumnoTO;
-
 /**
  *
  * @author Dave
@@ -34,7 +34,7 @@ public class SAUtils {
     
     public static Date getHourDate(String hour){
         try {
-            return new SimpleDateFormat("HH:mm:ss").parse(hour);
+            return new SimpleDateFormat("HH:mm").parse(hour);
         } catch (ParseException ex) {
             Logger.getLogger(SAUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -46,7 +46,7 @@ public class SAUtils {
     }
     
     public static String getFormattedTime(Date date){
-        return new SimpleDateFormat("HH:mm:ss").format(date);
+        return new SimpleDateFormat("HH:mm").format(date);
     }
     
     public static boolean isValidString(String str){
@@ -73,7 +73,7 @@ public class SAUtils {
           try {
             bos.close();
           } catch (IOException ex) {
-            // ignore close exception
+            //ignore close exception
           }
         }
         return array;
