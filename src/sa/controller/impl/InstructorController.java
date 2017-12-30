@@ -24,13 +24,13 @@
 package sa.controller.impl;
 
 
-import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import sa.model.dao.InstructorDAO;
 import sa.model.to.InstructorTO;
-import sa.utils.SAOutput;
 import sa.view.InstructorView;
 
 
@@ -54,6 +54,7 @@ public class InstructorController implements DocumentListener{
         addDocumentListener();
         addButtonsListeners();
         addListSelectionListeners();
+        showQuery(view.getQueryInstructores());
     }
     
     private void addListSelectionListeners(){
@@ -61,43 +62,23 @@ public class InstructorController implements DocumentListener{
     }
     
     private void doSelectedInstructor(ListSelectionEvent e){
+        System.out.println(Arrays.toString(view.getjTAQueryInstructores().getSelectedRows()));
         view.setInstructor(instructorDAO.getInstructor(view.getSelectedInstructor()));
     }
     
     private void addButtonsListeners(){
-        view.getjBtnEliminarInstructor().addActionListener(this::deleteInstructor);
-        view.getjBtnRegistrarInstructor().addActionListener(this::createInstructor);
-        view.getjBtnModificarInstructor().addActionListener(this::updateInstructor);
-        view.getjBtnBuscarInstructores().addActionListener(this::queryInstructores);
+        view.getjBtnQueryInstructores().addActionListener(e -> showQuery(view.getQueryInstructores()));
+        view.getjBtnEliminarInstructor().addActionListener(e -> {instructorDAO.deleteInstructor(view.getInstructor()); cleanView();});
+        view.getjBtnRegistrarInstructor().addActionListener(e -> {instructorDAO.createInstructor(view.getInstructor()); cleanView();});
+        view.getjBtnModificarInstructor().addActionListener(e -> {instructorDAO.updateInstructor(view.getInstructor()); cleanView();});
+        view.getjBtnMinimize().addActionListener( e -> view.setState(JFrame.ICONIFIED));
+        view.getjBtnMaximize().addActionListener(e ->  view.setExtendedState(view.getExtendedState() != JFrame.MAXIMIZED_BOTH ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));
+        view.getjBtnClose().addActionListener(e -> view.dispose());
     }
     
     private void cleanView(){
-        showUpdatedInstructor();
+        showQuery(view.getInstructor().getQuerySQL());
         view.resetView();
-    }
-    
-    private void createInstructor(ActionEvent e){
-        if(instructorDAO.createInstructor(view.getInstructor()))
-            SAOutput.showInformationMessage("El instructor se registró");
-        else
-            SAOutput.showErrorMessage("El instructor no se pudo registrar");
-        cleanView();
-    }
-    
-    private void deleteInstructor (ActionEvent e){
-        if(instructorDAO.deleteInstructor(view.getInstructor()))
-            SAOutput.showInformationMessage("El instructor se eliminó");
-        else 
-            SAOutput.showErrorMessage("El instructor no se pudo eliminar");
-        cleanView();
-    }
-    
-    private void updateInstructor(ActionEvent e){
-        if(instructorDAO.updateInstructor(view.getInstructor()))
-            SAOutput.showInformationMessage("El instructor se modificó");
-        else
-            SAOutput.showErrorMessage("El instructor no se pudo modificar");
-        cleanView();
     }
     
     private void addDocumentListener(){
@@ -105,14 +86,13 @@ public class InstructorController implements DocumentListener{
         view.getjTFIdInstructor().getDocument().addDocumentListener(this);
         view.getjTFNombresInstructor().getDocument().addDocumentListener(this);
         view.getjTAGradoInstructor().getDocument().addDocumentListener(this);
+        view.getjTFQApellidos().getDocument().addDocumentListener(this);
+        view.getjTFQId().getDocument().addDocumentListener(this);
+        view.getjTFQNombres().getDocument().addDocumentListener(this);
     }
     
-    public void showUpdatedInstructor(){
-        view.getjTAQueryInstructores().setModel(instructorDAO.getDTM(view.getInstructor().getQuerySQL()));
-    }
-    
-    public void queryInstructores(ActionEvent e) {
-        view.getjTAQueryInstructores().setModel(instructorDAO.getDTM("SELECT * FROM Instructor"));
+    public void showQuery(String query){
+        view.getjTAQueryInstructores().setModel(instructorDAO.getDTM(query));
     }
     
     private void editIdInstructor(){
@@ -141,7 +121,15 @@ public class InstructorController implements DocumentListener{
             view.setNombresInstructor();
         else if(e.getDocument() == view.getjTAGradoInstructor().getDocument())
             view.setGradoInstructor();
+        else if (isQueryEdited(e))
+            showQuery(view.getQueryInstructores());
         enableButtons();
+    }
+    
+    private boolean isQueryEdited(DocumentEvent e){
+        return e.getDocument() == view.getjTFQApellidos().getDocument() || 
+                e.getDocument() == view.getjTFQId().getDocument() ||
+                e.getDocument() == view.getjTFQNombres().getDocument();
     }
 
     @Override

@@ -24,7 +24,6 @@
 package sa.model.dao;
 
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import sa.model.to.InstructorTO;
 import sa.utils.SAOutput;
 
@@ -54,28 +53,25 @@ public class InstructorDAO extends GenericDAO<InstructorTO>{
         return getInstructor(instructor) != null;
     }
     
-    public boolean createInstructor(InstructorTO instructor) {
-        if(instructorExists(instructor))
-            SAOutput.showErrorMessage("El instructor ya existe");
-        else 
-            return create(instructor);
-        return false;
-    }
-
-    public boolean updateInstructor(InstructorTO instructor) {
-        if(!instructorExists(instructor))
-            SAOutput.showErrorMessage("El instructor no existe, no se puede modificar");
+    public void createInstructor(InstructorTO instructor) {
+        if(create(instructor))
+            SAOutput.showInformationMessage("El instructor se registro");
         else
-            return update(instructor);
-        return false;
+            SAOutput.showErrorMessage("El instructor no se pudo registrar");
     }
 
-    public boolean deleteInstructor(InstructorTO instructor) {
-        if(!instructorExists(instructor))
-            SAOutput.showErrorMessage("El instructor no existe");
-        else 
-            return delete(instructor);
-        return false;
+    public void updateInstructor(InstructorTO instructor) {
+        if (update(instructor)) 
+            SAOutput.showInformationMessage("El instructor se modificó");
+        else
+            SAOutput.showErrorMessage("El instructor no se pudo modificar");
+    }
+
+    public void deleteInstructor(InstructorTO instructor) {
+        if(delete(instructor))
+            SAOutput.showInformationMessage("El instructor se eliminó");
+        else
+            SAOutput.showErrorMessage("El instructor no se pudo eliminar");
     }
 
     public DefaultTableModel getDTM(String query) {

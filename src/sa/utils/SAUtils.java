@@ -32,9 +32,16 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import sa.model.to.AlumnoTO;
 
@@ -49,6 +56,38 @@ public class SAUtils {
     static{
         MYSQL_DATE_FORMAT = "YYYY-MM-dd";
         MYSQL_TIME_FORMAT = "";
+    }
+    
+    private static String getFormattedConditions(HashMap<String, JTextField> conditions){
+        String format = "WHERE "+String.join(
+                            " AND ", 
+                            conditions.entrySet()
+                                    .stream()
+                                    .filter(c -> !c.getValue().getText().trim().isEmpty())
+                                    .map(c -> String.format("%s LIKE '%%%s%%'", c.getKey(),c.getValue().getText().trim()))
+                                    .collect(Collectors.toList()
+                        )
+        );
+        return format.trim().endsWith("WHERE") ? "" : format;
+    }
+    
+    private static String getFormattedFields(HashMap<String, String> fields){
+        return String.join(
+                ", ", 
+                fields.entrySet()
+                        .stream()
+                        .map( f -> f.getValue().isEmpty() ? f.getKey() : String.format("%s AS '%s'", f.getKey(), f.getValue()))
+                        .collect(Collectors.toList())
+        );
+    }
+    
+    public static String getQuery(HashMap fields, String table, HashMap<String, JTextField> conditions){
+        return String.format(
+                "SELECT %s FROM %s %s",
+                fields != null ? getFormattedFields(fields) : "*", 
+                table,
+                getFormattedConditions(conditions)
+        );
     }
     
     public static Date getDateFromString(String date){
@@ -70,11 +109,11 @@ public class SAUtils {
     }
     
     public static String getFormattedDate(Date date){
-        return new SimpleDateFormat("YYYY-MM-dd").format(date);
+        return new SimpleDateFormat(MYSQL_DATE_FORMAT).format(date);
     }
     
     public static String getFormattedTime(Date date){
-        return new SimpleDateFormat("HH:mm:ss").format(date);
+        return new SimpleDateFormat(MYSQL_TIME_FORMAT).format(date);
     }
     
     public static boolean isValidString(String str){

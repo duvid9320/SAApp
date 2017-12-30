@@ -118,7 +118,7 @@ public class RegistroActividadView extends javax.swing.JFrame {
 
         jPanel2.setLayout(new java.awt.GridLayout(2, 1));
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Alumnos", 2, 1));
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Alumnos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_TOP));
         jPanel5.setLayout(new java.awt.BorderLayout());
 
         jPanel7.setOpaque(false);
@@ -187,7 +187,7 @@ public class RegistroActividadView extends javax.swing.JFrame {
 
         jPanel2.add(jPanel5);
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Actividades", 2, 1));
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Actividades", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_TOP));
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);

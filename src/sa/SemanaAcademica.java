@@ -22,12 +22,8 @@
  * THE SOFTWARE.
  */
 package sa;
-import sa.controller.impl.ActividadController;
-import sa.controller.impl.AlumnoControllerImpl;
 import sa.controller.impl.InstructorController;
-import sa.model.dao.ActividadDAO;
 import sa.model.dao.InstructorDAO;
-import sa.view.ActividadView;
 import sa.view.InstructorView;
 
 /**

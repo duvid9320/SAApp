@@ -112,7 +112,7 @@ public class AlumnoView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPForm.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nuevo Alumno", 2, 1));
+        jPForm.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nuevo Alumno", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_TOP));
         jPForm.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setText("Numero de Control");
@@ -215,7 +215,7 @@ public class AlumnoView extends javax.swing.JFrame {
 
         getContentPane().add(jPForm, java.awt.BorderLayout.NORTH);
 
-        jPResuts.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Buscar Alumnos", 2, 1));
+        jPResuts.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Buscar Alumnos", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.ABOVE_TOP));
         jPResuts.setLayout(new java.awt.GridLayout(1, 0));
 
         jTAAlumnos.setAutoCreateRowSorter(true);
