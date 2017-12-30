@@ -1,14 +1,12 @@
 package sa.view;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import sa.model.to.InstructorTO;
 import sa.utils.SAUtils;
+import sa.utils.TableManager;
 
 public class InstructorView extends javax.swing.JFrame {
     
@@ -26,12 +24,15 @@ public class InstructorView extends javax.swing.JFrame {
         conditions.put("Apellidos", jTFQApellidos);
         conditions.put("IdInstructor", jTFQId);
         conditions.put("Nombres", jTFQNombres);
-        System.out.println(SAUtils.getQuery(null, "Instructor", conditions));
         return SAUtils.getQuery(null, "Instructor", conditions);
     }
     
     public String getSelectedInstructor(){
         int selectedRow = jTAQueryInstructores.getSelectedRow();
+        return selectedRow != -1 ? String.valueOf(jTAQueryInstructores.getValueAt(selectedRow, 0)) : null;
+    }
+    
+    public String getSelectedInstructor(int selectedRow){
         return selectedRow != -1 ? String.valueOf(jTAQueryInstructores.getValueAt(selectedRow, 0)) : null;
     }
     
@@ -75,6 +76,10 @@ public class InstructorView extends javax.swing.JFrame {
         jTAGradoInstructor.setText(instructor.getGrado());
         if(instructor.getIdInstructor().toLowerCase().compareTo(jTFIdInstructor.getText().trim().toLowerCase()) != 0)
             jTFIdInstructor.setText(instructor.getIdInstructor());
+    }
+
+    public JButton getjBtnDeleteSelected() {
+        return jBtnDeleteSelected;
     }
 
     public JTextField getjTFQApellidos() {
@@ -176,6 +181,7 @@ public class InstructorView extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jTFQApellidos = new javax.swing.JTextField();
         jBtnQueryInstructores = new javax.swing.JButton();
+        jBtnDeleteSelected = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
         jBtnAdmActividadView = new javax.swing.JButton();
         jBtnAdmAlumnoView = new javax.swing.JButton();
@@ -223,6 +229,7 @@ public class InstructorView extends javax.swing.JFrame {
         jBtnRegistrarInstructor.setBorderPainted(false);
         jBtnRegistrarInstructor.setContentAreaFilled(false);
         jBtnRegistrarInstructor.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnRegistrarInstructor.setEnabled(false);
         jBtnRegistrarInstructor.setFocusPainted(false);
         jBtnRegistrarInstructor.setFocusable(false);
         jBtnRegistrarInstructor.setRequestFocusEnabled(false);
@@ -237,6 +244,7 @@ public class InstructorView extends javax.swing.JFrame {
         jBtnModificarInstructor.setBorderPainted(false);
         jBtnModificarInstructor.setContentAreaFilled(false);
         jBtnModificarInstructor.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnModificarInstructor.setEnabled(false);
         jBtnModificarInstructor.setFocusable(false);
         jBtnModificarInstructor.setVerifyInputWhenFocusTarget(false);
         jBtnModificarInstructor.addActionListener(new java.awt.event.ActionListener() {
@@ -254,6 +262,7 @@ public class InstructorView extends javax.swing.JFrame {
         jBtnEliminarInstructor.setBorderPainted(false);
         jBtnEliminarInstructor.setContentAreaFilled(false);
         jBtnEliminarInstructor.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnEliminarInstructor.setEnabled(false);
         jBtnEliminarInstructor.setFocusable(false);
         jBtnEliminarInstructor.setVerifyInputWhenFocusTarget(false);
         jBtnEliminarInstructor.addActionListener(new java.awt.event.ActionListener() {
@@ -360,6 +369,7 @@ public class InstructorView extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "INSTRUCTORES", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Calibri Light", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
         jPanel2.setLayout(new java.awt.BorderLayout());
 
+        jTAQueryInstructores.setAutoCreateRowSorter(true);
         jTAQueryInstructores.setFont(new java.awt.Font("Calibri Light", 0, 11)); // NOI18N
         jTAQueryInstructores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -369,6 +379,7 @@ public class InstructorView extends javax.swing.JFrame {
 
             }
         ));
+        jTAQueryInstructores.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTAQueryInstructores);
 
         jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
@@ -381,6 +392,8 @@ public class InstructorView extends javax.swing.JFrame {
 
         jBtnQueryInstructores.setText("Buscar");
 
+        jBtnDeleteSelected.setText("Eliminar Seleccionados");
+
         javax.swing.GroupLayout jPQueryInstructorControlsLayout = new javax.swing.GroupLayout(jPQueryInstructorControls);
         jPQueryInstructorControls.setLayout(jPQueryInstructorControlsLayout);
         jPQueryInstructorControlsLayout.setHorizontalGroup(
@@ -389,15 +402,17 @@ public class InstructorView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFQId, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addComponent(jTFQId, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFQNombres, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addComponent(jTFQNombres, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFQApellidos, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addComponent(jTFQApellidos, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jBtnDeleteSelected)
                 .addGap(18, 18, 18)
                 .addComponent(jBtnQueryInstructores)
                 .addContainerGap())
@@ -413,7 +428,8 @@ public class InstructorView extends javax.swing.JFrame {
                     .addComponent(jTFQNombres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(jTFQApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBtnQueryInstructores))
+                    .addComponent(jBtnQueryInstructores)
+                    .addComponent(jBtnDeleteSelected))
                 .addContainerGap())
         );
 
@@ -590,6 +606,7 @@ public class InstructorView extends javax.swing.JFrame {
     private javax.swing.JButton jBtnAdmActividadView;
     private javax.swing.JButton jBtnAdmAlumnoView;
     private javax.swing.JButton jBtnClose;
+    private javax.swing.JButton jBtnDeleteSelected;
     private javax.swing.JButton jBtnEliminarInstructor;
     private javax.swing.JButton jBtnMaximize;
     private javax.swing.JButton jBtnMinimize;

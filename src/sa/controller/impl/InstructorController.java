@@ -24,7 +24,9 @@
 package sa.controller.impl;
 
 
+import java.awt.event.ActionEvent;
 import java.util.Arrays;
+import java.util.stream.Stream;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -62,8 +64,11 @@ public class InstructorController implements DocumentListener{
     }
     
     private void doSelectedInstructor(ListSelectionEvent e){
-        System.out.println(Arrays.toString(view.getjTAQueryInstructores().getSelectedRows()));
-        view.setInstructor(instructorDAO.getInstructor(view.getSelectedInstructor()));
+        int[] selectedRows = view.getjTAQueryInstructores().getSelectedRows();
+        if(selectedRows != null && selectedRows.length == 1)
+            view.setInstructor(instructorDAO.getInstructor(view.getSelectedInstructor()));
+        else if(selectedRows.length > 1)
+            view.resetView();
     }
     
     private void addButtonsListeners(){
@@ -74,10 +79,19 @@ public class InstructorController implements DocumentListener{
         view.getjBtnMinimize().addActionListener( e -> view.setState(JFrame.ICONIFIED));
         view.getjBtnMaximize().addActionListener(e ->  view.setExtendedState(view.getExtendedState() != JFrame.MAXIMIZED_BOTH ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));
         view.getjBtnClose().addActionListener(e -> view.dispose());
+        view.getjBtnDeleteSelected().addActionListener(this::deleteSelected);
+    }
+    
+    private void deleteSelected(ActionEvent e){
+        Arrays.stream(view.getjTAQueryInstructores().getSelectedRows())
+                .mapToObj(r -> view.getSelectedInstructor(r))
+                .filter(s -> s!= null)
+                .forEach(this.instructorDAO::deleteInstructor);
+        showQuery(view.getQueryInstructores());
     }
     
     private void cleanView(){
-        showQuery(view.getInstructor().getQuerySQL());
+        showQuery(view.getQueryInstructores());
         view.resetView();
     }
     

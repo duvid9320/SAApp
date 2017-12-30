@@ -35,7 +35,7 @@ import sa.model.dao.InstructorDAO;
 import sa.model.to.ActividadTO;
 import sa.model.to.HorarioTO;
 import sa.model.to.InstructorTO;
-import sa.utils.SAOutput;
+import sa.utils.SAInputOutput;
 import sa.view.ActividadView;
 
 /**
@@ -83,23 +83,23 @@ public class ActividadController implements DocumentListener, ItemListener{
     
     private void deleteActividad(ActionEvent e){
         if(actividadDAO.deleteActividad(view.getActividad()))
-            SAOutput.showInformationMessage("La actividad se eliminó");
+            SAInputOutput.showInformationMessage("La actividad se eliminó");
         else 
-            SAOutput.showErrorMessage("La actividad no se pudo eliminar");
+            SAInputOutput.showErrorMessage("La actividad no se pudo eliminar");
     }
 
     private void createActividad(ActionEvent e){
         if(actividadDAO.createActividad(view.getActividad()))
-            SAOutput.showInformationMessage("La actividad se creo correctamente");
+            SAInputOutput.showInformationMessage("La actividad se creo correctamente");
         else
-            SAOutput.showErrorMessage("La actividad no se pudo crear");
+            SAInputOutput.showErrorMessage("La actividad no se pudo crear");
     }
     
     private void updateActividad(ActionEvent e){
         if(actividadDAO.updateActividad(view.getActividad()))
-            SAOutput.showInformationMessage("La actividad se modificó");
+            SAInputOutput.showInformationMessage("La actividad se modificó");
         else 
-            SAOutput.showErrorMessage("La actividad no se pudo modificar");
+            SAInputOutput.showErrorMessage("La actividad no se pudo modificar");
     }
     
 //    public void getAllInstructores(JTable jTRInstructores) {

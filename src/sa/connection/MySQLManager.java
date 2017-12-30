@@ -33,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sa.utils.SAOutput;
+import sa.utils.SAInputOutput;
 
 /**
  *
@@ -60,7 +60,7 @@ public class MySQLManager {
             this.mySQLConnection = new MySQLConnection(USER, PASSWORD, DATABASE, HOST);
         } catch (SQLException ex) {
             Logger.getLogger(MySQLManager.class.getName()).log(Level.SEVERE, null, ex);
-            SAOutput.showErrorMessage("Comprueba el servidor MYSQL");
+            SAInputOutput.showErrorMessage("Comprueba el servidor MYSQL");
             System.exit(0);
         }
     }

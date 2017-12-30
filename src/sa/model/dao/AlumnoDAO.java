@@ -25,7 +25,7 @@ package sa.model.dao;
 
 import java.util.List;
 import sa.model.to.AlumnoTO;
-import sa.utils.SAOutput;
+import sa.utils.SAInputOutput;
 
 /**
  *
@@ -55,7 +55,7 @@ public class AlumnoDAO extends GenericDAO<AlumnoTO>{
     
     public boolean insertAlumno(AlumnoTO alumno){
         if(alumnoExists(alumno))
-            SAOutput.showErrorMessage("El alumno ya existe");
+            SAInputOutput.showErrorMessage("El alumno ya existe");
         else
             return create(alumno);
         return false;
@@ -63,7 +63,7 @@ public class AlumnoDAO extends GenericDAO<AlumnoTO>{
     
     public boolean updateAlumno(AlumnoTO alumno){
         if(!alumnoExists(alumno))
-            SAOutput.showErrorMessage("El alumno no existe, no se puede modificar");
+            SAInputOutput.showErrorMessage("El alumno no existe, no se puede modificar");
         else
             return update(alumno);
         return false;
@@ -71,7 +71,7 @@ public class AlumnoDAO extends GenericDAO<AlumnoTO>{
     
     public boolean deleteAlumno(AlumnoTO alumno){
         if(!alumnoExists(alumno))
-            SAOutput.showErrorMessage("El alumno no existe");
+            SAInputOutput.showErrorMessage("El alumno no existe");
         else 
             return delete(alumno);
         return false;

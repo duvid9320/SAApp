@@ -30,6 +30,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -38,9 +39,16 @@ import javax.swing.table.DefaultTableModel;
 public class TableManager {
     
     public static DefaultTableModel getDefaultTableModelFromResultSet(ResultSet rs) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException{
+        DefaultTableModel dtm = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+            
+        };
         if(rs != null && rs.getMetaData().getColumnCount() > 0)
-            return new DefaultTableModel(getDataFromResultSet(rs), getColumnIdentifiersFromResultSet(rs));
-        return new DefaultTableModel();
+            dtm.setDataVector(getDataFromResultSet(rs), getColumnIdentifiersFromResultSet(rs));
+        return dtm;
     }
     
     public static Vector<Vector> getDataFromResultSet(ResultSet rs) throws SQLException{

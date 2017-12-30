@@ -36,7 +36,7 @@ import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
 import sa.model.to.AlumnoTO;
 import sa.model.to.CarreraTO;
-import sa.utils.SAOutput;
+import sa.utils.SAInputOutput;
 import sa.utils.TableManager;
 import sa.view.AlumnoView;
 
@@ -56,13 +56,13 @@ public class AlumnoControllerImpl implements AlumnoController{
     public void createAlumno(AlumnoTO alumno) {
         alumno.setCarrera(CarreraDAO.getInstance().getCarrera(alumno.getCarrera().getIdCarrera()));
         if(alumno.getCarrera() == null || !alumno.getCarrera().isValid())
-            SAOutput.showErrorMessage("La carrera no es valida");
+            SAInputOutput.showErrorMessage("La carrera no es valida");
         else if(!alumno.isValid())
-            SAOutput.showErrorMessage("La información del alumno no es valida");
+            SAInputOutput.showErrorMessage("La información del alumno no es valida");
         else if(AlumnoDAO.getInstance().insertAlumno(alumno))
-            SAOutput.showInformationMessage("Alumno registrado");
+            SAInputOutput.showInformationMessage("Alumno registrado");
         else
-            SAOutput.showErrorMessage("El alumno no se pudo registrar");
+            SAInputOutput.showErrorMessage("El alumno no se pudo registrar");
     }
 
     @Override
@@ -108,23 +108,23 @@ public class AlumnoControllerImpl implements AlumnoController{
     public void updateAlumno(AlumnoTO alumno) {
         alumno.setCarrera(CarreraDAO.getInstance().getCarrera(alumno.getCarrera().getIdCarrera()));
         if(alumno.getCarrera() == null || !alumno.getCarrera().isValid())
-            SAOutput.showErrorMessage("La carrera no es valida");
+            SAInputOutput.showErrorMessage("La carrera no es valida");
         else if(!alumno.isValid())
-            SAOutput.showErrorMessage("La información del alumno no es valida");
+            SAInputOutput.showErrorMessage("La información del alumno no es valida");
         else if(AlumnoDAO.getInstance().updateAlumno(alumno))
-            SAOutput.showInformationMessage("Alumno modificado");
+            SAInputOutput.showInformationMessage("Alumno modificado");
         else 
-            SAOutput.showErrorMessage("El alumno no se pudo modificar");
+            SAInputOutput.showErrorMessage("El alumno no se pudo modificar");
     }
 
     @Override
     public void deleteAlumno(AlumnoTO alumno) {
         alumno.setCarrera(CarreraDAO.getInstance().getCarrera(alumno.getCarrera().getIdCarrera()));
         if(!alumno.isValid())
-            SAOutput.showErrorMessage("El alumno no es valido, carguelo desde la tabla");
+            SAInputOutput.showErrorMessage("El alumno no es valido, carguelo desde la tabla");
         else if(AlumnoDAO.getInstance().deleteAlumno(alumno))
-            SAOutput.showInformationMessage("Alumno eliminado");
+            SAInputOutput.showInformationMessage("Alumno eliminado");
         else 
-            SAOutput.showErrorMessage("El alumno no se pudo eliminar");
+            SAInputOutput.showErrorMessage("El alumno no se pudo eliminar");
     }
 }
