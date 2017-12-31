@@ -24,6 +24,7 @@
 package sa.model.dao;
 
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 import sa.model.to.AlumnoTO;
 import sa.utils.SAInputOutput;
 
@@ -53,31 +54,32 @@ public class AlumnoDAO extends GenericDAO<AlumnoTO>{
         return getAlumno(alumno) != null;
     }
     
-    public boolean insertAlumno(AlumnoTO alumno){
-        if(alumnoExists(alumno))
-            SAInputOutput.showErrorMessage("El alumno ya existe");
+    public void insertAlumno(AlumnoTO alumno){
+        if(create(alumno))
+            SAInputOutput.showInformationMessage("El alumno se registro correctamente");
         else
-            return create(alumno);
-        return false;
+            SAInputOutput.showErrorMessage("El alumno no se pudo registrar");
     }
     
-    public boolean updateAlumno(AlumnoTO alumno){
-        if(!alumnoExists(alumno))
-            SAInputOutput.showErrorMessage("El alumno no existe, no se puede modificar");
+    public void updateAlumno(AlumnoTO alumno){
+        if(update(alumno))
+            SAInputOutput.showInformationMessage("El alumno se modificó");
         else
-            return update(alumno);
-        return false;
+            SAInputOutput.showErrorMessage("El alumno no se pudo modificar");
     }
     
-    public boolean deleteAlumno(AlumnoTO alumno){
-        if(!alumnoExists(alumno))
-            SAInputOutput.showErrorMessage("El alumno no existe");
-        else 
-            return delete(alumno);
-        return false;
+    public void deleteAlumno(AlumnoTO alumno){
+        if(delete(alumno))
+            SAInputOutput.showInformationMessage("El alumno se eliminó");
+        else
+            SAInputOutput.showErrorMessage("El alumno no se pudo eliminar");
     }
     
     public List<AlumnoTO> getAllAlumnos(){
         return readList("SELECT * FROM Alumno", data -> new AlumnoTO(data));
+    }
+    
+    public DefaultTableModel getDTM(String query){
+        return getDefaultTableModel(query);
     }
 }

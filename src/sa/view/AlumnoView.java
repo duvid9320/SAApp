@@ -1,60 +1,180 @@
 package sa.view;
 
-import sa.controller.AlumnoController;
-import sa.controller.impl.ActividadControllerImpl;
-import sa.controller.impl.InstructorControllerImpl;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import sa.model.to.AlumnoTO;
-import sa.model.to.CarreraTO;
+import sa.utils.SAUtils;
 
-public class AlumnoView extends javax.swing.JFrame {
+public class AlumnoView extends javax.swing.JFrame{
 
-    public AlumnoView(AlumnoController controller) {
+    private AlumnoTO alumno;
+    private int x,y;
+    
+    public AlumnoView() {
         initComponents();
         setLocationRelativeTo(null);
-        controller.buscarTodos(jTAAlumnos);
-        jBtnClose.addActionListener(e -> System.exit(0));
-        jTAAlumnos.getSelectionModel().addListSelectionListener(e -> setAlumnoToView(controller.getAlumno(getSelectedAlumno())));
-        jCBCarrera.setModel(controller.getModelCarreras());
-        jBtnRegistrar.addActionListener(e -> {controller.createAlumno(getAlumnoFromView());controller.buscarTodos(jTAAlumnos);});
-        jBtnModificar.addActionListener(e -> {controller.updateAlumno(getAlumnoFromView());controller.buscarTodos(jTAAlumnos);});
-        jBtnEliminar.addActionListener(e -> {controller.deleteAlumno(getAlumnoFromView());controller.buscarTodos(jTAAlumnos);});
-        jBtnAdmActividadView.addActionListener(e -> {new ActividadControllerImpl();this.dispose();});
-        jBtnAdmInstructorView.addActionListener(e -> {new InstructorControllerImpl();this.dispose();});
+        alumno = new AlumnoTO(); 
     }
     
-    //posción del mouse
-    int x,y;
-    
-    private AlumnoTO getAlumnoFromView(){
-        return new AlumnoTO(
-                jTFNumeroControl.getText().trim(), 
-                jTFNombres.getText().trim(), 
-                jTFAPaterno.getText().trim(), 
-                jTFAMaterno.getText().trim(), 
-                Integer.parseInt(String.valueOf(jCBSemestre.getSelectedItem())), 
-                new CarreraTO(String.valueOf(jCBCarrera.getSelectedItem()), null),
-                new byte[10]
-        );
+    public String getNumeroControl(){
+        return jTFNumeroControl.getText().trim();
     }
     
-    private String getSelectedAlumno(){
-        int selectedRow = jTAAlumnos.getSelectedRow();
-        if(selectedRow != -1)
-            return String.valueOf(jTAAlumnos.getValueAt(selectedRow, 0));
-        return null;
+    public void setNumeroControl(){
+        alumno.setNumeroControl(jTFNumeroControl.getText().trim());
+    }
+    
+    public void setNombres(){
+        alumno.setNombres(jTFNombres.getText().trim());
+    }
+    
+    public void setApellidoMaterno(){
+        alumno.setApellidoMaterno(jTFAMaterno.getText().trim());
+    }
+    
+    public void setApellidoPaterno(){
+        alumno.setApellidoPaterno(jTFAPaterno.getText().trim());
+    }
+    
+    private HashMap<String, JTextField> getConditions(){
+        HashMap<String, JTextField> conditions = new HashMap<>(6);
+        conditions.put("NumeroControl", jTFQNControl);
+        conditions.put("Nombres", jTFQNombres);
+        conditions.put("ApellidoPaterno", jTFQAPaterno);
+        conditions.put("ApellidoMaterno", jTFQAMaterno);
+        conditions.put("Semestre", jTFQSemestre);
+        conditions.put("CarreraFK", jTFQCarrera);
+        return conditions;
+    }
+    
+    private LinkedHashMap<String, String> getFields(){
+        LinkedHashMap<String, String> fields = new LinkedHashMap<>();
+        fields.put("NumeroControl", "Numero de Control");
+        fields.put("Nombres", "");
+        fields.put("ApellidoPaterno", "Apellido Paterno");
+        fields.put("ApellidoMaterno", "Apellido Materno");
+        fields.put("Semestre", "");
+        fields.put("Carrera.Nombre", "Carrera");
+        return fields;
+    }
+    
+    public String getQueryAlumnos(){
+        return SAUtils.getQuery(getFields(), "Alumno INNER JOIN Carrera ON Carrera.IdCarrera = Alumno.CarreraFk", getConditions());
+    }
+    
+    public void resetView(){
+        jTFAMaterno.setText("");
+        jTFAPaterno.setText("");
+        jTFNombres.setText("");
+        jTFNumeroControl.setText("");
+        jCBCarrera.setSelectedIndex(-1);
+        jCBSemestre.setSelectedIndex(-1);
     }
 
-    private void setAlumnoToView(AlumnoTO alumno){
-        if(alumno == null)
-            return;
-        jTFNumeroControl.setText(alumno.getNumeroControl());
-        jTFNombres.setText(alumno.getNombres());
-        jTFAPaterno.setText(alumno.getApellidoPaterno());
-        jTFAMaterno.setText(alumno.getApellidoMaterno());
-        jCBSemestre.setSelectedItem(alumno.getSemestre());
-        jCBCarrera.setSelectedItem(alumno.getCarrera().getIdCarrera());
+    public AlumnoTO getAlumno() {
+        return alumno;
     }
-    @SuppressWarnings("unchecked")
+
+    public void setAlumno(AlumnoTO alumno) {
+        this.alumno = alumno;
+    }
+
+    public JButton getjBtnEliminarSeleccionados() {
+        return jBtnEliminarSeleccionados;
+    }
+
+    public JButton getjBtnQuery() {
+        return jBtnQuery;
+    }
+
+    public JButton getjBtnAdmActividadView() {
+        return jBtnAdmActividadView;
+    }
+
+    public JButton getjBtnAdmInstructorView() {
+        return jBtnAdmInstructorView;
+    }
+
+    public JButton getjBtnClose() {
+        return jBtnClose;
+    }
+
+    public JButton getjBtnEliminar() {
+        return jBtnEliminar;
+    }
+
+    public JButton getjBtnMaximize() {
+        return jBtnMaximize;
+    }
+
+    public JButton getjBtnMinimize() {
+        return jBtnMinimize;
+    }
+
+    public JButton getjBtnModificar() {
+        return jBtnModificar;
+    }
+
+    public JButton getjBtnRegistrar() {
+        return jBtnRegistrar;
+    }
+
+    public JComboBox<String> getjCBCarrera() {
+        return jCBCarrera;
+    }
+
+    public JComboBox<String> getjCBSemestre() {
+        return jCBSemestre;
+    }
+
+    public JTable getjTAAlumnos() {
+        return jTAAlumnos;
+    }
+
+    public JTextField getjTFAMaterno() {
+        return jTFAMaterno;
+    }
+
+    public JTextField getjTFAPaterno() {
+        return jTFAPaterno;
+    }
+
+    public JTextField getjTFNombres() {
+        return jTFNombres;
+    }
+
+    public JTextField getjTFNumeroControl() {
+        return jTFNumeroControl;
+    }
+    
+    public JTextField getjTFQAMaterno() {
+        return jTFQAMaterno;
+    }
+
+    public JTextField getjTFQAPaterno() {
+        return jTFQAPaterno;
+    }
+
+    public JTextField getjTFQCarrera() {
+        return jTFQCarrera;
+    }
+
+    public JTextField getjTFQNControl() {
+        return jTFQNControl;
+    }
+
+    public JTextField getjTFQNombres() {
+        return jTFQNombres;
+    }
+
+    public JTextField getjTFQSemestre() {
+        return jTFQSemestre;
+    }
+//@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -80,6 +200,21 @@ public class AlumnoView extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTAAlumnos = new javax.swing.JTable();
+        jPQueryControls = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        jTFQNControl = new javax.swing.JTextField();
+        jTFQNombres = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jTFQAPaterno = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jTFQAMaterno = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jBtnQuery = new javax.swing.JButton();
+        jBtnEliminarSeleccionados = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        jTFQCarrera = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        jTFQSemestre = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         jBtnAdmActividadView = new javax.swing.JButton();
         jBtnAdmInstructorView = new javax.swing.JButton();
@@ -127,6 +262,7 @@ public class AlumnoView extends javax.swing.JFrame {
         jBtnRegistrar.setBorderPainted(false);
         jBtnRegistrar.setContentAreaFilled(false);
         jBtnRegistrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnRegistrar.setEnabled(false);
         jBtnRegistrar.setFocusPainted(false);
         jBtnRegistrar.setFocusable(false);
         jBtnRegistrar.setRequestFocusEnabled(false);
@@ -141,6 +277,7 @@ public class AlumnoView extends javax.swing.JFrame {
         jBtnModificar.setBorderPainted(false);
         jBtnModificar.setContentAreaFilled(false);
         jBtnModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnModificar.setEnabled(false);
         jBtnModificar.setFocusable(false);
         jBtnModificar.setVerifyInputWhenFocusTarget(false);
         jBtnModificar.addActionListener(new java.awt.event.ActionListener() {
@@ -158,6 +295,7 @@ public class AlumnoView extends javax.swing.JFrame {
         jBtnEliminar.setBorderPainted(false);
         jBtnEliminar.setContentAreaFilled(false);
         jBtnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnEliminar.setEnabled(false);
         jBtnEliminar.setFocusable(false);
         jBtnEliminar.setVerifyInputWhenFocusTarget(false);
         jBtnEliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -235,7 +373,7 @@ public class AlumnoView extends javax.swing.JFrame {
                 .addComponent(jBtnModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBtnEliminar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -297,9 +435,11 @@ public class AlumnoView extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 153));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ALUMNOS", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Calibri Light", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel2.setLayout(new java.awt.BorderLayout());
 
         jScrollPane2.setBorder(null);
 
+        jTAAlumnos.setAutoCreateRowSorter(true);
         jTAAlumnos.setFont(new java.awt.Font("Calibri Light", 0, 11)); // NOI18N
         jTAAlumnos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -309,18 +449,94 @@ public class AlumnoView extends javax.swing.JFrame {
 
             }
         ));
+        jTAAlumnos.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTAAlumnos);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+        jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        jLabel8.setText("Numero de Control");
+
+        jLabel9.setText("Nombres");
+
+        jLabel10.setText("Apellido Paterno");
+
+        jLabel11.setText("Apellido Materno");
+
+        jBtnQuery.setText("Buscar");
+
+        jBtnEliminarSeleccionados.setText("Eliminar Seleccionados");
+        jBtnEliminarSeleccionados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnEliminarSeleccionadosActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setText("Carrera");
+
+        jLabel13.setText("Semestre");
+
+        javax.swing.GroupLayout jPQueryControlsLayout = new javax.swing.GroupLayout(jPQueryControls);
+        jPQueryControls.setLayout(jPQueryControlsLayout);
+        jPQueryControlsLayout.setHorizontalGroup(
+            jPQueryControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPQueryControlsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPQueryControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPQueryControlsLayout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTFQNControl)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTFQNombres)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTFQAPaterno)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel11)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTFQAMaterno))
+                    .addGroup(jPQueryControlsLayout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTFQCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTFQSemestre, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 250, Short.MAX_VALUE)
+                        .addComponent(jBtnEliminarSeleccionados)
+                        .addGap(18, 18, 18)
+                        .addComponent(jBtnQuery)))
+                .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+        jPQueryControlsLayout.setVerticalGroup(
+            jPQueryControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPQueryControlsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPQueryControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jTFQNControl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(jTFQNombres, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(jTFQAPaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11)
+                    .addComponent(jTFQAMaterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPQueryControlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jBtnQuery)
+                    .addComponent(jBtnEliminarSeleccionados)
+                    .addComponent(jLabel12)
+                    .addComponent(jTFQCarrera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13)
+                    .addComponent(jTFQSemestre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
+
+        jPanel2.add(jPQueryControls, java.awt.BorderLayout.PAGE_START);
 
         javax.swing.GroupLayout jpContenidoLayout = new javax.swing.GroupLayout(jpContenido);
         jpContenido.setLayout(jpContenidoLayout);
@@ -334,7 +550,7 @@ public class AlumnoView extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpContenidoLayout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE))
         );
 
         jLabel20.setFont(new java.awt.Font("Calibri Light", 1, 18)); // NOI18N
@@ -493,18 +709,28 @@ public class AlumnoView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jBtnCloseActionPerformed
 
+    private void jBtnEliminarSeleccionadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnEliminarSeleccionadosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBtnEliminarSeleccionadosActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtnAdmActividadView;
     private javax.swing.JButton jBtnAdmInstructorView;
     private javax.swing.JButton jBtnClose;
     private javax.swing.JButton jBtnEliminar;
+    private javax.swing.JButton jBtnEliminarSeleccionados;
     private javax.swing.JButton jBtnMaximize;
     private javax.swing.JButton jBtnMinimize;
     private javax.swing.JButton jBtnModificar;
+    private javax.swing.JButton jBtnQuery;
     private javax.swing.JButton jBtnRegistrar;
     private javax.swing.JComboBox<String> jCBCarrera;
     private javax.swing.JComboBox<String> jCBSemestre;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
@@ -512,6 +738,9 @@ public class AlumnoView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPQueryControls;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
@@ -520,6 +749,12 @@ public class AlumnoView extends javax.swing.JFrame {
     private javax.swing.JTextField jTFAPaterno;
     private javax.swing.JTextField jTFNombres;
     private javax.swing.JTextField jTFNumeroControl;
+    private javax.swing.JTextField jTFQAMaterno;
+    private javax.swing.JTextField jTFQAPaterno;
+    private javax.swing.JTextField jTFQCarrera;
+    private javax.swing.JTextField jTFQNControl;
+    private javax.swing.JTextField jTFQNombres;
+    private javax.swing.JTextField jTFQSemestre;
     private javax.swing.JPanel jpContenido;
     private javax.swing.JPanel jpFondo;
     // End of variables declaration//GEN-END:variables

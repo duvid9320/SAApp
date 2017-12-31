@@ -33,12 +33,16 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import sa.model.to.AlumnoTO;
 
 /**
@@ -54,6 +58,18 @@ public class SAUtils {
         MYSQL_TIME_FORMAT = "";
     }
     
+    public static boolean isAnyEdited(DocumentEvent e, JTextField... jtfs){
+        return Arrays.stream(jtfs).anyMatch(j -> e.getDocument() == j.getDocument());
+    }
+    
+    public static boolean isJTFEdited(DocumentEvent e, JTextField jtf){
+        return e.getDocument() == jtf.getDocument();
+    }
+    
+    public static void addDocumentListener(DocumentListener l, JTextField... jtfs){
+        Arrays.stream(jtfs).forEach( j -> j.getDocument().addDocumentListener(l));
+    }
+    
     private static String getFormattedConditions(HashMap<String, JTextField> conditions){
         String format = "WHERE "+String.join(
                             " AND ", 
@@ -67,7 +83,7 @@ public class SAUtils {
         return format.trim().endsWith("WHERE") ? "" : format;
     }
     
-    private static String getFormattedFields(HashMap<String, String> fields){
+    private static String getFormattedFields(LinkedHashMap<String, String> fields){
         return String.join(
                 ", ", 
                 fields.entrySet()
@@ -77,7 +93,7 @@ public class SAUtils {
         );
     }
     
-    public static String getQuery(HashMap fields, String table, HashMap<String, JTextField> conditions){
+    public static String getQuery(LinkedHashMap<String, String> fields, String table, HashMap<String, JTextField> conditions){
         return String.format(
                 "SELECT %s FROM %s %s",
                 fields != null ? getFormattedFields(fields) : "*", 

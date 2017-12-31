@@ -33,6 +33,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import sa.model.dao.InstructorDAO;
 import sa.model.to.InstructorTO;
+import sa.utils.SAUtils;
 import sa.view.InstructorView;
 
 
@@ -96,44 +97,41 @@ public class InstructorController implements DocumentListener{
     }
     
     private void addDocumentListener(){
-        view.getjTFApellidosInstructor().getDocument().addDocumentListener(this);
-        view.getjTFIdInstructor().getDocument().addDocumentListener(this);
-        view.getjTFNombresInstructor().getDocument().addDocumentListener(this);
-        view.getjTAGradoInstructor().getDocument().addDocumentListener(this);
-        view.getjTFQApellidos().getDocument().addDocumentListener(this);
-        view.getjTFQId().getDocument().addDocumentListener(this);
-        view.getjTFQNombres().getDocument().addDocumentListener(this);
+        SAUtils.addDocumentListener(
+                this,
+                view.getjTFApellidosInstructor(),
+                view.getjTFIdInstructor(),
+                view.getjTFNombresInstructor(),
+                view.getjTAGradoInstructor(),
+                view.getjTFQApellidos(),
+                view.getjTFQId(),
+                view.getjTFQNombres()
+        );
     }
     
     public void showQuery(String query){
         view.getjTAQueryInstructores().setModel(instructorDAO.getDTM(query));
     }
     
-    private void editIdInstructor(){
+    private void enableButtons(){
         InstructorTO instructor = instructorDAO.getInstructor(view.getIdInstructor());
         if(instructor != null)
             view.setInstructor(instructor);
-        else
-            view.setIdInstructor();
-    }
-    
-    private void enableButtons(){
         if(!view.getInstructor().isValid())
             return;
-        InstructorTO instructor = instructorDAO.getInstructor(view.getIdInstructor());
         view.getjBtnRegistrarInstructor().setEnabled(instructor == null);
         view.getjBtnModificarInstructor().setEnabled(instructor != null);
         view.getjBtnEliminarInstructor().setEnabled(instructor != null);
     }
     
     private void textEdited(DocumentEvent e){
-        if(e.getDocument() == view.getjTFApellidosInstructor().getDocument())
+        if(SAUtils.isJTFEdited(e, view.getjTFApellidosInstructor()))
             view.setApellidosInstructor();
-        else if (e.getDocument() == view.getjTFIdInstructor().getDocument())
-            editIdInstructor();
-        else if (e.getDocument() == view.getjTFNombresInstructor().getDocument())
+        else if (SAUtils.isJTFEdited(e, view.getjTFIdInstructor()))
+            view.setIdInstructor();
+        else if (SAUtils.isJTFEdited(e, view.getjTFNombresInstructor()))
             view.setNombresInstructor();
-        else if(e.getDocument() == view.getjTAGradoInstructor().getDocument())
+        else if(SAUtils.isJTFEdited(e, view.getjTAGradoInstructor()))
             view.setGradoInstructor();
         else if (isQueryEdited(e))
             showQuery(view.getQueryInstructores());
@@ -141,9 +139,7 @@ public class InstructorController implements DocumentListener{
     }
     
     private boolean isQueryEdited(DocumentEvent e){
-        return e.getDocument() == view.getjTFQApellidos().getDocument() || 
-                e.getDocument() == view.getjTFQId().getDocument() ||
-                e.getDocument() == view.getjTFQNombres().getDocument();
+        return SAUtils.isAnyEdited(e, view.getjTFQApellidos(), view.getjTFQId(), view.getjTFQNombres());
     }
 
     @Override

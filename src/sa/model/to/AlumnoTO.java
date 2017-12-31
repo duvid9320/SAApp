@@ -61,6 +61,9 @@ public class AlumnoTO implements GenericTO{
         this.carrera = carrera;
         this.huella = huella;
     }
+
+    public AlumnoTO() {
+    }
     
     public String getNumeroControl() {
         return numeroControl;

@@ -24,7 +24,6 @@
 package sa.model.to;
 
 import java.util.HashMap;
-import sa.model.to.GenericTO;
 
 /**
  *
