@@ -66,7 +66,9 @@ public class InstructorController implements DocumentListener{
     
     private void doSelectedInstructor(ListSelectionEvent e){
         int[] selectedRows = view.getjTAQueryInstructores().getSelectedRows();
-        if(selectedRows != null && selectedRows.length == 1)
+        if(selectedRows == null)
+            return;
+        else if(selectedRows.length == 1)
             view.setInstructor(instructorDAO.getInstructor(view.getSelectedInstructor()));
         else if(selectedRows.length > 1)
             view.resetView();
@@ -115,8 +117,6 @@ public class InstructorController implements DocumentListener{
     
     private void enableButtons(){
         InstructorTO instructor = instructorDAO.getInstructor(view.getIdInstructor());
-        if(instructor != null)
-            view.setInstructor(instructor);
         if(!view.getInstructor().isValid())
             return;
         view.getjBtnRegistrarInstructor().setEnabled(instructor == null);
@@ -124,11 +124,19 @@ public class InstructorController implements DocumentListener{
         view.getjBtnEliminarInstructor().setEnabled(instructor != null);
     }
     
+    private void editIdInstructor(){
+        InstructorTO instructor = instructorDAO.getInstructor(view.getIdInstructor());
+        if(instructor != null)
+            view.setInstructor(instructor);
+        else
+            view.setIdInstructor();
+    }
+    
     private void textEdited(DocumentEvent e){
         if(SAUtils.isJTFEdited(e, view.getjTFApellidosInstructor()))
             view.setApellidosInstructor();
         else if (SAUtils.isJTFEdited(e, view.getjTFIdInstructor()))
-            view.setIdInstructor();
+            editIdInstructor();
         else if (SAUtils.isJTFEdited(e, view.getjTFNombresInstructor()))
             view.setNombresInstructor();
         else if(SAUtils.isJTFEdited(e, view.getjTAGradoInstructor()))

@@ -8,6 +8,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import sa.model.to.AlumnoTO;
+import sa.model.to.CarreraTO;
 import sa.utils.SAUtils;
 
 public class AlumnoView extends javax.swing.JFrame{
@@ -19,6 +20,19 @@ public class AlumnoView extends javax.swing.JFrame{
         initComponents();
         setLocationRelativeTo(null);
         alumno = new AlumnoTO(); 
+        alumno.setHuella(new byte[16]);
+    }
+    
+    public void setSemestre(){
+        alumno.setSemestre(Integer.parseInt(String.valueOf(jCBSemestre.getSelectedItem())));
+    }
+    
+    public void setCarrera(CarreraTO carrera){
+        alumno.setCarrera(carrera);
+    }
+    
+    public String getSelectedCarrera(){
+        return String.valueOf(jCBCarrera.getSelectedItem());
     }
     
     public String getSelectedAlumno(int r){
@@ -89,7 +103,7 @@ public class AlumnoView extends javax.swing.JFrame{
         jTFAMaterno.setText(alumno.getApellidoMaterno());
         jTFAPaterno.setText(alumno.getApellidoPaterno());
         jTFNombres.setText(alumno.getNombres());
-        jCBSemestre.setSelectedItem(alumno.getSemestre());
+        jCBSemestre.setSelectedItem(String.valueOf(alumno.getSemestre()));
         jCBCarrera.setSelectedItem(alumno.getCarrera().getIdCarrera());
         if(jTFNumeroControl.getText().trim().toLowerCase().compareTo(alumno.getNumeroControl().trim().toLowerCase()) != 0)
             jTFNumeroControl.setText(alumno.getNumeroControl());

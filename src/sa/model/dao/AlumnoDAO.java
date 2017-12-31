@@ -71,7 +71,7 @@ public class AlumnoDAO extends GenericDAO<AlumnoTO>{
     public void deleteAlumno(AlumnoTO alumno){
         if(!SAInputOutput.showDeleteConfirmation("Desea eliminar el alumno con NC "+alumno.getNumeroControl()))
             SAInputOutput.showInformationMessage("Eliminación cancelada por el usuario");
-        if(delete(alumno))
+        else if(delete(alumno))
             SAInputOutput.showInformationMessage("El alumno se eliminó");
         else
             SAInputOutput.showErrorMessage("El alumno no se pudo eliminar");
