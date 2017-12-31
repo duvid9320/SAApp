@@ -24,14 +24,16 @@
 package sa.controller.impl;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
 import sa.model.to.AlumnoTO;
@@ -42,7 +44,7 @@ import sa.view.AlumnoView;
  *
  * @author dave
  */
-public class AlumnoControllerImpl implements DocumentListener{
+public class AlumnoControllerImpl implements DocumentListener, ItemListener{
     
     private final AlumnoView view;
     private final AlumnoDAO alumnoDAO;
@@ -60,26 +62,17 @@ public class AlumnoControllerImpl implements DocumentListener{
         view.getjCBCarrera().setModel(getModelCarreras());
         addButtonListeners();
         addDocumentListener();
+        addItemListener();
+        view.getjTAAlumnos().getSelectionModel().addListSelectionListener(this::loadSelected);
+    }
+    
+    private void addItemListener(){
+        view.getjCBCarrera().addItemListener(this);
+        view.getjCBSemestre().addItemListener(this);
     }
     
     private void addDocumentListener(){
         SAUtils.addDocumentListener(
-                this, 
-                view.getjTFAMaterno(),
-                view.getjTFAPaterno(),
-                view.getjTFNombres(),
-                view.getjTFNumeroControl(),
-                view.getjTFQAMaterno(),
-                view.getjTFQAPaterno(),
-                view.getjTFQCarrera(),
-                view.getjTFQNControl(),
-                view.getjTFQNombres(),
-                view.getjTFQSemestre()
-        );
-    }
-    
-    private void removeDocumentListener(){
-        SAUtils.removeDocumentListener(
                 this, 
                 view.getjTFAMaterno(),
                 view.getjTFAPaterno(),
@@ -99,10 +92,20 @@ public class AlumnoControllerImpl implements DocumentListener{
         view.getjBtnModificar().addActionListener(e -> {alumnoDAO.updateAlumno(view.getAlumno()); cleanView();});
         view.getjBtnEliminar().addActionListener(e -> {alumnoDAO.deleteAlumno(view.getAlumno()); cleanView();});
         view.getjBtnClose().addActionListener(e -> view.dispose());
-        view.getjBtnMaximize().addActionListener(e -> view.setExtendedState(view.getState() != JFrame.MAXIMIZED_BOTH ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));
+        view.getjBtnMaximize().addActionListener(e -> view.setExtendedState(view.getExtendedState() != JFrame.MAXIMIZED_BOTH ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));
         view.getjBtnMinimize().addActionListener(e -> view.setExtendedState(JFrame.ICONIFIED));
         view.getjBtnEliminarSeleccionados().addActionListener(this::deleteSelected);
         view.getjBtnQuery().addActionListener(e -> showQuery(view.getQueryAlumnos()));
+    }
+
+    private void loadSelected(ListSelectionEvent e){
+        int []selection = view.getjTAAlumnos().getSelectedRows();
+        if(selection == null)
+            return;
+        else if(selection.length == 1)
+            view.setAlumno(alumnoDAO.getAlumno(view.getSelectedAlumno(selection[0])));
+        else if(selection.length > 1)
+            view.resetView();
     }
     
     private void deleteSelected(ActionEvent e){
@@ -153,10 +156,10 @@ public class AlumnoControllerImpl implements DocumentListener{
     }
     
     private void enableButtons(){
-        AlumnoTO alumno = alumnoDAO.getAlumno(view.getNumeroControl());
-        if(!view.getAlumno().isValid())
-            return;
-        view.getjBtnRegistrar().setEnabled(alumno == null);
+        AlumnoTO alumno = null;
+        if(view.getAlumno().isValid())
+            alumnoDAO.getAlumno(view.getNumeroControl());
+        view.getjBtnRegistrar().setEnabled(view.getAlumno().isValid() && alumno == null);
         view.getjBtnModificar().setEnabled(alumno != null);
         view.getjBtnEliminar().setEnabled(alumno != null);
     }
@@ -172,6 +175,16 @@ public class AlumnoControllerImpl implements DocumentListener{
                 view.getjTFQSemestre()
         );
     }
+    
+    private void itemSelected(ItemEvent e){
+        if(e.getStateChange() != ItemEvent.SELECTED)
+            return;
+        else if(e.getSource() == view.getjCBCarrera())
+            view.setCarrera(carreraDAO.getCarrera(view.getSelectedCarrera()));
+        else if(e.getSource() == view.getjCBSemestre())
+            view.setSemestre();
+        enableButtons();
+    }
 
     @Override
     public void insertUpdate(DocumentEvent e) {
@@ -186,5 +199,10 @@ public class AlumnoControllerImpl implements DocumentListener{
     @Override
     public void changedUpdate(DocumentEvent e) {
         textEdited(e);
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        itemSelected(e);
     }
 }
