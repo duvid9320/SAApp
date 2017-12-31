@@ -70,6 +70,10 @@ public class SAUtils {
         Arrays.stream(jtfs).forEach( j -> j.getDocument().addDocumentListener(l));
     }
     
+    public static void removeDocumentListener(DocumentListener l, JTextField... jtfs){
+        Arrays.stream(jtfs).forEach( j -> j.getDocument().removeDocumentListener(l));
+    }
+    
     private static String getFormattedConditions(HashMap<String, JTextField> conditions){
         String format = "WHERE "+String.join(
                             " AND ", 

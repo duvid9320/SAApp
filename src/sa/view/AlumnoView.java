@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import sa.model.to.AlumnoTO;
 import sa.utils.SAUtils;
 
@@ -18,6 +19,10 @@ public class AlumnoView extends javax.swing.JFrame{
         initComponents();
         setLocationRelativeTo(null);
         alumno = new AlumnoTO(); 
+    }
+    
+    public String getSelectedAlumno(int r){
+        return r != -1 ? String.valueOf(jTAAlumnos.getValueAt(r, 0)) : null;
     }
     
     public String getNumeroControl(){
@@ -81,6 +86,13 @@ public class AlumnoView extends javax.swing.JFrame{
 
     public void setAlumno(AlumnoTO alumno) {
         this.alumno = alumno;
+        jTFAMaterno.setText(alumno.getApellidoMaterno());
+        jTFAPaterno.setText(alumno.getApellidoPaterno());
+        jTFNombres.setText(alumno.getNombres());
+        jCBSemestre.setSelectedItem(alumno.getSemestre());
+        jCBCarrera.setSelectedItem(alumno.getCarrera().getIdCarrera());
+        if(jTFNumeroControl.getText().trim().toLowerCase().compareTo(alumno.getNumeroControl().trim().toLowerCase()) != 0)
+            jTFNumeroControl.setText(alumno.getNumeroControl());
     }
 
     public JButton getjBtnEliminarSeleccionados() {

@@ -23,9 +23,12 @@
  */
 package sa;
 import sa.controller.impl.AlumnoControllerImpl;
+import sa.controller.impl.InstructorController;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
+import sa.model.dao.InstructorDAO;
 import sa.view.AlumnoView;
+import sa.view.InstructorView;
 
 /**
  *

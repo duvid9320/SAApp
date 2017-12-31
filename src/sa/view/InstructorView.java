@@ -1,9 +1,13 @@
 package sa.view;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import sa.model.to.InstructorTO;
 import sa.utils.SAUtils;
 import sa.utils.TableManager;

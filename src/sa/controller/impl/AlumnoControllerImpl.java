@@ -23,9 +23,13 @@
  */
 package sa.controller.impl;
 
+import java.awt.event.ActionEvent;
+import java.util.Arrays;
 import java.util.Vector;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import sa.model.dao.AlumnoDAO;
@@ -74,9 +78,37 @@ public class AlumnoControllerImpl implements DocumentListener{
         );
     }
     
+    private void removeDocumentListener(){
+        SAUtils.removeDocumentListener(
+                this, 
+                view.getjTFAMaterno(),
+                view.getjTFAPaterno(),
+                view.getjTFNombres(),
+                view.getjTFNumeroControl(),
+                view.getjTFQAMaterno(),
+                view.getjTFQAPaterno(),
+                view.getjTFQCarrera(),
+                view.getjTFQNControl(),
+                view.getjTFQNombres(),
+                view.getjTFQSemestre()
+        );
+    }
+    
     private void addButtonListeners(){
         view.getjBtnRegistrar().addActionListener(e -> { alumnoDAO.insertAlumno(view.getAlumno()); cleanView();});
+        view.getjBtnModificar().addActionListener(e -> {alumnoDAO.updateAlumno(view.getAlumno()); cleanView();});
+        view.getjBtnEliminar().addActionListener(e -> {alumnoDAO.deleteAlumno(view.getAlumno()); cleanView();});
+        view.getjBtnClose().addActionListener(e -> view.dispose());
+        view.getjBtnMaximize().addActionListener(e -> view.setExtendedState(view.getState() != JFrame.MAXIMIZED_BOTH ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));
+        view.getjBtnMinimize().addActionListener(e -> view.setExtendedState(JFrame.ICONIFIED));
+        view.getjBtnEliminarSeleccionados().addActionListener(this::deleteSelected);
         view.getjBtnQuery().addActionListener(e -> showQuery(view.getQueryAlumnos()));
+    }
+    
+    private void deleteSelected(ActionEvent e){
+        Arrays.stream(view.getjTAAlumnos().getSelectedRows())
+                .mapToObj(r -> view.getSelectedAlumno(r))
+                .forEach(nc -> alumnoDAO.deleteAlumno(nc));
     }
     
     private void cleanView(){
@@ -106,16 +138,22 @@ public class AlumnoControllerImpl implements DocumentListener{
         else if(SAUtils.isJTFEdited(e, view.getjTFNombres()))
             view.setNombres();
         else if(SAUtils.isJTFEdited(e, view.getjTFNumeroControl()))
-            view.setNumeroControl();
+            editNumeroControl();
         else if(isQueryEdited(e))
             showQuery(view.getQueryAlumnos());
         enableButtons();
     }
     
-    private void enableButtons(){
+    private void editNumeroControl(){
         AlumnoTO alumno = alumnoDAO.getAlumno(view.getNumeroControl());
         if(alumno != null)
             view.setAlumno(alumno);
+        else
+            view.setNumeroControl();
+    }
+    
+    private void enableButtons(){
+        AlumnoTO alumno = alumnoDAO.getAlumno(view.getNumeroControl());
         if(!view.getAlumno().isValid())
             return;
         view.getjBtnRegistrar().setEnabled(alumno == null);

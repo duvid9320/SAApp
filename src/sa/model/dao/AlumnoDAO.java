@@ -69,6 +69,8 @@ public class AlumnoDAO extends GenericDAO<AlumnoTO>{
     }
     
     public void deleteAlumno(AlumnoTO alumno){
+        if(!SAInputOutput.showDeleteConfirmation("Desea eliminar el alumno con NC "+alumno.getNumeroControl()))
+            SAInputOutput.showInformationMessage("Eliminación cancelada por el usuario");
         if(delete(alumno))
             SAInputOutput.showInformationMessage("El alumno se eliminó");
         else
@@ -81,5 +83,9 @@ public class AlumnoDAO extends GenericDAO<AlumnoTO>{
     
     public DefaultTableModel getDTM(String query){
         return getDefaultTableModel(query);
+    }
+
+    public void deleteAlumno(String nc) {
+        deleteAlumno(getAlumno(nc));
     }
 }
