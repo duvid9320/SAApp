@@ -36,9 +36,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
+import sa.model.dao.InstructorDAO;
 import sa.model.to.AlumnoTO;
 import sa.utils.SAUtils;
 import sa.view.AlumnoView;
+import sa.view.InstructorView;
 
 /**
  *
@@ -96,8 +98,14 @@ public class AlumnoControllerImpl implements DocumentListener, ItemListener{
         view.getjBtnMinimize().addActionListener(e -> view.setExtendedState(JFrame.ICONIFIED));
         view.getjBtnEliminarSeleccionados().addActionListener(this::deleteSelected);
         view.getjBtnQuery().addActionListener(e -> showQuery(view.getQueryAlumnos()));
+        view.getjBtnAdmInstructorView().addActionListener(this::showInstructorView);
     }
 
+    private void showInstructorView(ActionEvent e){
+        new InstructorController(new InstructorView(), InstructorDAO.getInstance());
+        view.dispose();
+    }
+    
     private void loadSelected(ListSelectionEvent e){
         int []selection = view.getjTAAlumnos().getSelectedRows();
         if(selection == null)
@@ -112,6 +120,7 @@ public class AlumnoControllerImpl implements DocumentListener, ItemListener{
         Arrays.stream(view.getjTAAlumnos().getSelectedRows())
                 .mapToObj(r -> view.getSelectedAlumno(r))
                 .forEach(nc -> alumnoDAO.deleteAlumno(nc));
+        showQuery(view.getQueryAlumnos());
     }
     
     private void cleanView(){
@@ -177,9 +186,7 @@ public class AlumnoControllerImpl implements DocumentListener, ItemListener{
     }
     
     private void itemSelected(ItemEvent e){
-        if(e.getStateChange() != ItemEvent.SELECTED)
-            return;
-        else if(e.getSource() == view.getjCBCarrera())
+        if(e.getSource() == view.getjCBCarrera())
             view.setCarrera(carreraDAO.getCarrera(view.getSelectedCarrera()));
         else if(e.getSource() == view.getjCBSemestre())
             view.setSemestre();

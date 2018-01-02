@@ -6,7 +6,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import sa.model.to.AlumnoTO;
 import sa.model.to.CarreraTO;
 import sa.utils.SAUtils;
@@ -24,7 +23,7 @@ public class AlumnoView extends javax.swing.JFrame{
     }
     
     public void setSemestre(){
-        alumno.setSemestre(Integer.parseInt(String.valueOf(jCBSemestre.getSelectedItem())));
+        alumno.setSemestre(jCBSemestre.getSelectedIndex() != -1 ? Integer.parseInt(String.valueOf(jCBSemestre.getSelectedItem())) : 0);
     }
     
     public void setCarrera(CarreraTO carrera){
@@ -32,7 +31,7 @@ public class AlumnoView extends javax.swing.JFrame{
     }
     
     public String getSelectedCarrera(){
-        return String.valueOf(jCBCarrera.getSelectedItem());
+        return jCBCarrera.getSelectedIndex() != -1 ? String.valueOf(jCBCarrera.getSelectedItem()) : "";
     }
     
     public String getSelectedAlumno(int r){

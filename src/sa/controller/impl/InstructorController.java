@@ -26,14 +26,16 @@ package sa.controller.impl;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
-import java.util.stream.Stream;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
+import sa.model.dao.AlumnoDAO;
+import sa.model.dao.CarreraDAO;
 import sa.model.dao.InstructorDAO;
 import sa.model.to.InstructorTO;
 import sa.utils.SAUtils;
+import sa.view.AlumnoView;
 import sa.view.InstructorView;
 
 
@@ -57,7 +59,6 @@ public class InstructorController implements DocumentListener{
         addDocumentListener();
         addButtonsListeners();
         addListSelectionListeners();
-        showQuery(view.getQueryInstructores());
     }
     
     private void addListSelectionListeners(){
@@ -83,6 +84,12 @@ public class InstructorController implements DocumentListener{
         view.getjBtnMaximize().addActionListener(e ->  view.setExtendedState(view.getExtendedState() != JFrame.MAXIMIZED_BOTH ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));
         view.getjBtnClose().addActionListener(e -> view.dispose());
         view.getjBtnDeleteSelected().addActionListener(this::deleteSelected);
+        view.getjBtnAdmAlumnoView().addActionListener(this::showAlumnoView);
+    }
+    
+    private void showAlumnoView(ActionEvent e){
+        new AlumnoControllerImpl(new AlumnoView(), AlumnoDAO.getInstance(), CarreraDAO.getInstance());
+        view.dispose();
     }
     
     private void deleteSelected(ActionEvent e){
@@ -116,10 +123,10 @@ public class InstructorController implements DocumentListener{
     }
     
     private void enableButtons(){
-        InstructorTO instructor = instructorDAO.getInstructor(view.getIdInstructor());
-        if(!view.getInstructor().isValid())
-            return;
-        view.getjBtnRegistrarInstructor().setEnabled(instructor == null);
+        InstructorTO instructor = null;
+        if(view.getInstructor().isValid())
+            instructor = instructorDAO.getInstructor(view.getIdInstructor());
+        view.getjBtnRegistrarInstructor().setEnabled(view.getInstructor().isValid() && instructor == null);
         view.getjBtnModificarInstructor().setEnabled(instructor != null);
         view.getjBtnEliminarInstructor().setEnabled(instructor != null);
     }
