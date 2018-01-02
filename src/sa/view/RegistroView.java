@@ -1,11 +1,9 @@
 package sa.view;
 
-import sa.controller.ActividadController;
-import sa.controller.AlumnoController;
 
 public class RegistroView extends javax.swing.JFrame {
 
-    public RegistroView(ActividadController controller,AlumnoController controller2) {
+    public RegistroView() {
         initComponents();
         setLocationRelativeTo(null);
     }

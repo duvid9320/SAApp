@@ -23,15 +23,21 @@
  */
 package sa.controller.impl;
 
+import java.util.HashMap;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import sa.model.dao.ActividadDAO;
 import sa.model.dao.InstructorDAO;
+import sa.utils.SAUtils;
 import sa.view.ActividadView;
 
 /**
  *
  * @author dave
  */
-public class ActividadController //implements DocumentListener, ItemListener
+public class ActividadController implements DocumentListener
 {    
     private final ActividadView view;
     private final HorarioControllerImpl horarioController;
@@ -40,191 +46,61 @@ public class ActividadController //implements DocumentListener, ItemListener
     
     public ActividadController(ActividadView view,  InstructorDAO instructorDAO, ActividadDAO actividadDAO) {
         this.view = view;
-        //initView();
-        this.view.setVisible(true);
         this.instructorDAO = instructorDAO;
         this.actividadDAO = actividadDAO;
         horarioController = new HorarioControllerImpl();
+        initView();
+        this.view.setVisible(true);
     }
-//    
-//    private void initView(){
-//        addButtonListeners();
-//        addDocumentListener();
-//        addItemListener();
-//    }
-//    
-//    private void addItemListener(){
-//        view.getjCBHoras().addItemListener(this);
-//        view.getjCBTipo().addItemListener(this);
-//    }
-//    
-//    private void addDocumentListener(){
-//        view.getjTFIdActividad().getDocument().addDocumentListener(this);
-//        view.getjTFNombreActividad().getDocument().addDocumentListener(this);
-//        view.getjTFIdInstructorActividad().getDocument().addDocumentListener(this);
-//        view.getjTADescripcionActividad().getDocument().addDocumentListener(this);
-//    }
-//
-//    private void addButtonListeners() {
-//        view.getjBtnRegistrarActividad().addActionListener(this::createActividad);
-//        view.getjBtnModificarActividad().addActionListener(this::updateActividad);
-//        view.getjBtnEliminarActividad().addActionListener(this::deleteActividad);
-//    }
-//    
-//    private void deleteActividad(ActionEvent e){
-//        if(actividadDAO.deleteActividad(view.getActividad()))
-//            SAInputOutput.showInformationMessage("La actividad se eliminó");
-//        else 
-//            SAInputOutput.showErrorMessage("La actividad no se pudo eliminar");
-//    }
-//
-//    private void createActividad(ActionEvent e){
-//        if(actividadDAO.createActividad(view.getActividad()))
-//            SAInputOutput.showInformationMessage("La actividad se creo correctamente");
-//        else
-//            SAInputOutput.showErrorMessage("La actividad no se pudo crear");
-//    }
-//    
-//    private void updateActividad(ActionEvent e){
-//        if(actividadDAO.updateActividad(view.getActividad()))
-//            SAInputOutput.showInformationMessage("La actividad se modificó");
-//        else 
-//            SAInputOutput.showErrorMessage("La actividad no se pudo modificar");
-//    }
-//    
-////    public void getAllInstructores(JTable jTRInstructores) {
-////        jTRInstructores.setModel(instructorDAO.getDTM("SELECT * FROM Instructor"));
-////    }
-////
-////    public InstructorTO getInstructor(String id) {
-////        return InstructorDAO.getInstance().getInstructor(id);
-////    }
-////
-////    public void createActividad(ActividadTO actividad) {
-////        actividad.setInstructorFk(InstructorDAO.getInstance().getInstructor(actividad.getInstructorFk()));
-////        if(actividad.getInstructorFk() == null || !actividad.getInstructorFk().isValid())
-////            SAOutput.showErrorMessage("Instructor no es valido");
-////        else if(!actividad.isValid())
-////            SAOutput.showErrorMessage("La información de la actividad no es válida.");
-////        else if(ActividadDAO.getInstance().createActividad(actividad))
-////            SAOutput.showInformationMessage("La actividad se creo correctamente");
-////        else
-////            SAOutput.showErrorMessage("La actividad no se pudo crear");
-////    }
-////
-////    public void updateActividad(ActividadTO actividad) {
-////        actividad.setInstructorFk(InstructorDAO.getInstance().getInstructor(actividad.getInstructorFk()));
-////        if(!actividad.isValid())
-////            SAOutput.showErrorMessage("Carga la actividad desde la tabla");
-////        else if(ActividadDAO.getInstance().updateActividad(actividad))
-////            SAOutput.showInformationMessage("Se modifico la actividad");
-////        else
-////            SAOutput.showErrorMessage("La actividad no se pudo modificar");
-////    }
-////
-////    public void deleteActividad(ActividadTO actividad) {
-////        actividad.setInstructorFk(InstructorDAO.getInstance().getInstructor(actividad.getInstructorFk()));
-////        if(!actividad.isValid())
-////            SAOutput.showErrorMessage("Carga la actividad desde la tabla");
-////        else if(ActividadDAO.getInstance().deleteActividad(actividad))
-////            SAOutput.showInformationMessage("La actividad se eliminó");
-////        else
-////            SAOutput.showErrorMessage("La actividad no se pudo eliminar");
-////        
-////    }
-////
-////    public void showAllActividades(JTable jTQActividades) {
-////        jTQActividades.setModel(
-////            ActividadDAO.getInstance().getDTM(
-////                String.format(
-////                    "SELECT %s, %s, %s, %s, %s, %s FROM Actividad "
-////                            + "INNER JOIN Instructor ON Instructor.IdInstructor = Actividad.InstructorFk", 
-////                    "IdActividad AS Id",
-////                    "Nombre",
-////                    "Tipo AS 'Tipo Actividad'",
-////                    "Descripcion",
-////                    "Horas",
-////                    "Instructor.Nombres AS 'Nombre Instructor'"
-////                )
-////            )
-////        );
-////    }
-////
-////    public ActividadTO getActividad(String actividad) {
-////        return ActividadDAO.getInstance().getActividad(actividad);
-////    }
-////
-////    public void createHorario(HorarioTO horario) {
-////        horario.setActividadFk(ActividadDAO.getInstance().getActividad(horario.getActividadFk().getIdActividad()));
-////        horarioController.createHorario(horario);
-////    }
-////
-////    public void showAllHorarios(ActividadTO actividad, JTable tableHorarios) {
-////        horarioController.showAll(ActividadDAO.getInstance().getActividad(actividad), tableHorarios);
-////    }
-////
-////    public HorarioTO getHorario(String id) {
-////        return id != null && !id.trim().isEmpty() ? HorarioDAO.getInstance().getHorario(Integer.parseInt(id)) : null;
-////    }
-////
-////    public void deleteHorario(HorarioTO horario) {
-////        horario.setActividadFk(ActividadDAO.getInstance().getActividad(horario.getActividadFk()));
-////        horarioController.deleteHorario(horario);
-////    }
-////
-////    public void updateHorario(HorarioTO horario) {
-////        horario.setActividadFk(ActividadDAO.getInstance().getActividad(horario.getActividadFk()));
-////        horarioController.updateHorario(horario);
-////    }
-////    
-//    private void textEdited(DocumentEvent e){
-//        if(e == view.getjTFIdActividad())
-//            editIdActividad();
-//        else if(e == view.getjTFNombreActividad())
-//            view.setNombreActividad();
-//        else if(e == view.getjTFIdInstructorActividad())
-//            view.setInstructorActividad(instructorDAO.getInstructor(view.getIdInstructorActividad()));
-//        else if(e == view.getjTADescripcionActividad())
-//            view.setDescripcionActividad();
-//        view.enableButtons(actividadDAO.getActividad(view.getIdActividad()));
-//    }
-//    
-//    private void editIdActividad(){
-//        ActividadTO actividad = actividadDAO.getActividad(view.getIdActividad());
-//        if(actividad != null)
-//            view.setActividad(actividad);
-//        else
-//            view.setIdActividad();
-//    }
-//    
-//    private void itemSelected(ItemEvent e){
-//        if(e.getStateChange() == ItemEvent.SELECTED){
-//            if(e.getSource() == view.getjCBHoras())
-//                view.setHorasActividad();
-//            else if(e.getSource() == view.getjCBTipo())
-//                view.setTipoActividad();
-//            view.enableButtons(actividadDAO.getActividad(view.getIdActividad()));
-//        }
-//    }
-//
-//    @Override
-//    public void insertUpdate(DocumentEvent e) {
-//        textEdited(e);
-//    }
-//
-//    @Override
-//    public void removeUpdate(DocumentEvent e) {
-//        textEdited(e);
-//    }
-//
-//    @Override
-//    public void changedUpdate(DocumentEvent e) {
-//        textEdited(e);
-//    }
-//
-//    @Override
-//    public void itemStateChanged(ItemEvent e) {
-//        itemSelected(e);
-//    }
+    
+    private void initView(){
+        addDocumentListener();
+        addItemListener();
+    }
+    
+    private void addItemListener(){
+        view.getjCBTipoActividad().addItemListener(e -> {view.setTipoActividad(); enableButtons();});
+        view.getjCBHorasActividad().addItemListener(e -> {view.setHorasActividad(); enableButtons();});
+    }
+    
+    private void enableButtons(){
+        
+    }
+    
+    private void addDocumentListener(){
+        SAUtils.addDocumentListener(
+                this, 
+                view.getjTFIdActividad(),
+                view.getjTFNombreActividad(),
+                view.getjTFIdInstructorActividad(),
+                view.getjTADescripcionActividad()
+        );
+    }
+    
+    private void textEdited(DocumentEvent e){
+        HashMap<Predicate, Consumer> actions = new HashMap<>();
+        //si "c -> true" entonces "t -> ejecuta"
+        actions.put(c->SAUtils.isJTComponentEdited(e, view.getjTFIdActividad()), t -> view.setIdActividad());
+        actions.put(c->SAUtils.isJTComponentEdited(e, view.getjTADescripcionActividad()), t -> view.setDescripcion());
+        actions.put(c->SAUtils.isJTComponentEdited(e, view.getjTFIdInstructorActividad()), t -> view.setInstructorActividad(instructorDAO.getInstructor(view.getSelectedInstructor())));
+        actions.put(c->SAUtils.isJTComponentEdited(e, view.getjTFNombreActividad()), t -> view.setNombreActividad());
+        SAUtils.doListener(actions);
+        enableButtons();
+    }
+    
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        textEdited(e);
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        textEdited(e);
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        textEdited(e);
+    }
 }
 

@@ -1,16 +1,12 @@
 package sa.view;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
 import sa.model.to.InstructorTO;
 import sa.utils.SAUtils;
-import sa.utils.TableManager;
 
 public class InstructorView extends javax.swing.JFrame {
     
@@ -24,7 +20,7 @@ public class InstructorView extends javax.swing.JFrame {
     }
     
     public String getQueryInstructores(){
-        HashMap<String, JTextField> conditions = new HashMap<>(3);
+        HashMap<String, JTextComponent> conditions = new HashMap<>(3);
         conditions.put("Apellidos", jTFQApellidos);
         conditions.put("IdInstructor", jTFQId);
         conditions.put("Nombres", jTFQNombres);

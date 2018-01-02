@@ -1,115 +1,163 @@
 package sa.view;
 
-import java.util.Calendar;
-import java.util.Date;
+import com.toedter.calendar.JDateChooser;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JSpinner;
-import javax.swing.SpinnerDateModel;
-import sa.controller.ActividadController;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import sa.model.to.ActividadTO;
-import sa.model.to.HorarioTO;
 import sa.model.to.InstructorTO;
 import sa.utils.SAUtils;
-import sa.controller.impl.AlumnoControllerImpl;
-import sa.controller.impl.InstructorControllerImpl;
 
 public class ActividadView extends javax.swing.JFrame {
+    private int x,y;
+    private ActividadTO actividad;
 
-    public ActividadView(ActividadController controller) {
+    public ActividadView() {
         initComponents();
         setLocationRelativeTo(null);
-        controller.getAllInstructores(jTRInstructores);
-        controller.showAllActividades(jTQActividades);
-        jBtnClose.addActionListener(e -> System.exit(0));
-        jTRInstructores.getSelectionModel().addListSelectionListener(e -> selectInstructor(controller.getInstructor(getSelectedInstructor())));
-        jBtnRegistrarActividad.addActionListener(e -> {controller.createActividad(getActividadFromView());controller.showAllActividades(jTQActividades);});
-        jBtnModificarActividad.addActionListener(e -> {controller.updateActividad(getActividadFromView());controller.showAllActividades(jTQActividades);});
-        jBtnEliminarActividad.addActionListener(e -> {controller.deleteActividad(getActividadFromView());controller.showAllActividades(jTQActividades);});
-        jTQActividades.getSelectionModel().addListSelectionListener(e -> {setActividadToView(controller.getActividad(getSelectedActividad()));controller.showAllHorarios(getActividadFromView(), jTQHActividad);});
-        jBtnRegistrarHorario.addActionListener(e -> {controller.createHorario(getHorarioFromView());controller.showAllHorarios(getActividadFromView(), jTQHActividad);});
-        jTQHActividad.getSelectionModel().addListSelectionListener(e -> setHorarioToView(controller.getHorario(getSelectedHorario())));
-        jBtnEliminarHorario.addActionListener(e -> {controller.deleteHorario(getHorarioFromView());controller.showAllHorarios(getActividadFromView(), jTQHActividad);});
-        jBtnModificarHorario.addActionListener(e -> {controller.updateHorario(getHorarioFromView());controller.showAllHorarios(getActividadFromView(), jTQHActividad);});
-        jBtnAdmAlumnoView.addActionListener(e -> {new AlumnoControllerImpl();this.dispose();});
-        jBtnAdmInstructorView.addActionListener(e -> {new InstructorControllerImpl();this.dispose();});
-        init();
     }
     
-    //posción del mouse
-    int x,y;
-    
-    private void init(){
-        jSHFin.setModel(getHourModel());
-        jSHFin.setEditor(new JSpinner.DateEditor(jSHFin, "HH:mm"));
-        jSHInicio.setModel(getHourModel());
-        jSHInicio.setEditor(new JSpinner.DateEditor(jSHInicio, "HH:mm"));
+    public void setNombreActividad(){
+        actividad.setNombre(jTFNombreActividad.getText().trim());
     }
     
-    private String getSelectedHorario(){
-        int selectedRow = jTQHActividad.getSelectedRow();
-        return selectedRow != -1 ? jTQHActividad.getValueAt(selectedRow, 0).toString() : null;
+    public String getSelectedInstructor(){
+        return jTFIdInstructorActividad.getText().trim();
     }
     
-    private void setHorarioToView(HorarioTO horario){
-        if(horario == null)
-            return;
-        jTFIdHorario.setText(String.valueOf(horario.getIdHorario()));
-        jSHInicio.setValue(SAUtils.getHourDate(horario.getHoraInicio()));
-        jSHFin.setValue(SAUtils.getHourDate(horario.getHoraFin()));
-        jTFLugarHorario.setText(horario.getLugar());
-        jDCFechaHorario.setDate(horario.getFecha());
+    public void setInstructorActividad(InstructorTO instructor){
+        actividad.setInstructorFk(instructor);
     }
     
-    private HorarioTO getHorarioFromView(){
-        String id = jTFIdHorario.getText().trim();
-        return new HorarioTO(
-                SAUtils.isValidString(id) ? Integer.parseInt(id) : 0, 
-                new ActividadTO(jTFIdActividad.getText().trim(), null, null, null, 0, null), 
-                jDCFechaHorario.getDate(), 
-                SAUtils.getFormattedTime(new Date(String.valueOf(jSHInicio.getValue()))), 
-                SAUtils.getFormattedTime(new Date(String.valueOf(jSHFin.getValue()))), 
-                jTFLugarHorario.getText().trim()
-        );
+    public void setDescripcion(){
+        actividad.setDescripcion(jTADescripcionActividad.getText().trim());
     }
     
-    private void setActividadToView(ActividadTO actividad){
-        if(actividad == null)
-            return;
-        jTFIdActividad.setText(actividad.getIdActividad());
-        jTFNombre.setText(actividad.getNombre());
-        jTFInstructor.setText(actividad.getInstructorFk().getIdInstructor());
-        jTADescripcion.setText(actividad.getDescripcion());
-        jCBTipo.setSelectedItem(actividad.getTipo());
-        jCBHoras.setSelectedItem(String.valueOf(actividad.getHoras()));
+    public void setIdActividad(){
+        actividad.setIdActividad(jTFIdActividad.getText().trim());
+    }
+    
+    public void setHorasActividad(){
+        actividad.setHoras(jCBHorasActividad.getSelectedIndex() != -1 ? Integer.parseInt(String.valueOf(jCBHorasActividad.getSelectedItem())) : 0);
+    }
+    
+    public void setTipoActividad(){
+        actividad.setTipo(jCBTipoActividad.getSelectedIndex() != -1 ? String.valueOf(jCBTipoActividad.getSelectedItem()) : "");
     }
 
-    private ActividadTO getActividadFromView() {
-        return new ActividadTO(
-                jTFIdActividad.getText().trim(), 
-                jTFNombre.getText().trim(), 
-                String.valueOf(jCBTipo.getSelectedItem()), 
-                jTADescripcion.getText().trim(), 
-                Integer.parseInt(String.valueOf(jCBHoras.getSelectedItem())), 
-                new InstructorTO(jTFInstructor.getText().trim(), null, null, null)
-        );
+    public ActividadTO getActividad() {
+        return actividad;
     }
 
-    private String getSelectedActividad(){
-        int selectedRow = jTQActividades.getSelectedRow();
-        return selectedRow != -1 ? jTQActividades.getValueAt(selectedRow, 0).toString() : null;
+    public void setActividad(ActividadTO actividad) {
+        this.actividad = actividad;
+    }
+
+    public JButton getjBtnAdmAlumnoView() {
+        return jBtnAdmAlumnoView;
+    }
+
+    public JButton getjBtnAdmInstructorView() {
+        return jBtnAdmInstructorView;
+    }
+
+    public JButton getjBtnClose() {
+        return jBtnClose;
+    }
+
+    public JButton getjBtnEliminarActividad() {
+        return jBtnEliminarActividad;
+    }
+
+    public JButton getjBtnEliminarHorario() {
+        return jBtnEliminarHorario;
+    }
+
+    public JButton getjBtnMaximize() {
+        return jBtnMaximize;
+    }
+
+    public JButton getjBtnMinimize() {
+        return jBtnMinimize;
+    }
+
+    public JButton getjBtnModificarActividad() {
+        return jBtnModificarActividad;
+    }
+
+    public JButton getjBtnModificarHorario() {
+        return jBtnModificarHorario;
+    }
+
+    public JButton getjBtnRegistrarActividad() {
+        return jBtnRegistrarActividad;
+    }
+
+    public JButton getjBtnRegistrarHorario() {
+        return jBtnRegistrarHorario;
+    }
+
+    public JComboBox<String> getjCBHorasActividad() {
+        return jCBHorasActividad;
+    }
+
+    public JComboBox<String> getjCBTipoActividad() {
+        return jCBTipoActividad;
+    }
+
+    public JDateChooser getjDCFechaHorario() {
+        return jDCFechaHorario;
+    }
+
+    public JSpinner getjSHFin() {
+        return jSHFin;
+    }
+
+    public JSpinner getjSHInicio() {
+        return jSHInicio;
+    }
+
+    public JTextArea getjTADescripcionActividad() {
+        return jTADescripcionActividad;
+    }
+
+    public JTextField getjTFIdActividad() {
+        return jTFIdActividad;
+    }
+
+    public JTextField getjTFIdHorario() {
+        return jTFIdHorario;
+    }
+
+    public JTextField getjTFIdInstructorActividad() {
+        return jTFIdInstructorActividad;
+    }
+
+    public JTextField getjTFLugarHorario() {
+        return jTFLugarHorario;
+    }
+
+    public JTextField getjTFNombreActividad() {
+        return jTFNombreActividad;
+    }
+
+    public JTable getjTQActividades() {
+        return jTQActividades;
+    }
+
+    public JTable getjTQHActividad() {
+        return jTQHActividad;
+    }
+
+    public JTable getjTRInstructores() {
+        return jTRInstructores;
     }
     
-    private String getSelectedInstructor() {
-        int selectedRow = jTRInstructores.getSelectedRow();
-        return selectedRow != -1 ? jTRInstructores.getValueAt(selectedRow, 0).toString() : null;
-    }
-
-    private void selectInstructor(InstructorTO instructor) {
-            jTFInstructor.setText(instructor != null ? instructor.getIdInstructor() : "");
-    }
-
-    private SpinnerDateModel getHourModel(){
-        return new SpinnerDateModel(new Date(),null, null, Calendar.HOUR);
-    }
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -122,13 +170,13 @@ public class ActividadView extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jTFIdActividad = new javax.swing.JTextField();
-        jTFNombre = new javax.swing.JTextField();
-        jCBHoras = new javax.swing.JComboBox<>();
-        jCBTipo = new javax.swing.JComboBox<>();
+        jTFNombreActividad = new javax.swing.JTextField();
+        jCBHorasActividad = new javax.swing.JComboBox<>();
+        jCBTipoActividad = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTADescripcion = new javax.swing.JTextArea();
-        jTFInstructor = new javax.swing.JTextField();
+        jTADescripcionActividad = new javax.swing.JTextArea();
+        jTFIdInstructorActividad = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -150,8 +198,10 @@ public class ActividadView extends javax.swing.JFrame {
         jTFIdHorario = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jSHInicio = new javax.swing.JSpinner();
+        SAUtils.initSpinnerHourEditor(jSHInicio);
         jLabel13 = new javax.swing.JLabel();
         jSHFin = new javax.swing.JSpinner();
+        SAUtils.initSpinnerHourEditor(jSHFin);
         jLabel11 = new javax.swing.JLabel();
         jTFLugarHorario = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
@@ -216,48 +266,48 @@ public class ActividadView extends javax.swing.JFrame {
             }
         });
 
-        jTFNombre.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
-        jTFNombre.setBorder(null);
-        jTFNombre.addActionListener(new java.awt.event.ActionListener() {
+        jTFNombreActividad.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
+        jTFNombreActividad.setBorder(null);
+        jTFNombreActividad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTFNombreActionPerformed(evt);
+                jTFNombreActividadActionPerformed(evt);
             }
         });
 
-        jCBHoras.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
-        jCBHoras.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" }));
-        jCBHoras.setBorder(null);
-        jCBHoras.addActionListener(new java.awt.event.ActionListener() {
+        jCBHorasActividad.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
+        jCBHorasActividad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" }));
+        jCBHorasActividad.setBorder(null);
+        jCBHorasActividad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCBHorasActionPerformed(evt);
+                jCBHorasActividadActionPerformed(evt);
             }
         });
 
-        jCBTipo.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
-        jCBTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Taller", "Conferencia" }));
-        jCBTipo.setSelectedIndex(1);
-        jCBTipo.setBorder(null);
-        jCBTipo.setFocusable(false);
-        jCBTipo.setLightWeightPopupEnabled(false);
-        jCBTipo.setRequestFocusEnabled(false);
-        jCBTipo.setVerifyInputWhenFocusTarget(false);
+        jCBTipoActividad.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
+        jCBTipoActividad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Taller", "Conferencia" }));
+        jCBTipoActividad.setSelectedIndex(1);
+        jCBTipoActividad.setBorder(null);
+        jCBTipoActividad.setFocusable(false);
+        jCBTipoActividad.setLightWeightPopupEnabled(false);
+        jCBTipoActividad.setRequestFocusEnabled(false);
+        jCBTipoActividad.setVerifyInputWhenFocusTarget(false);
 
         jLabel9.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setText("ID:");
 
-        jTADescripcion.setColumns(10);
-        jTADescripcion.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
-        jTADescripcion.setRows(2);
-        jTADescripcion.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "DESCRIPCIÓN", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Calibri Light", 0, 10))); // NOI18N
-        jScrollPane1.setViewportView(jTADescripcion);
+        jTADescripcionActividad.setColumns(10);
+        jTADescripcionActividad.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
+        jTADescripcionActividad.setRows(2);
+        jTADescripcionActividad.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "DESCRIPCIÓN", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Calibri Light", 0, 10))); // NOI18N
+        jScrollPane1.setViewportView(jTADescripcionActividad);
 
-        jTFInstructor.setEditable(false);
-        jTFInstructor.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
-        jTFInstructor.setBorder(null);
-        jTFInstructor.addActionListener(new java.awt.event.ActionListener() {
+        jTFIdInstructorActividad.setEditable(false);
+        jTFIdInstructorActividad.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
+        jTFIdInstructorActividad.setBorder(null);
+        jTFIdInstructorActividad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTFInstructorActionPerformed(evt);
+                jTFIdInstructorActividadActionPerformed(evt);
             }
         });
 
@@ -286,6 +336,7 @@ public class ActividadView extends javax.swing.JFrame {
         jBtnRegistrarActividad.setBorderPainted(false);
         jBtnRegistrarActividad.setContentAreaFilled(false);
         jBtnRegistrarActividad.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnRegistrarActividad.setEnabled(false);
         jBtnRegistrarActividad.setFocusPainted(false);
         jBtnRegistrarActividad.setFocusable(false);
         jBtnRegistrarActividad.setRequestFocusEnabled(false);
@@ -300,6 +351,7 @@ public class ActividadView extends javax.swing.JFrame {
         jBtnModificarActividad.setBorderPainted(false);
         jBtnModificarActividad.setContentAreaFilled(false);
         jBtnModificarActividad.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnModificarActividad.setEnabled(false);
         jBtnModificarActividad.setFocusable(false);
         jBtnModificarActividad.setVerifyInputWhenFocusTarget(false);
         jBtnModificarActividad.addActionListener(new java.awt.event.ActionListener() {
@@ -317,6 +369,7 @@ public class ActividadView extends javax.swing.JFrame {
         jBtnEliminarActividad.setBorderPainted(false);
         jBtnEliminarActividad.setContentAreaFilled(false);
         jBtnEliminarActividad.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnEliminarActividad.setEnabled(false);
         jBtnEliminarActividad.setFocusable(false);
         jBtnEliminarActividad.setVerifyInputWhenFocusTarget(false);
         jBtnEliminarActividad.addActionListener(new java.awt.event.ActionListener() {
@@ -328,6 +381,7 @@ public class ActividadView extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 0, 153));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "INSTRUCTORES", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Calibri Light", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
 
+        jTRInstructores.setAutoCreateRowSorter(true);
         jTRInstructores.setFont(new java.awt.Font("Calibri Light", 0, 11)); // NOI18N
         jTRInstructores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -337,6 +391,7 @@ public class ActividadView extends javax.swing.JFrame {
 
             }
         ));
+        jTRInstructores.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(jTRInstructores);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -370,19 +425,19 @@ public class ActividadView extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTFNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTFNombreActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCBTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jCBTipoActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel16)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCBHoras, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jCBHorasActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel17)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTFInstructor, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTFIdInstructorActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -398,7 +453,7 @@ public class ActividadView extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jTFNombre, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTFNombreActividad, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jTFIdActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -406,11 +461,11 @@ public class ActividadView extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCBTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jCBTipoActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCBHoras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jCBHorasActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTFInstructor, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jTFIdInstructorActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jBtnEliminarActividad, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -426,6 +481,7 @@ public class ActividadView extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(0, 0, 153));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "HORARIOS", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Calibri Light", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
 
+        jTQHActividad.setAutoCreateRowSorter(true);
         jTQHActividad.setFont(new java.awt.Font("Calibri Light", 0, 11)); // NOI18N
         jTQHActividad.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -435,6 +491,7 @@ public class ActividadView extends javax.swing.JFrame {
 
             }
         ));
+        jTQHActividad.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(jTQHActividad);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -457,6 +514,7 @@ public class ActividadView extends javax.swing.JFrame {
         jBtnRegistrarHorario.setBorderPainted(false);
         jBtnRegistrarHorario.setContentAreaFilled(false);
         jBtnRegistrarHorario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnRegistrarHorario.setEnabled(false);
         jBtnRegistrarHorario.setFocusPainted(false);
         jBtnRegistrarHorario.setFocusable(false);
         jBtnRegistrarHorario.setRequestFocusEnabled(false);
@@ -471,6 +529,7 @@ public class ActividadView extends javax.swing.JFrame {
         jBtnModificarHorario.setBorderPainted(false);
         jBtnModificarHorario.setContentAreaFilled(false);
         jBtnModificarHorario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnModificarHorario.setEnabled(false);
         jBtnModificarHorario.setFocusPainted(false);
         jBtnModificarHorario.setFocusable(false);
         jBtnModificarHorario.setRequestFocusEnabled(false);
@@ -490,6 +549,7 @@ public class ActividadView extends javax.swing.JFrame {
         jBtnEliminarHorario.setBorderPainted(false);
         jBtnEliminarHorario.setContentAreaFilled(false);
         jBtnEliminarHorario.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnEliminarHorario.setEnabled(false);
         jBtnEliminarHorario.setFocusPainted(false);
         jBtnEliminarHorario.setFocusable(false);
         jBtnEliminarHorario.setRequestFocusEnabled(false);
@@ -615,6 +675,7 @@ public class ActividadView extends javax.swing.JFrame {
         jPActividades.setBackground(new java.awt.Color(0, 0, 153));
         jPActividades.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ACTIVIDADES", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Calibri Light", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
 
+        jTQActividades.setAutoCreateRowSorter(true);
         jTQActividades.setFont(new java.awt.Font("Calibri Light", 0, 11)); // NOI18N
         jTQActividades.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -624,6 +685,7 @@ public class ActividadView extends javax.swing.JFrame {
 
             }
         ));
+        jTQActividades.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTQActividades);
 
         javax.swing.GroupLayout jPActividadesLayout = new javax.swing.GroupLayout(jPActividades);
@@ -793,17 +855,17 @@ public class ActividadView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jBtnModificarActividadActionPerformed
 
-    private void jTFInstructorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFInstructorActionPerformed
+    private void jTFIdInstructorActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFIdInstructorActividadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTFInstructorActionPerformed
+    }//GEN-LAST:event_jTFIdInstructorActividadActionPerformed
 
-    private void jCBHorasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBHorasActionPerformed
+    private void jCBHorasActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBHorasActividadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCBHorasActionPerformed
+    }//GEN-LAST:event_jCBHorasActividadActionPerformed
 
-    private void jTFNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFNombreActionPerformed
+    private void jTFNombreActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFNombreActividadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTFNombreActionPerformed
+    }//GEN-LAST:event_jTFNombreActividadActionPerformed
 
     private void jTFIdActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFIdActividadActionPerformed
         // TODO add your handling code here:
@@ -821,8 +883,8 @@ public class ActividadView extends javax.swing.JFrame {
     private javax.swing.JButton jBtnModificarHorario;
     private javax.swing.JButton jBtnRegistrarActividad;
     private javax.swing.JButton jBtnRegistrarHorario;
-    private javax.swing.JComboBox<String> jCBHoras;
-    private javax.swing.JComboBox<String> jCBTipo;
+    private javax.swing.JComboBox<String> jCBHorasActividad;
+    private javax.swing.JComboBox<String> jCBTipoActividad;
     private com.toedter.calendar.JDateChooser jDCFechaHorario;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -848,12 +910,12 @@ public class ActividadView extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTextArea jTADescripcion;
+    private javax.swing.JTextArea jTADescripcionActividad;
     private javax.swing.JTextField jTFIdActividad;
     private javax.swing.JTextField jTFIdHorario;
-    private javax.swing.JTextField jTFInstructor;
+    private javax.swing.JTextField jTFIdInstructorActividad;
     private javax.swing.JTextField jTFLugarHorario;
-    private javax.swing.JTextField jTFNombre;
+    private javax.swing.JTextField jTFNombreActividad;
     private javax.swing.JTable jTQActividades;
     private javax.swing.JTable jTQHActividad;
     private javax.swing.JTable jTRInstructores;

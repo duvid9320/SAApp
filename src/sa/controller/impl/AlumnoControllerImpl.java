@@ -24,8 +24,6 @@
 package sa.controller.impl;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.stream.Collectors;
@@ -46,7 +44,7 @@ import sa.view.InstructorView;
  *
  * @author dave
  */
-public class AlumnoControllerImpl implements DocumentListener, ItemListener{
+public class AlumnoControllerImpl implements DocumentListener{
     
     private final AlumnoView view;
     private final AlumnoDAO alumnoDAO;
@@ -69,14 +67,13 @@ public class AlumnoControllerImpl implements DocumentListener, ItemListener{
     }
     
     private void addItemListener(){
-        view.getjCBCarrera().addItemListener(this);
-        view.getjCBSemestre().addItemListener(this);
+        view.getjCBCarrera().addItemListener(e -> {view.setCarrera(carreraDAO.getCarrera(view.getSelectedCarrera())); enableButtons();});
+        view.getjCBSemestre().addItemListener(e -> {view.setSemestre(); enableButtons();});
     }
     
     private void addDocumentListener(){
         SAUtils.addDocumentListener(
-                this, 
-                view.getjTFAMaterno(),
+                this,view.getjTFAMaterno(),
                 view.getjTFAPaterno(),
                 view.getjTFNombres(),
                 view.getjTFNumeroControl(),
@@ -143,13 +140,13 @@ public class AlumnoControllerImpl implements DocumentListener, ItemListener{
     }
     
     private void textEdited(DocumentEvent e){
-        if(SAUtils.isJTFEdited(e, view.getjTFAMaterno()))
+        if(SAUtils.isJTComponentEdited(e, view.getjTFAMaterno()))
             view.setApellidoMaterno();
-        else if(SAUtils.isJTFEdited(e, view.getjTFAPaterno()))
+        else if(SAUtils.isJTComponentEdited(e, view.getjTFAPaterno()))
             view.setApellidoPaterno();
-        else if(SAUtils.isJTFEdited(e, view.getjTFNombres()))
+        else if(SAUtils.isJTComponentEdited(e, view.getjTFNombres()))
             view.setNombres();
-        else if(SAUtils.isJTFEdited(e, view.getjTFNumeroControl()))
+        else if(SAUtils.isJTComponentEdited(e, view.getjTFNumeroControl()))
             editNumeroControl();
         else if(isQueryEdited(e))
             showQuery(view.getQueryAlumnos());
@@ -184,14 +181,6 @@ public class AlumnoControllerImpl implements DocumentListener, ItemListener{
                 view.getjTFQSemestre()
         );
     }
-    
-    private void itemSelected(ItemEvent e){
-        if(e.getSource() == view.getjCBCarrera())
-            view.setCarrera(carreraDAO.getCarrera(view.getSelectedCarrera()));
-        else if(e.getSource() == view.getjCBSemestre())
-            view.setSemestre();
-        enableButtons();
-    }
 
     @Override
     public void insertUpdate(DocumentEvent e) {
@@ -206,10 +195,5 @@ public class AlumnoControllerImpl implements DocumentListener, ItemListener{
     @Override
     public void changedUpdate(DocumentEvent e) {
         textEdited(e);
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-        itemSelected(e);
     }
 }

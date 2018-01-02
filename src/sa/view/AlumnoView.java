@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 import sa.model.to.AlumnoTO;
 import sa.model.to.CarreraTO;
 import sa.utils.SAUtils;
@@ -58,8 +59,8 @@ public class AlumnoView extends javax.swing.JFrame{
         alumno.setApellidoPaterno(jTFAPaterno.getText().trim());
     }
     
-    private HashMap<String, JTextField> getConditions(){
-        HashMap<String, JTextField> conditions = new HashMap<>(6);
+    private HashMap<String, JTextComponent> getConditions(){
+        HashMap<String, JTextComponent> conditions = new HashMap<>(6);
         conditions.put("NumeroControl", jTFQNControl);
         conditions.put("Nombres", jTFQNombres);
         conditions.put("ApellidoPaterno", jTFQAPaterno);

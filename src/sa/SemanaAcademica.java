@@ -22,11 +22,14 @@
  * THE SOFTWARE.
  */
 package sa;
+import sa.controller.impl.ActividadController;
 import sa.controller.impl.AlumnoControllerImpl;
 import sa.controller.impl.InstructorController;
+import sa.model.dao.ActividadDAO;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
 import sa.model.dao.InstructorDAO;
+import sa.view.ActividadView;
 import sa.view.AlumnoView;
 import sa.view.InstructorView;
 
@@ -37,8 +40,8 @@ import sa.view.InstructorView;
 public class SemanaAcademica {
     
     public static void main(String[] args) {
-        //new ActividadController(new ActividadView(), InstructorDAO.getInstance(), ActividadDAO.getInstance());
-        new AlumnoControllerImpl(new AlumnoView(), AlumnoDAO.getInstance(), CarreraDAO.getInstance());
+        new ActividadController(new ActividadView(), InstructorDAO.getInstance(), ActividadDAO.getInstance());
+        //new AlumnoControllerImpl(new AlumnoView(), AlumnoDAO.getInstance(), CarreraDAO.getInstance());
         //new InstructorController(new InstructorView(), InstructorDAO.getInstance());
     }
     

@@ -34,15 +34,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 import sa.model.to.AlumnoTO;
 
 /**
@@ -58,23 +59,28 @@ public class SAUtils {
         MYSQL_TIME_FORMAT = "";
     }
     
-    public static boolean isAnyEdited(DocumentEvent e, JTextField... jtfs){
+    //else if, key -> predicado, value -> accion. 
+    public static void doListener(HashMap<Predicate, Consumer> actions){
+        actions.entrySet().stream()
+                          .filter(e -> e.getKey().test(null))
+                          .findFirst()
+                          .get()
+                          .getValue().accept(null);
+    }
+    
+    public static boolean isAnyEdited(DocumentEvent e, JTextComponent... jtfs){
         return Arrays.stream(jtfs).anyMatch(j -> e.getDocument() == j.getDocument());
     }
     
-    public static boolean isJTFEdited(DocumentEvent e, JTextField jtf){
+    public static boolean isJTComponentEdited(DocumentEvent e, JTextComponent jtf){
         return e.getDocument() == jtf.getDocument();
     }
     
-    public static void addDocumentListener(DocumentListener l, JTextField... jtfs){
+    public static void addDocumentListener(DocumentListener l, JTextComponent... jtfs){
         Arrays.stream(jtfs).forEach( j -> j.getDocument().addDocumentListener(l));
     }
     
-    public static void removeDocumentListener(DocumentListener l, JTextField... jtfs){
-        Arrays.stream(jtfs).forEach( j -> j.getDocument().removeDocumentListener(l));
-    }
-    
-    private static String getFormattedConditions(HashMap<String, JTextField> conditions){
+    private static String getFormattedConditions(HashMap<String, JTextComponent> conditions){
         String format = "WHERE "+String.join(
                             " AND ", 
                             conditions.entrySet()
@@ -97,7 +103,7 @@ public class SAUtils {
         );
     }
     
-    public static String getQuery(LinkedHashMap<String, String> fields, String table, HashMap<String, JTextField> conditions){
+    public static String getQuery(LinkedHashMap<String, String> fields, String table, HashMap<String, JTextComponent> conditions){
         return String.format(
                 "SELECT %s FROM %s %s",
                 fields != null ? getFormattedFields(fields) : "*", 

@@ -220,20 +220,20 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jTFNombre" min="-2" pref="214" max="-2" attributes="0"/>
+                                              <Component id="jTFNombreActividad" min="-2" pref="214" max="-2" attributes="0"/>
                                           </Group>
                                           <Group type="102" alignment="1" attributes="0">
                                               <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jCBTipo" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jCBTipoActividad" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jCBHoras" min="-2" pref="37" max="-2" attributes="0"/>
+                                              <Component id="jCBHorasActividad" min="-2" pref="37" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jTFInstructor" min="-2" pref="30" max="-2" attributes="0"/>
+                                              <Component id="jTFIdInstructorActividad" min="-2" pref="30" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -253,7 +253,7 @@
                                               <Group type="103" groupAlignment="0" attributes="0">
                                                   <Group type="102" attributes="0">
                                                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                                          <Component id="jTFNombre" alignment="0" min="-2" pref="20" max="-2" attributes="0"/>
+                                                          <Component id="jTFNombreActividad" alignment="0" min="-2" pref="20" max="-2" attributes="0"/>
                                                           <Group type="103" groupAlignment="3" attributes="0">
                                                               <Component id="jTFIdActividad" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
                                                               <Component id="jLabel14" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
@@ -263,11 +263,11 @@
                                                       <EmptySpace max="-2" attributes="0"/>
                                                       <Group type="103" groupAlignment="3" attributes="0">
                                                           <Component id="jLabel15" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
-                                                          <Component id="jCBTipo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                                          <Component id="jCBTipoActividad" alignment="3" min="-2" max="-2" attributes="0"/>
                                                           <Component id="jLabel16" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
-                                                          <Component id="jCBHoras" alignment="3" min="-2" max="-2" attributes="0"/>
+                                                          <Component id="jCBHorasActividad" alignment="3" min="-2" max="-2" attributes="0"/>
                                                           <Component id="jLabel17" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
-                                                          <Component id="jTFInstructor" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                                                          <Component id="jTFIdInstructorActividad" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
                                                       </Group>
                                                   </Group>
                                                   <Component id="jScrollPane1" min="-2" pref="58" max="-2" attributes="0"/>
@@ -298,7 +298,7 @@
                                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTFIdActividadActionPerformed"/>
                               </Events>
                             </Component>
-                            <Component class="javax.swing.JTextField" name="jTFNombre">
+                            <Component class="javax.swing.JTextField" name="jTFNombreActividad">
                               <Properties>
                                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                                   <Font name="Calibri Light" size="12" style="0"/>
@@ -308,10 +308,10 @@
                                 </Property>
                               </Properties>
                               <Events>
-                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTFNombreActionPerformed"/>
+                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTFNombreActividadActionPerformed"/>
                               </Events>
                             </Component>
-                            <Component class="javax.swing.JComboBox" name="jCBHoras">
+                            <Component class="javax.swing.JComboBox" name="jCBHorasActividad">
                               <Properties>
                                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                                   <Font name="Calibri Light" size="12" style="0"/>
@@ -345,13 +345,13 @@
                                 </Property>
                               </Properties>
                               <Events>
-                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCBHorasActionPerformed"/>
+                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCBHorasActividadActionPerformed"/>
                               </Events>
                               <AuxValues>
                                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                               </AuxValues>
                             </Component>
-                            <Component class="javax.swing.JComboBox" name="jCBTipo">
+                            <Component class="javax.swing.JComboBox" name="jCBTipoActividad">
                               <Properties>
                                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                                   <Font name="Calibri Light" size="12" style="0"/>
@@ -393,7 +393,7 @@
 
                               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                               <SubComponents>
-                                <Component class="javax.swing.JTextArea" name="jTADescripcion">
+                                <Component class="javax.swing.JTextArea" name="jTADescripcionActividad">
                                   <Properties>
                                     <Property name="columns" type="int" value="10"/>
                                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -411,7 +411,7 @@
                                 </Component>
                               </SubComponents>
                             </Container>
-                            <Component class="javax.swing.JTextField" name="jTFInstructor">
+                            <Component class="javax.swing.JTextField" name="jTFIdInstructorActividad">
                               <Properties>
                                 <Property name="editable" type="boolean" value="false"/>
                                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -422,7 +422,7 @@
                                 </Property>
                               </Properties>
                               <Events>
-                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTFInstructorActionPerformed"/>
+                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTFIdInstructorActividadActionPerformed"/>
                               </Events>
                             </Component>
                             <Component class="javax.swing.JLabel" name="jLabel14">
@@ -492,6 +492,7 @@
                                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                                   <Color id="Cursor de Mano"/>
                                 </Property>
+                                <Property name="enabled" type="boolean" value="false"/>
                                 <Property name="focusPainted" type="boolean" value="false"/>
                                 <Property name="focusable" type="boolean" value="false"/>
                                 <Property name="requestFocusEnabled" type="boolean" value="false"/>
@@ -521,6 +522,7 @@
                                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                                   <Color id="Cursor de Mano"/>
                                 </Property>
+                                <Property name="enabled" type="boolean" value="false"/>
                                 <Property name="focusable" type="boolean" value="false"/>
                                 <Property name="verifyInputWhenFocusTarget" type="boolean" value="false"/>
                               </Properties>
@@ -551,6 +553,7 @@
                                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                                   <Color id="Cursor de Mano"/>
                                 </Property>
+                                <Property name="enabled" type="boolean" value="false"/>
                                 <Property name="focusable" type="boolean" value="false"/>
                                 <Property name="verifyInputWhenFocusTarget" type="boolean" value="false"/>
                               </Properties>
@@ -595,6 +598,7 @@
                                   <SubComponents>
                                     <Component class="javax.swing.JTable" name="jTRInstructores">
                                       <Properties>
+                                        <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                                           <Font name="Calibri Light" size="11" style="0"/>
                                         </Property>
@@ -605,7 +609,7 @@
                                           <TableColumnModel selectionModel="0"/>
                                         </Property>
                                         <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                                          <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                                          <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                                         </Property>
                                       </Properties>
                                     </Component>
@@ -739,6 +743,7 @@
                                   <SubComponents>
                                     <Component class="javax.swing.JTable" name="jTQHActividad">
                                       <Properties>
+                                        <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                                           <Font name="Calibri Light" size="11" style="0"/>
                                         </Property>
@@ -749,7 +754,7 @@
                                           <TableColumnModel selectionModel="0"/>
                                         </Property>
                                         <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                                          <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                                          <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                                         </Property>
                                       </Properties>
                                     </Component>
@@ -780,6 +785,7 @@
                                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                                   <Color id="Cursor de Mano"/>
                                 </Property>
+                                <Property name="enabled" type="boolean" value="false"/>
                                 <Property name="focusPainted" type="boolean" value="false"/>
                                 <Property name="focusable" type="boolean" value="false"/>
                                 <Property name="requestFocusEnabled" type="boolean" value="false"/>
@@ -809,6 +815,7 @@
                                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                                   <Color id="Cursor de Mano"/>
                                 </Property>
+                                <Property name="enabled" type="boolean" value="false"/>
                                 <Property name="focusPainted" type="boolean" value="false"/>
                                 <Property name="focusable" type="boolean" value="false"/>
                                 <Property name="requestFocusEnabled" type="boolean" value="false"/>
@@ -841,6 +848,7 @@
                                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                                   <Color id="Cursor de Mano"/>
                                 </Property>
+                                <Property name="enabled" type="boolean" value="false"/>
                                 <Property name="focusPainted" type="boolean" value="false"/>
                                 <Property name="focusable" type="boolean" value="false"/>
                                 <Property name="requestFocusEnabled" type="boolean" value="false"/>
@@ -889,6 +897,9 @@
                                   <Border info="null"/>
                                 </Property>
                               </Properties>
+                              <AuxValues>
+                                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="SAUtils.initSpinnerHourEditor(jSHInicio);&#xd;&#xa;"/>
+                              </AuxValues>
                             </Component>
                             <Component class="javax.swing.JLabel" name="jLabel13">
                               <Properties>
@@ -910,6 +921,9 @@
                                   <Border info="null"/>
                                 </Property>
                               </Properties>
+                              <AuxValues>
+                                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="SAUtils.initSpinnerHourEditor(jSHFin);&#xd;&#xa;"/>
+                              </AuxValues>
                             </Component>
                             <Component class="javax.swing.JLabel" name="jLabel11">
                               <Properties>
@@ -1001,6 +1015,7 @@
                       <SubComponents>
                         <Component class="javax.swing.JTable" name="jTQActividades">
                           <Properties>
+                            <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Calibri Light" size="11" style="0"/>
                             </Property>
@@ -1011,7 +1026,7 @@
                               <TableColumnModel selectionModel="0"/>
                             </Property>
                             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                              <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                             </Property>
                           </Properties>
                         </Component>

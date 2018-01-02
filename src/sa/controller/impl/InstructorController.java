@@ -140,13 +140,13 @@ public class InstructorController implements DocumentListener{
     }
     
     private void textEdited(DocumentEvent e){
-        if(SAUtils.isJTFEdited(e, view.getjTFApellidosInstructor()))
+        if(SAUtils.isJTComponentEdited(e, view.getjTFApellidosInstructor()))
             view.setApellidosInstructor();
-        else if (SAUtils.isJTFEdited(e, view.getjTFIdInstructor()))
+        else if (SAUtils.isJTComponentEdited(e, view.getjTFIdInstructor()))
             editIdInstructor();
-        else if (SAUtils.isJTFEdited(e, view.getjTFNombresInstructor()))
+        else if (SAUtils.isJTComponentEdited(e, view.getjTFNombresInstructor()))
             view.setNombresInstructor();
-        else if(SAUtils.isJTFEdited(e, view.getjTAGradoInstructor()))
+        else if(SAUtils.isJTComponentEdited(e, view.getjTAGradoInstructor()))
             view.setGradoInstructor();
         else if (isQueryEdited(e))
             showQuery(view.getQueryInstructores());
