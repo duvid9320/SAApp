@@ -1,7 +1,7 @@
 /* 
  * The MIT License
  *
- * Copyright 2017 David Rodríguez <duvid9320@gmail.com>.
+ * Copyright 2018 David Rodríguez <duvid9320@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +26,13 @@ package sa.controller.impl;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.function.Consumer;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.text.JTextComponent;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
 import sa.model.dao.InstructorDAO;
@@ -43,7 +46,7 @@ import sa.view.InstructorView;
  *
  * @author dave
  */
-public class InstructorController implements DocumentListener{
+public class InstructorController {
     
     private final InstructorView view;
     private final InstructorDAO instructorDAO;
@@ -106,16 +109,7 @@ public class InstructorController implements DocumentListener{
     }
     
     private void addDocumentListener(){
-        SAUtils.addDocumentListener(
-                this,
-                view.getjTFApellidosInstructor(),
-                view.getjTFIdInstructor(),
-                view.getjTFNombresInstructor(),
-                view.getjTAGradoInstructor(),
-                view.getjTFQApellidos(),
-                view.getjTFQId(),
-                view.getjTFQNombres()
-        );
+        SAUtils.addDocumentListener(getTextEditActions(), a -> enableButtons());
     }
     
     public void showQuery(String query){
@@ -139,37 +133,15 @@ public class InstructorController implements DocumentListener{
             view.setIdInstructor();
     }
     
-    private void textEdited(DocumentEvent e){
-        if(SAUtils.isJTComponentEdited(e, view.getjTFApellidosInstructor()))
-            view.setApellidosInstructor();
-        else if (SAUtils.isJTComponentEdited(e, view.getjTFIdInstructor()))
-            editIdInstructor();
-        else if (SAUtils.isJTComponentEdited(e, view.getjTFNombresInstructor()))
-            view.setNombresInstructor();
-        else if(SAUtils.isJTComponentEdited(e, view.getjTAGradoInstructor()))
-            view.setGradoInstructor();
-        else if (isQueryEdited(e))
-            showQuery(view.getQueryInstructores());
-        enableButtons();
+    private LinkedHashMap<JTextComponent, Consumer> getTextEditActions(){
+        LinkedHashMap<JTextComponent, Consumer> actions = new LinkedHashMap<>();
+        actions.put(view.getjTFApellidosInstructor(), a -> view.setApellidosInstructor());
+        actions.put(view.getjTFIdInstructor(), a -> editIdInstructor());
+        actions.put(view.getjTFNombresInstructor(), a -> view.setNombresInstructor());
+        actions.put(view.getjTAGradoInstructor(), a -> view.setGradoInstructor());
+        actions.put(view.getjTFQApellidos(), a -> showQuery(view.getQueryInstructores()));
+        actions.put(view.getjTFQId(), a -> showQuery(view.getQueryInstructores()));
+        actions.put(view.getjTFQNombres(), a -> showQuery(view.getQueryInstructores()));
+        return actions;
     }
-    
-    private boolean isQueryEdited(DocumentEvent e){
-        return SAUtils.isAnyEdited(e, view.getjTFQApellidos(), view.getjTFQId(), view.getjTFQNombres());
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        textEdited(e);
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        textEdited(e);
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        textEdited(e);
-    }
-    
 }

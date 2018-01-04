@@ -1,7 +1,7 @@
 /* 
  * The MIT License
  *
- * Copyright 2017 David Rodríguez <duvid9320@gmail.com>.
+ * Copyright 2018 David Rodríguez <duvid9320@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,22 +23,28 @@
  */
 package sa.controller.impl;
 
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.JFrame;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.text.JTextComponent;
+import sa.connection.MySQLManager;
 import sa.model.dao.ActividadDAO;
+import sa.model.dao.AlumnoDAO;
+import sa.model.dao.CarreraDAO;
 import sa.model.dao.InstructorDAO;
+import sa.model.to.ActividadTO;
 import sa.utils.SAUtils;
 import sa.view.ActividadView;
+import sa.view.AlumnoView;
+import sa.view.InstructorView;
 
 /**
  *
  * @author dave
  */
-public class ActividadController implements DocumentListener
-{    
+public class ActividadController {    
     private final ActividadView view;
     private final HorarioControllerImpl horarioController;
     private final InstructorDAO instructorDAO;
@@ -56,6 +62,52 @@ public class ActividadController implements DocumentListener
     private void initView(){
         addDocumentListener();
         addItemListener();
+        addListSelectionListeners();
+        addButtonListeners();
+    }
+    
+    private void addButtonListeners(){
+        view.getjBtnRegistrarActividad().addActionListener(e -> {actividadDAO.createActividad(view.getActividad()); cleanView();});
+        view.getjBtnModificarActividad().addActionListener(e -> {actividadDAO.updateActividad(view.getActividad()); cleanView();}); 
+        view.getjBtnEliminarActividad().addActionListener(e -> {actividadDAO.deleteActividad(view.getActividad()); cleanView();});
+        view.getjBtnAdmAlumnoView().addActionListener(e -> {new AlumnoControllerImpl(new AlumnoView(), AlumnoDAO.getInstance(), CarreraDAO.getInstance()); view.dispose();});
+        view.getjBtnAdmInstructorView().addActionListener(e -> {new InstructorController(new InstructorView(), InstructorDAO.getInstance()); view.dispose();});
+        view.getjBtnClose().addActionListener(e -> {view.dispose(); MySQLManager.getInstance().close();});
+        view.getjBtnMaximize().addActionListener(e -> view.setExtendedState(view.getExtendedState() == JFrame.NORMAL ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));
+        view.getjBtnMinimize().addActionListener(e -> view.setExtendedState(JFrame.ICONIFIED));
+        view.getjBtnQueryActividad().addActionListener(e -> showActividadQuery(view.getActividadQuery()));
+        view.getjBtnQueryInstructores().addActionListener(e -> showInstructorQuery(view.getInstructorQuery()));
+    }
+    
+    private void cleanView(){
+        view.resetView();
+        showActividadQuery(view.getActividadQuery());
+    }
+    
+    private void addListSelectionListeners(){
+        view.getjTRInstructores().getSelectionModel().addListSelectionListener(this::doSelectedInstructor);
+        view.getjTQActividades().getSelectionModel().addListSelectionListener(this::doSelectedActividad);
+    }
+    
+    private void doSelectedInstructor(ListSelectionEvent e){
+        Object []ids = Arrays.stream(view.getjTRInstructores().getSelectedRows()).filter(r -> r != -1).mapToObj(r -> view.getSelectedInstructor(r)).toArray();
+        if(ids == null)
+            return;
+        else if(ids.length == 1)
+            view.setInstructorActividad(instructorDAO.getInstructor(String.valueOf(ids[0])));
+        else 
+            view.resetView();
+        enableButtons();
+    }
+    
+    private void doSelectedActividad(ListSelectionEvent e){
+        Object []ids = Arrays.stream(view.getjTQActividades().getSelectedRows()).filter(r -> r!=-1).mapToObj(r -> view.getSelectedActividad(r)).toArray();
+        if(ids == null)
+            return;
+        else if(ids.length == 1)
+            view.setActividad(actividadDAO.getActividad(String.valueOf(ids[0])));
+        else
+            view.resetView();
     }
     
     private void addItemListener(){
@@ -64,43 +116,47 @@ public class ActividadController implements DocumentListener
     }
     
     private void enableButtons(){
-        
+        ActividadTO actividad = null;
+        if(view.getActividad().isValid())
+            actividad = actividadDAO.getActividad(view.getActividad().getIdActividad());
+        view.getjBtnRegistrarActividad().setEnabled(view.getActividad().isValid() && actividad == null);
+        view.getjBtnEliminarActividad().setEnabled(actividad != null);
+        view.getjBtnModificarActividad().setEnabled(actividad != null);
     }
     
     private void addDocumentListener(){
-        SAUtils.addDocumentListener(
-                this, 
-                view.getjTFIdActividad(),
-                view.getjTFNombreActividad(),
-                view.getjTFIdInstructorActividad(),
-                view.getjTADescripcionActividad()
-        );
+        SAUtils.addDocumentListener(getTextEditActions(), a -> enableButtons());
     }
     
-    private void textEdited(DocumentEvent e){
-        HashMap<Predicate, Consumer> actions = new HashMap<>();
-        //si "c -> true" entonces "t -> ejecuta"
-        actions.put(c->SAUtils.isJTComponentEdited(e, view.getjTFIdActividad()), t -> view.setIdActividad());
-        actions.put(c->SAUtils.isJTComponentEdited(e, view.getjTADescripcionActividad()), t -> view.setDescripcion());
-        actions.put(c->SAUtils.isJTComponentEdited(e, view.getjTFIdInstructorActividad()), t -> view.setInstructorActividad(instructorDAO.getInstructor(view.getSelectedInstructor())));
-        actions.put(c->SAUtils.isJTComponentEdited(e, view.getjTFNombreActividad()), t -> view.setNombreActividad());
-        SAUtils.doListener(actions);
-        enableButtons();
+    private LinkedHashMap<JTextComponent, Consumer> getTextEditActions(){
+        LinkedHashMap<JTextComponent, Consumer> actions = new LinkedHashMap<>();
+        actions.put(view.getjTFIdActividad(), t -> editIdActividad());
+        actions.put(view.getjTADescripcionActividad(), t -> view.setDescripcion());
+        actions.put(view.getjTFNombreActividad(), t -> view.setNombreActividad());
+        actions.put(view.getjTFQNInstructor(), t -> showInstructorQuery(view.getInstructorQuery()));
+        actions.put(view.getjTFQAInstructor(), t -> showInstructorQuery(view.getInstructorQuery()));
+        actions.put(view.getjTFQGInstructor(), t -> showInstructorQuery(view.getInstructorQuery()));
+        actions.put(view.getjTFQNActividad(), t -> showActividadQuery(view.getActividadQuery()));
+        actions.put(view.getjTFQTActividad(), t -> showActividadQuery(view.getActividadQuery()));
+        actions.put(view.getjTFQHActividad(), t -> showActividadQuery(view.getActividadQuery()));
+        actions.put(view.getjTFQIActividad(), t -> showActividadQuery(view.getActividadQuery()));
+        return actions;
     }
     
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        textEdited(e);
+    private void editIdActividad(){
+        ActividadTO actividad = actividadDAO.getActividad(view.getIdActividad());
+        if(actividad != null)
+            view.setActividad(actividad);
+        else 
+            view.setIdActividad();
     }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        textEdited(e);
+    
+    private void showActividadQuery(String query){
+        view.getjTQActividades().setModel(actividadDAO.getDTM(query));
     }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        textEdited(e);
+    
+    private void showInstructorQuery(String query){
+        view.getjTRInstructores().setModel(instructorDAO.getDTM(query));
     }
 }
 

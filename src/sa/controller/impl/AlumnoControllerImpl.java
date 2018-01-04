@@ -1,7 +1,7 @@
 /* 
  * The MIT License
  *
- * Copyright 2017 David Rodríguez <duvid9320@gmail.com>.
+ * Copyright 2018 David Rodríguez <duvid9320@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,16 @@ package sa.controller.impl;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.text.JTextComponent;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
 import sa.model.dao.InstructorDAO;
@@ -44,7 +47,7 @@ import sa.view.InstructorView;
  *
  * @author dave
  */
-public class AlumnoControllerImpl implements DocumentListener{
+public class AlumnoControllerImpl{
     
     private final AlumnoView view;
     private final AlumnoDAO alumnoDAO;
@@ -72,18 +75,7 @@ public class AlumnoControllerImpl implements DocumentListener{
     }
     
     private void addDocumentListener(){
-        SAUtils.addDocumentListener(
-                this,view.getjTFAMaterno(),
-                view.getjTFAPaterno(),
-                view.getjTFNombres(),
-                view.getjTFNumeroControl(),
-                view.getjTFQAMaterno(),
-                view.getjTFQAPaterno(),
-                view.getjTFQCarrera(),
-                view.getjTFQNControl(),
-                view.getjTFQNombres(),
-                view.getjTFQSemestre()
-        );
+        SAUtils.addDocumentListener(getTextEditActions(), a -> enableButtons());
     }
     
     private void addButtonListeners(){
@@ -139,22 +131,24 @@ public class AlumnoControllerImpl implements DocumentListener{
         );
     }
     
-    private void textEdited(DocumentEvent e){
-        if(SAUtils.isJTComponentEdited(e, view.getjTFAMaterno()))
-            view.setApellidoMaterno();
-        else if(SAUtils.isJTComponentEdited(e, view.getjTFAPaterno()))
-            view.setApellidoPaterno();
-        else if(SAUtils.isJTComponentEdited(e, view.getjTFNombres()))
-            view.setNombres();
-        else if(SAUtils.isJTComponentEdited(e, view.getjTFNumeroControl()))
-            editNumeroControl();
-        else if(isQueryEdited(e))
-            showQuery(view.getQueryAlumnos());
-        enableButtons();
+    private LinkedHashMap<JTextComponent, Consumer> getTextEditActions(){
+        LinkedHashMap<JTextComponent, Consumer> actions = new LinkedHashMap<>();
+        actions.put(view.getjTFAMaterno(), a -> view.setApellidoMaterno());
+        actions.put(view.getjTFAPaterno(), a -> view.setApellidoPaterno());
+        actions.put(view.getjTFNombres(), a-> view.setNombres());
+        actions.put(view.getjTFNumeroControl(), a -> editNumeroControl());
+        actions.put(view.getjTFQAMaterno(), a -> showQuery(view.getQueryAlumnos()));
+        actions.put(view.getjTFQAPaterno(), a -> showQuery(view.getQueryAlumnos()));
+        actions.put(view.getjTFQCarrera(), a -> showQuery(view.getQueryAlumnos()));
+        actions.put(view.getjTFQNControl(), a -> showQuery(view.getQueryAlumnos()));
+        actions.put(view.getjTFQNombres(), a -> showQuery(view.getQueryAlumnos()));
+        actions.put(view.getjTFQSemestre(), a -> showQuery(view.getQueryAlumnos()));
+        return actions;
     }
     
     private void editNumeroControl(){
         AlumnoTO alumno = alumnoDAO.getAlumno(view.getNumeroControl());
+        view.setNumeroControl();
         if(alumno != null)
             view.setAlumno(alumno);
         else
@@ -164,36 +158,9 @@ public class AlumnoControllerImpl implements DocumentListener{
     private void enableButtons(){
         AlumnoTO alumno = null;
         if(view.getAlumno().isValid())
-            alumnoDAO.getAlumno(view.getNumeroControl());
+            alumno = alumnoDAO.getAlumno(view.getNumeroControl());
         view.getjBtnRegistrar().setEnabled(view.getAlumno().isValid() && alumno == null);
         view.getjBtnModificar().setEnabled(alumno != null);
         view.getjBtnEliminar().setEnabled(alumno != null);
-    }
-    
-    private boolean isQueryEdited(DocumentEvent e){
-        return SAUtils.isAnyEdited(
-                e, 
-                view.getjTFQAMaterno(),
-                view.getjTFQAPaterno(),
-                view.getjTFQCarrera(),
-                view.getjTFQNControl(),
-                view.getjTFQNombres(),
-                view.getjTFQSemestre()
-        );
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        textEdited(e);
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        textEdited(e);
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        textEdited(e);
     }
 }
