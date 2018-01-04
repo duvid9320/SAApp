@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 package sa;
+import sa.connection.MySQLManager;
 import sa.controller.impl.ActividadController;
 import sa.controller.impl.AlumnoControllerImpl;
 import sa.controller.impl.InstructorController;
@@ -38,6 +39,10 @@ import sa.view.InstructorView;
  * @author David Rodríguez
  */
 public class SemanaAcademica {
+    
+    static {
+        new Thread(() -> MySQLManager.getInstance()).start();
+    }
     
     public static void main(String[] args) {
         new ActividadController(new ActividadView(), InstructorDAO.getInstance(), ActividadDAO.getInstance());

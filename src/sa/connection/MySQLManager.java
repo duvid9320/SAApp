@@ -1,7 +1,7 @@
 /* 
  * The MIT License
  *
- * Copyright 2017 David Rodríguez <duvid9320@gmail.com>.
+ * Copyright 2018 David Rodríguez <duvid9320@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -103,5 +103,15 @@ public class MySQLManager {
     
     public DatabaseMetaData getMetadata() throws SQLException{
         return mySQLConnection.getConnection().getMetaData();
+    }
+    
+    public void close(){
+        try {
+            mySQLConnection.closeConnection();
+            System.out.println("La conexión se ha cerrado, no es posible interactuar con la base de datos "+DATABASE);
+        } catch (SQLException ex) {
+            System.err.println("No se pudo cerrar la conexión");
+            Logger.getLogger(MySQLManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -1,7 +1,7 @@
 /* 
  * The MIT License
  *
- * Copyright 2017 David Rodríguez <duvid9320@gmail.com>.
+ * Copyright 2018 David Rodríguez <duvid9320@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -59,13 +58,31 @@ public class SAUtils {
         MYSQL_TIME_FORMAT = "";
     }
     
-    //else if, key -> predicado, value -> accion. 
-    public static void doListener(HashMap<Predicate, Consumer> actions){
-        actions.entrySet().stream()
-                          .filter(e -> e.getKey().test(null))
-                          .findFirst()
-                          .get()
-                          .getValue().accept(null);
+    public static void addDocumentListener(LinkedHashMap<JTextComponent, Consumer> jtfcs, Consumer alwaysDo){
+        DocumentListener dc = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                switchEventAction(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                switchEventAction(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                switchEventAction(e);
+            }
+            
+            void switchEventAction(DocumentEvent e){
+                jtfcs.entrySet().stream()
+                                    .filter(a -> SAUtils.isJTComponentEdited(e, a.getKey()))
+                                    .findFirst()
+                                    .ifPresent(a -> a.getValue().andThen(alwaysDo).accept(a));
+            }
+        };
+        jtfcs.entrySet().forEach(j -> j.getKey().getDocument().addDocumentListener(dc));        
     }
     
     public static boolean isAnyEdited(DocumentEvent e, JTextComponent... jtfs){

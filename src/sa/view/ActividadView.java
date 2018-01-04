@@ -1,12 +1,39 @@
+/* 
+ * The MIT License
+ *
+ * Copyright 2018 David Rodríguez <duvid9320@gmail.com>.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package sa.view;
 
 import com.toedter.calendar.JDateChooser;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 import sa.model.to.ActividadTO;
 import sa.model.to.InstructorTO;
 import sa.utils.SAUtils;
@@ -18,6 +45,71 @@ public class ActividadView extends javax.swing.JFrame {
     public ActividadView() {
         initComponents();
         setLocationRelativeTo(null);
+        actividad = new ActividadTO();
+    }
+    
+    public void resetView(){
+        jTFIdActividad.setText("");
+        jTFNombreActividad.setText("");
+        jCBTipoActividad.setSelectedIndex(-1);
+        jCBHorasActividad.setSelectedIndex(-1);
+        jTFIdInstructorActividad.setText("");
+        jTADescripcionActividad.setText("");
+    }
+    
+    public String getSelectedActividad(int row){
+        return String.valueOf(row != -1 ? jTQActividades.getValueAt(row, 0) : "");
+    }
+    
+    public void setInstructorActividad(InstructorTO instructor){
+        if(instructor == null)
+            return;
+        actividad.setInstructorFk(instructor);
+        jTFIdInstructorActividad.setText(instructor.getIdInstructor());
+    }
+    
+    public String getSelectedInstructor(int row){
+        return String.valueOf(row != -1 ? jTRInstructores.getValueAt(row, 0) : "");
+    }
+    
+    public String getIdActividad(){
+        return jTFIdActividad.getText().trim();
+    }
+    
+    public String getActividadQuery(){
+        return SAUtils.getQuery(getActividadFields(), "Actividad INNER JOIN Instructor ON Instructor.IdInstructor = Actividad.InstructorFk", getActividadConditions());
+    }
+    
+    private HashMap<String, JTextComponent> getActividadConditions(){
+        HashMap<String, JTextComponent> conditions = new HashMap<>();
+        conditions.put("Nombre", jTFQNActividad);
+        conditions.put("Tipo", jTFQTActividad);
+        conditions.put("Horas", jTFQHActividad);
+        conditions.put("Instructor.Nombre", jTFQIActividad);
+        return conditions;
+    }
+    
+    private LinkedHashMap<String, String> getActividadFields(){
+        LinkedHashMap<String, String> fields = new LinkedHashMap<>();
+        fields.put("IdActividad", "");
+        fields.put("Nombre", "");
+        fields.put("Descripcion", "");
+        fields.put("Horas", "");
+        fields.put("Instructor.Nombres", "N. Instructor");
+        fields.put("Instructor.Apellidos", "A. Instructor");
+        return fields;
+    }
+    
+    public String getInstructorQuery(){
+        return SAUtils.getQuery(null, "Instructor", getInstructorConditions());
+    }
+    
+    private HashMap<String, JTextComponent> getInstructorConditions(){
+        HashMap<String, JTextComponent> conditions = new HashMap<>();
+        conditions.put("Nombres", jTFQNInstructor);
+        conditions.put("Apellidos", jTFQAInstructor);
+        conditions.put("Grado", jTFQGInstructor);
+        return conditions;
     }
     
     public void setNombreActividad(){
@@ -26,10 +118,6 @@ public class ActividadView extends javax.swing.JFrame {
     
     public String getSelectedInstructor(){
         return jTFIdInstructorActividad.getText().trim();
-    }
-    
-    public void setInstructorActividad(InstructorTO instructor){
-        actividad.setInstructorFk(instructor);
     }
     
     public void setDescripcion(){
@@ -53,7 +141,16 @@ public class ActividadView extends javax.swing.JFrame {
     }
 
     public void setActividad(ActividadTO actividad) {
+        if(actividad == null)
+            return;
         this.actividad = actividad;
+        if(jTFIdActividad.getText().toLowerCase().trim().compareTo(actividad.getIdActividad().toLowerCase().trim()) != 0)
+            jTFIdActividad.setText(actividad.getIdActividad());
+        jTFNombreActividad.setText(actividad.getNombre());
+        jTFIdInstructorActividad.setText(actividad.getInstructorFk().getIdInstructor());
+        jTADescripcionActividad.setText(actividad.getDescripcion());
+        jCBTipoActividad.setSelectedItem(actividad.getTipo());
+        jCBHorasActividad.setSelectedItem(String.valueOf(actividad.getHoras()));
     }
 
     public JButton getjBtnAdmAlumnoView() {
@@ -155,8 +252,42 @@ public class ActividadView extends javax.swing.JFrame {
     public JTable getjTRInstructores() {
         return jTRInstructores;
     }
-    
-    
+
+    public JButton getjBtnQueryActividad() {
+        return jBtnQueryActividad;
+    }
+
+    public JButton getjBtnQueryInstructores() {
+        return jBtnQueryInstructores;
+    }
+
+    public JTextField getjTFQAInstructor() {
+        return jTFQAInstructor;
+    }
+
+    public JTextField getjTFQGInstructor() {
+        return jTFQGInstructor;
+    }
+
+    public JTextField getjTFQHActividad() {
+        return jTFQHActividad;
+    }
+
+    public JTextField getjTFQIActividad() {
+        return jTFQIActividad;
+    }
+
+    public JTextField getjTFQNActividad() {
+        return jTFQNActividad;
+    }
+
+    public JTextField getjTFQNInstructor() {
+        return jTFQNInstructor;
+    }
+
+    public JTextField getjTFQTActividad() {
+        return jTFQTActividad;
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -187,6 +318,14 @@ public class ActividadView extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTRInstructores = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jTFQNInstructor = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jTFQAInstructor = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jTFQGInstructor = new javax.swing.JTextField();
+        jBtnQueryInstructores = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -209,6 +348,16 @@ public class ActividadView extends javax.swing.JFrame {
         jPActividades = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTQActividades = new javax.swing.JTable();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jTFQNActividad = new javax.swing.JTextField();
+        jTFQTActividad = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jTFQHActividad = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jTFQIActividad = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        jBtnQueryActividad = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
         jBtnAdmAlumnoView = new javax.swing.JButton();
         jBtnAdmInstructorView = new javax.swing.JButton();
@@ -276,6 +425,7 @@ public class ActividadView extends javax.swing.JFrame {
 
         jCBHorasActividad.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
         jCBHorasActividad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" }));
+        jCBHorasActividad.setSelectedIndex(-1);
         jCBHorasActividad.setBorder(null);
         jCBHorasActividad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -285,7 +435,7 @@ public class ActividadView extends javax.swing.JFrame {
 
         jCBTipoActividad.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
         jCBTipoActividad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Taller", "Conferencia" }));
-        jCBTipoActividad.setSelectedIndex(1);
+        jCBTipoActividad.setSelectedIndex(-1);
         jCBTipoActividad.setBorder(null);
         jCBTipoActividad.setFocusable(false);
         jCBTipoActividad.setLightWeightPopupEnabled(false);
@@ -380,6 +530,7 @@ public class ActividadView extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 153));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "INSTRUCTORES", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Calibri Light", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         jTRInstructores.setAutoCreateRowSorter(true);
         jTRInstructores.setFont(new java.awt.Font("Calibri Light", 0, 11)); // NOI18N
@@ -394,16 +545,53 @@ public class ActividadView extends javax.swing.JFrame {
         jTRInstructores.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(jTRInstructores);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
+        jPanel1.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+
+        jLabel1.setText("Nombres");
+
+        jLabel2.setText("Apellidos");
+
+        jLabel3.setText("Grado");
+
+        jBtnQueryInstructores.setText("Buscar");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFQNInstructor, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFQAInstructor, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFQGInstructor, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jBtnQueryInstructores)
+                .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jTFQNInstructor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTFQAInstructor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jTFQGInstructor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBtnQueryInstructores))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanel1.add(jPanel4, java.awt.BorderLayout.PAGE_START);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -416,7 +604,7 @@ public class ActividadView extends javax.swing.JFrame {
                 .addComponent(jBtnModificarActividad, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBtnEliminarActividad)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel9)
@@ -674,6 +862,7 @@ public class ActividadView extends javax.swing.JFrame {
 
         jPActividades.setBackground(new java.awt.Color(0, 0, 153));
         jPActividades.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ACTIVIDADES", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Calibri Light", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPActividades.setLayout(new java.awt.BorderLayout());
 
         jTQActividades.setAutoCreateRowSorter(true);
         jTQActividades.setFont(new java.awt.Font("Calibri Light", 0, 11)); // NOI18N
@@ -688,16 +877,61 @@ public class ActividadView extends javax.swing.JFrame {
         jTQActividades.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTQActividades);
 
-        javax.swing.GroupLayout jPActividadesLayout = new javax.swing.GroupLayout(jPActividades);
-        jPActividades.setLayout(jPActividadesLayout);
-        jPActividadesLayout.setHorizontalGroup(
-            jPActividadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 816, Short.MAX_VALUE)
+        jPActividades.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        jLabel4.setText("Nombre");
+
+        jLabel5.setText("Tipo");
+
+        jLabel6.setText("Horas");
+
+        jLabel18.setText("N. Instructor");
+
+        jBtnQueryActividad.setText("Buscar");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFQNActividad, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFQTActividad, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFQHActividad, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTFQIActividad, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jBtnQueryActividad)
+                .addContainerGap())
         );
-        jPActividadesLayout.setVerticalGroup(
-            jPActividadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTFQNActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(jTFQTActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(jTFQHActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18)
+                    .addComponent(jTFQIActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBtnQueryActividad))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPActividades.add(jPanel6, java.awt.BorderLayout.PAGE_START);
 
         jspContenido.setRightComponent(jPActividades);
 
@@ -881,11 +1115,14 @@ public class ActividadView extends javax.swing.JFrame {
     private javax.swing.JButton jBtnMinimize;
     private javax.swing.JButton jBtnModificarActividad;
     private javax.swing.JButton jBtnModificarHorario;
+    private javax.swing.JButton jBtnQueryActividad;
+    private javax.swing.JButton jBtnQueryInstructores;
     private javax.swing.JButton jBtnRegistrarActividad;
     private javax.swing.JButton jBtnRegistrarHorario;
     private javax.swing.JComboBox<String> jCBHorasActividad;
     private javax.swing.JComboBox<String> jCBTipoActividad;
     private com.toedter.calendar.JDateChooser jDCFechaHorario;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -894,7 +1131,13 @@ public class ActividadView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -903,7 +1146,9 @@ public class ActividadView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JSpinner jSHFin;
     private javax.swing.JSpinner jSHInicio;
     private javax.swing.JScrollPane jScrollPane1;
@@ -916,6 +1161,13 @@ public class ActividadView extends javax.swing.JFrame {
     private javax.swing.JTextField jTFIdInstructorActividad;
     private javax.swing.JTextField jTFLugarHorario;
     private javax.swing.JTextField jTFNombreActividad;
+    private javax.swing.JTextField jTFQAInstructor;
+    private javax.swing.JTextField jTFQGInstructor;
+    private javax.swing.JTextField jTFQHActividad;
+    private javax.swing.JTextField jTFQIActividad;
+    private javax.swing.JTextField jTFQNActividad;
+    private javax.swing.JTextField jTFQNInstructor;
+    private javax.swing.JTextField jTFQTActividad;
     private javax.swing.JTable jTQActividades;
     private javax.swing.JTable jTQHActividad;
     private javax.swing.JTable jTRInstructores;
