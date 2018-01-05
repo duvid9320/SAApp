@@ -33,6 +33,7 @@ import sa.connection.MySQLManager;
 import sa.model.dao.ActividadDAO;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
+import sa.model.dao.HorarioDAO;
 import sa.model.dao.InstructorDAO;
 import sa.model.to.ActividadTO;
 import sa.utils.SAUtils;
@@ -54,22 +55,28 @@ public class ActividadController {
         this.view = view;
         this.instructorDAO = instructorDAO;
         this.actividadDAO = actividadDAO;
-        horarioController = new HorarioControllerImpl();
+        horarioController = new HorarioControllerImpl(this.view, this.actividadDAO, this.instructorDAO, HorarioDAO.getInstance());
         initView();
         this.view.setVisible(true);
     }
     
     private void initView(){
+        initSpinners();
         addDocumentListener();
         addItemListener();
         addListSelectionListeners();
         addButtonListeners();
     }
     
+    private void initSpinners(){
+        SAUtils.initSpinnerHourEditor(view.getjSHInicio());
+        SAUtils.initSpinnerHourEditor(view.getjSHFin());
+    }
+    
     private void addButtonListeners(){
-        view.getjBtnRegistrarActividad().addActionListener(e -> {actividadDAO.createActividad(view.getActividad()); cleanView();});
-        view.getjBtnModificarActividad().addActionListener(e -> {actividadDAO.updateActividad(view.getActividad()); cleanView();}); 
-        view.getjBtnEliminarActividad().addActionListener(e -> {actividadDAO.deleteActividad(view.getActividad()); cleanView();});
+        view.getjBtnRegistrarActividad().addActionListener(e -> {actividadDAO.createActividad(view.getActividad()); cleanActividadView();});
+        view.getjBtnModificarActividad().addActionListener(e -> {actividadDAO.updateActividad(view.getActividad()); cleanActividadView();}); 
+        view.getjBtnEliminarActividad().addActionListener(e -> {actividadDAO.deleteActividad(view.getActividad()); cleanActividadView();});
         view.getjBtnAdmAlumnoView().addActionListener(e -> {new AlumnoControllerImpl(new AlumnoView(), AlumnoDAO.getInstance(), CarreraDAO.getInstance()); view.dispose();});
         view.getjBtnAdmInstructorView().addActionListener(e -> {new InstructorController(new InstructorView(), InstructorDAO.getInstance()); view.dispose();});
         view.getjBtnClose().addActionListener(e -> {view.dispose(); MySQLManager.getInstance().close();});
@@ -79,8 +86,8 @@ public class ActividadController {
         view.getjBtnQueryInstructores().addActionListener(e -> showInstructorQuery(view.getInstructorQuery()));
     }
     
-    private void cleanView(){
-        view.resetView();
+    private void cleanActividadView(){
+        view.resetActividadView();
         showActividadQuery(view.getActividadQuery());
     }
     
@@ -90,13 +97,13 @@ public class ActividadController {
     }
     
     private void doSelectedInstructor(ListSelectionEvent e){
-        Object []ids = Arrays.stream(view.getjTRInstructores().getSelectedRows()).filter(r -> r != -1).mapToObj(r -> view.getSelectedInstructor(r)).toArray();
+        String []ids = (String[]) Arrays.stream(view.getjTRInstructores().getSelectedRows()).filter(r -> r != -1).mapToObj(r -> view.getSelectedInstructor(r)).toArray();
         if(ids == null)
             return;
         else if(ids.length == 1)
-            view.setInstructorActividad(instructorDAO.getInstructor(String.valueOf(ids[0])));
+            view.setInstructorActividad(instructorDAO.getInstructor(ids[0]));
         else 
-            view.resetView();
+            view.resetActividadView();
         enableButtons();
     }
     
@@ -107,7 +114,7 @@ public class ActividadController {
         else if(ids.length == 1)
             view.setActividad(actividadDAO.getActividad(String.valueOf(ids[0])));
         else
-            view.resetView();
+            view.resetActividadView();
     }
     
     private void addItemListener(){
@@ -119,6 +126,7 @@ public class ActividadController {
         ActividadTO actividad = null;
         if(view.getActividad().isValid())
             actividad = actividadDAO.getActividad(view.getActividad().getIdActividad());
+        view.getHorario().setActividadFk(actividad);
         view.getjBtnRegistrarActividad().setEnabled(view.getActividad().isValid() && actividad == null);
         view.getjBtnEliminarActividad().setEnabled(actividad != null);
         view.getjBtnModificarActividad().setEnabled(actividad != null);

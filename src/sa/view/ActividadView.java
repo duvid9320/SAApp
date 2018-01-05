@@ -24,7 +24,6 @@
 package sa.view;
 
 import com.toedter.calendar.JDateChooser;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import javax.swing.JButton;
@@ -35,20 +34,51 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import sa.model.to.ActividadTO;
+import sa.model.to.HorarioTO;
 import sa.model.to.InstructorTO;
 import sa.utils.SAUtils;
 
 public class ActividadView extends javax.swing.JFrame {
     private int x,y;
     private ActividadTO actividad;
+    private HorarioTO horario;
 
     public ActividadView() {
         initComponents();
         setLocationRelativeTo(null);
         actividad = new ActividadTO();
+        horario = new HorarioTO();
     }
     
-    public void resetView(){
+    public void resetHorarioView(){
+        jTFIdHorario.setText("");
+        jSHInicio.setValue("");
+        jSHFin.setValue("");
+        jTFLugarHorario.setText("");
+        jDCFechaHorario.setDate(null);
+    }
+    
+    public int getSelectedHorario(int row){
+        return Integer.parseInt(String.valueOf(row != -1 ? jTQHActividad.getValueAt(row, 0) : 0));
+    }
+    
+    public void setHoraInicioHorario(){
+        horario.setHoraInicio(String.valueOf(jSHInicio.getValue()));
+    }
+    
+    public void setHoraFinHorario(){
+        horario.setHoraFin(String.valueOf(jSHFin.getValue()));
+    }
+    
+    public void setFechaHorario(){
+        horario.setFecha(jDCFechaHorario.getDate());
+    }
+    
+    public void setLugarHorario(){
+        horario.setLugar(jTFLugarHorario.getText().trim());
+    }
+    
+    public void resetActividadView(){
         jTFIdActividad.setText("");
         jTFNombreActividad.setText("");
         jCBTipoActividad.setSelectedIndex(-1);
@@ -151,6 +181,21 @@ public class ActividadView extends javax.swing.JFrame {
         jTADescripcionActividad.setText(actividad.getDescripcion());
         jCBTipoActividad.setSelectedItem(actividad.getTipo());
         jCBHorasActividad.setSelectedItem(String.valueOf(actividad.getHoras()));
+    }
+
+    public HorarioTO getHorario() {
+        return horario;
+    }
+
+    public void setHorario(HorarioTO horario) {
+        if(horario == null)
+            return;
+        this.horario = horario;
+        jTFIdHorario.setText(String.valueOf(horario.getIdHorario()));
+        jSHInicio.setValue(SAUtils.getTimeFromString(horario.getHoraInicio()));
+        jSHFin.setValue(SAUtils.getTimeFromString(horario.getHoraFin()));
+        jTFLugarHorario.setText(horario.getLugar());
+        jDCFechaHorario.setDate(horario.getFecha());
     }
 
     public JButton getjBtnAdmAlumnoView() {
@@ -337,10 +382,8 @@ public class ActividadView extends javax.swing.JFrame {
         jTFIdHorario = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jSHInicio = new javax.swing.JSpinner();
-        SAUtils.initSpinnerHourEditor(jSHInicio);
         jLabel13 = new javax.swing.JLabel();
         jSHFin = new javax.swing.JSpinner();
-        SAUtils.initSpinnerHourEditor(jSHFin);
         jLabel11 = new javax.swing.JLabel();
         jTFLugarHorario = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
@@ -668,6 +711,7 @@ public class ActividadView extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 153));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "HORARIOS", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Calibri Light", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel3.setLayout(new java.awt.BorderLayout());
 
         jTQHActividad.setAutoCreateRowSorter(true);
         jTQHActividad.setFont(new java.awt.Font("Calibri Light", 0, 11)); // NOI18N
@@ -682,16 +726,7 @@ public class ActividadView extends javax.swing.JFrame {
         jTQHActividad.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(jTQHActividad);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
-        );
+        jPanel3.add(jScrollPane3, java.awt.BorderLayout.CENTER);
 
         jBtnRegistrarHorario.setBackground(new java.awt.Color(0, 0, 153));
         jBtnRegistrarHorario.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
@@ -795,7 +830,7 @@ public class ActividadView extends javax.swing.JFrame {
                 .addComponent(jBtnModificarHorario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBtnEliminarHorario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)

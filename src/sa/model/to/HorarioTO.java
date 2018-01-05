@@ -59,6 +59,9 @@ public class HorarioTO implements GenericTO{
         this.horaFin = horaFin;
         this.lugar = lugar;
     }
+
+    public HorarioTO() {
+    }
     
     public int getIdHorario() {
         return idHorario;
@@ -150,6 +153,15 @@ public class HorarioTO implements GenericTO{
         return String.format(
                 "DELETE FROM Horario WHERE IdHorario = %d", 
                 idHorario
+        );
+    }
+    
+    public String getHorarioActividadQuery(){
+        return String.format(
+                "SELECT IdHorario AS 'Id', a.Nombre, Fecha, HoraInicio AS 'Inicio', HoraFin AS 'Fin', Lugar, "
+                        + " FROM Horario AS h INNER JOIN Actividad AS a ON h.ActividadFk = a.IdActividad"
+                        + " WHERE h.ActividadFk = '%s'", 
+                actividadFk.getIdActividad() != null ? actividadFk.getIdActividad() : ""
         );
     }
 

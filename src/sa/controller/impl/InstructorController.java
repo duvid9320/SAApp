@@ -29,15 +29,15 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
 import javax.swing.JFrame;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.text.JTextComponent;
+import sa.model.dao.ActividadDAO;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
 import sa.model.dao.InstructorDAO;
 import sa.model.to.InstructorTO;
 import sa.utils.SAUtils;
+import sa.view.ActividadView;
 import sa.view.AlumnoView;
 import sa.view.InstructorView;
 
@@ -88,6 +88,11 @@ public class InstructorController {
         view.getjBtnClose().addActionListener(e -> view.dispose());
         view.getjBtnDeleteSelected().addActionListener(this::deleteSelected);
         view.getjBtnAdmAlumnoView().addActionListener(this::showAlumnoView);
+        view.getjBtnAdmActividadView().addActionListener(this::showActividadView);
+    }
+    
+    private void showActividadView(ActionEvent e){
+        new ActividadController(new ActividadView(), instructorDAO, ActividadDAO.getInstance());
     }
     
     private void showAlumnoView(ActionEvent e){

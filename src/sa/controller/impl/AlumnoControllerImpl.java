@@ -31,15 +31,15 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.text.JTextComponent;
+import sa.model.dao.ActividadDAO;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.CarreraDAO;
 import sa.model.dao.InstructorDAO;
 import sa.model.to.AlumnoTO;
 import sa.utils.SAUtils;
+import sa.view.ActividadView;
 import sa.view.AlumnoView;
 import sa.view.InstructorView;
 
@@ -88,6 +88,11 @@ public class AlumnoControllerImpl{
         view.getjBtnEliminarSeleccionados().addActionListener(this::deleteSelected);
         view.getjBtnQuery().addActionListener(e -> showQuery(view.getQueryAlumnos()));
         view.getjBtnAdmInstructorView().addActionListener(this::showInstructorView);
+        view.getjBtnAdmActividadView().addActionListener(this::showActividadView);
+    }
+    
+    private void showActividadView(ActionEvent e){
+        new ActividadController(new ActividadView(), InstructorDAO.getInstance(), ActividadDAO.getInstance());
     }
 
     private void showInstructorView(ActionEvent e){

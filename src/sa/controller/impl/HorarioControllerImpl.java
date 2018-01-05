@@ -23,55 +23,97 @@
  */
 package sa.controller.impl;
 
-import javax.swing.JTable;
-import sa.controller.HorarioController;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.function.Consumer;
+import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
+import sa.model.dao.ActividadDAO;
 import sa.model.dao.HorarioDAO;
-import sa.model.to.ActividadTO;
+import sa.model.dao.InstructorDAO;
 import sa.model.to.HorarioTO;
-import sa.utils.SAInputOutput;
+import sa.utils.SAUtils;
+import sa.view.ActividadView;
 
 /**
  *
  * @author dave
  */
-public class HorarioControllerImpl implements HorarioController{
+public class HorarioControllerImpl{
+    private final ActividadView view;
+    private final ActividadDAO actividadDAO;
+    private final InstructorDAO instructorDAO;
+    private final HorarioDAO horarioDAO;
+
+    public HorarioControllerImpl(ActividadView view, ActividadDAO actividadDAO, InstructorDAO instructorDAO, HorarioDAO horarioDAO) {
+        this.actividadDAO = actividadDAO;
+        this.instructorDAO = instructorDAO;
+        this.horarioDAO = horarioDAO;
+        this.view = view;
+        initView();
+    }
     
-    @Override
-    public void createHorario(HorarioTO horario){
-        if(!horario.isValid())
-            SAInputOutput.showErrorMessage("La información del horario no es válida");
-        else if(HorarioDAO.getInstance().horarioExists(horario))
-            SAInputOutput.showErrorMessage("El horario ya existe");
-        else if (HorarioDAO.getInstance().createHorario(horario))
-            SAInputOutput.showInformationMessage("El horario se creo correctamente");
-        else 
-            SAInputOutput.showErrorMessage("El horario no se pudo crear");
+    private void initView(){
+        addDocumentListener();
+        addChangeListeners();
+        addListSelectionListeners();
+        addButtonListeners();
     }
-
-    public void showAll(ActividadTO actividad, JTable tableHorarios) {
-        if(actividad != null && actividad.isValid())
-            tableHorarios.setModel(HorarioDAO.getInstance().getDTM(actividad));
-   }
-
-    void deleteHorario(HorarioTO horario) {
-        if(!horario.isValid())
-            SAInputOutput.showErrorMessage("Debes cargar el horario desde la tabla");
-        else if(!HorarioDAO.getInstance().horarioExists(horario))
-            SAInputOutput.showErrorMessage("El horario no existe");
-        else if(HorarioDAO.getInstance().deleteHorario(horario))
-            SAInputOutput.showInformationMessage("El horario se eliminó correctamente");
-        else 
-            SAInputOutput.showErrorMessage("El horario no se pudo eliminar");
+    
+    private void addButtonListeners(){
+        view.getjBtnRegistrarHorario().addActionListener(e -> {horarioDAO.createHorario(view.getHorario()); cleanHorarioView();});
+        view.getjBtnModificarHorario().addActionListener(e -> {horarioDAO.updateHorario(view.getHorario()); cleanHorarioView();});
+        view.getjBtnEliminarHorario().addActionListener(e -> {horarioDAO.deleteHorario(view.getHorario()); cleanHorarioView();});
     }
-
-    void updateHorario(HorarioTO horario) {
-        if(!horario.isValid())
-            SAInputOutput.showErrorMessage("Debes cargar el horario desde la tabla");
-        else if (!HorarioDAO.getInstance().horarioExists(horario))
-            SAInputOutput.showErrorMessage("El horario no existe");
-        else if(HorarioDAO.getInstance().updateHorario(horario))
-            SAInputOutput.showInformationMessage("El horario se modificó correctamente");
-        else
-            SAInputOutput.showErrorMessage("El horario no se pudo modificar");
+    
+    private void cleanHorarioView(){
+        view.resetHorarioView();
+        showHorarioQuery(view.getHorario().getHorarioActividadQuery());
+    }
+    
+    private void showHorarioQuery(String query){
+        view.getjTQHActividad().setModel(horarioDAO.getDTM(query));
+    }
+    
+    private void addListSelectionListeners(){
+        view.getjTQHActividad().getSelectionModel().addListSelectionListener(e -> doSelectedHorario());
+    }
+    
+    private void doSelectedHorario(){
+        int []ids = Arrays.stream(view.getjTQHActividad().getSelectedRows())
+                .filter(r -> r != -1)
+                .toArray();
+        //view.getjTFIdHorario().setText("");
+        if(ids == null)
+            view.getjTFIdHorario().setText("");
+        else if(ids.length == 1)
+            view.setHorario(horarioDAO.getHorario(ids[0]));
+        else 
+            view.resetHorarioView();
+    }
+    
+    private void addChangeListeners(){
+        view.getjSHInicio().addChangeListener(e -> {view.setHoraInicioHorario(); enableButtons();});
+        view.getjSHFin().addChangeListener(e -> {view.setHoraFinHorario(); enableButtons();});
+    }
+    
+    private void addDocumentListener(){
+        SAUtils.addDocumentListener(getTextEditActions(), a -> enableButtons());
+    }
+    
+    private LinkedHashMap<JTextComponent, Consumer> getTextEditActions(){
+        LinkedHashMap<JTextComponent, Consumer> actions = new LinkedHashMap<>();
+        actions.put(view.getjTFLugarHorario(), a -> view.setLugarHorario());
+        actions.put((JTextField)view.getjDCFechaHorario().getDateEditor(), a -> view.setFechaHorario());
+        return actions;
+    }
+    
+    private void enableButtons(){
+        HorarioTO horario = null;
+        if(view.getHorario().isValid())
+            horario = horarioDAO.getHorario(view.getHorario().getIdHorario());
+        view.getjBtnRegistrarHorario().setEnabled(view.getHorario().isValid() && horario == null);
+        view.getjBtnModificarHorario().setEnabled(horario != null);
+        view.getjBtnEliminarHorario().setEnabled(horario != null);
     }
 }

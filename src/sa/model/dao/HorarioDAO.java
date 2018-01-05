@@ -26,6 +26,7 @@ package sa.model.dao;
 import javax.swing.table.DefaultTableModel;
 import sa.model.to.ActividadTO;
 import sa.model.to.HorarioTO;
+import sa.utils.SAInputOutput;
 
 /**
  *
@@ -49,24 +50,35 @@ public class HorarioDAO extends GenericDAO<HorarioTO>{
         return read(horario, data -> new HorarioTO(data));
     }
 
-    public boolean createHorario(HorarioTO horario) {
-        return create(horario);
+    public void createHorario(HorarioTO horario) {
+        if(create(horario))
+            SAInputOutput.showInformationMessage("El horario se registró correctamente");
+        else
+            SAInputOutput.showErrorMessage("El horario no se pudo registrar");
     }
 
-    public DefaultTableModel getDTM(ActividadTO actividad) {
-        return getDefaultTableModel(actividad.getQueryHorariosSQL());
+    public DefaultTableModel getDTM(String query) {
+        return getDefaultTableModel(query);
     }
 
     public HorarioTO getHorario(int id) {
         return getHorario(new HorarioTO(id, null, null, null, null, null));
     }
 
-    public boolean deleteHorario(HorarioTO horario) {
-        return delete(horario);
+    public void deleteHorario(HorarioTO horario) {
+        if(!SAInputOutput.showDeleteConfirmation("Seguro que deseas eliminar este horario de la actividad "+horario.getActividadFk().getNombre()))
+            SAInputOutput.showInformationMessage("Operación cancelada por el usuario");
+        else if(delete(horario))
+            SAInputOutput.showInformationMessage("El horario se eliminó correctamente");
+        else 
+            SAInputOutput.showErrorMessage("El horario no se pudo eliminar");
     }
 
-    public boolean updateHorario(HorarioTO horario) {
-        return update(horario);
+    public void updateHorario(HorarioTO horario) {
+        if(update(horario))
+            SAInputOutput.showInformationMessage("El horario se modificó correctamente");
+        else
+            SAInputOutput.showErrorMessage("El horario no se pudo modificar");
     }
 }
 
