@@ -141,7 +141,7 @@ public class HorarioTO implements GenericTO{
             return String.format("SELECT * FROM Horario WHERE IdHorario = %d", idHorario);
         return String.format("SELECT * FROM Horario WHERE ActividadFk = '%s' "
                 + "AND Fecha = '%s' AND HoraInicio = '%s' AND HoraFin = '%s'", 
-                actividadFk.getIdActividad(),
+                actividadFk != null ? actividadFk.getIdActividad() : "",
                 fecha != null ? SAUtils.getFormattedDate(fecha) : "",
                 horaInicio,
                 horaFin
@@ -158,10 +158,10 @@ public class HorarioTO implements GenericTO{
     
     public String getHorarioActividadQuery(){
         return String.format(
-                "SELECT IdHorario AS 'Id', a.Nombre, Fecha, HoraInicio AS 'Inicio', HoraFin AS 'Fin', Lugar, "
+                "SELECT IdHorario AS 'Id', a.Nombre, Fecha, HoraInicio AS 'Inicio', HoraFin AS 'Fin', Lugar "
                         + " FROM Horario AS h INNER JOIN Actividad AS a ON h.ActividadFk = a.IdActividad"
                         + " WHERE h.ActividadFk = '%s'", 
-                actividadFk.getIdActividad() != null ? actividadFk.getIdActividad() : ""
+                actividadFk != null ? actividadFk.getIdActividad() : ""
         );
     }
 

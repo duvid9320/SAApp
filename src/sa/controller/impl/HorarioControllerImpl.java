@@ -64,6 +64,7 @@ public class HorarioControllerImpl{
         view.getjBtnRegistrarHorario().addActionListener(e -> {horarioDAO.createHorario(view.getHorario()); cleanHorarioView();});
         view.getjBtnModificarHorario().addActionListener(e -> {horarioDAO.updateHorario(view.getHorario()); cleanHorarioView();});
         view.getjBtnEliminarHorario().addActionListener(e -> {horarioDAO.deleteHorario(view.getHorario()); cleanHorarioView();});
+        view.getjBtnClean().addActionListener(e -> view.resetHorarioView());
     }
     
     private void cleanHorarioView(){
@@ -71,7 +72,7 @@ public class HorarioControllerImpl{
         showHorarioQuery(view.getHorario().getHorarioActividadQuery());
     }
     
-    private void showHorarioQuery(String query){
+    public void showHorarioQuery(String query){
         view.getjTQHActividad().setModel(horarioDAO.getDTM(query));
     }
     
@@ -80,10 +81,7 @@ public class HorarioControllerImpl{
     }
     
     private void doSelectedHorario(){
-        int []ids = Arrays.stream(view.getjTQHActividad().getSelectedRows())
-                .filter(r -> r != -1)
-                .toArray();
-        //view.getjTFIdHorario().setText("");
+        int []ids = Arrays.stream(view.getjTQHActividad().getSelectedRows()).filter(r -> r != -1).map(row -> view.getSelectedHorario(row)).toArray();
         if(ids == null)
             view.getjTFIdHorario().setText("");
         else if(ids.length == 1)
@@ -103,17 +101,19 @@ public class HorarioControllerImpl{
     
     private LinkedHashMap<JTextComponent, Consumer> getTextEditActions(){
         LinkedHashMap<JTextComponent, Consumer> actions = new LinkedHashMap<>();
+        actions.put(view.getjTFIdHorario(), a -> view.setIdHorario());
         actions.put(view.getjTFLugarHorario(), a -> view.setLugarHorario());
         actions.put((JTextField)view.getjDCFechaHorario().getDateEditor(), a -> view.setFechaHorario());
         return actions;
     }
     
     private void enableButtons(){
-        HorarioTO horario = null;
-        if(view.getHorario().isValid())
-            horario = horarioDAO.getHorario(view.getHorario().getIdHorario());
-        view.getjBtnRegistrarHorario().setEnabled(view.getHorario().isValid() && horario == null);
-        view.getjBtnModificarHorario().setEnabled(horario != null);
-        view.getjBtnEliminarHorario().setEnabled(horario != null);
+        HorarioTO horarioExists=  null;
+        HorarioTO horarioView = view.getHorario();
+        if(horarioView.isValid())
+            horarioExists = horarioDAO.getHorario(horarioView.getIdHorario());
+        view.getjBtnRegistrarHorario().setEnabled(horarioView.isValid() && horarioView.getIdHorario() == 0 && horarioExists == null);
+        view.getjBtnModificarHorario().setEnabled(horarioView.getIdHorario() != 0 && horarioExists != null);
+        view.getjBtnEliminarHorario().setEnabled(horarioView.getIdHorario() != 0 && horarioExists != null);
     }
 }

@@ -158,4 +158,9 @@ public class ActividadTO implements GenericTO{
                 idActividad
         );
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(isValid());
+    }
 }

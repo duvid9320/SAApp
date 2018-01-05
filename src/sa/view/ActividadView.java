@@ -24,6 +24,7 @@
 package sa.view;
 
 import com.toedter.calendar.JDateChooser;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import javax.swing.JButton;
@@ -50,10 +51,14 @@ public class ActividadView extends javax.swing.JFrame {
         horario = new HorarioTO();
     }
     
+    public void setIdHorario(){
+        horario.setIdHorario(jTFIdHorario.getText().trim().isEmpty() ? 0 : Integer.parseInt(jTFIdHorario.getText()));
+    }
+    
     public void resetHorarioView(){
         jTFIdHorario.setText("");
-        jSHInicio.setValue("");
-        jSHFin.setValue("");
+        jSHInicio.setValue(new Date(SAUtils.ZERO_HOUR));
+        jSHFin.setValue(new Date(SAUtils.ZERO_HOUR));
         jTFLugarHorario.setText("");
         jDCFechaHorario.setDate(null);
     }
@@ -63,11 +68,11 @@ public class ActividadView extends javax.swing.JFrame {
     }
     
     public void setHoraInicioHorario(){
-        horario.setHoraInicio(String.valueOf(jSHInicio.getValue()));
+        horario.setHoraInicio(SAUtils.getFormattedTime((Date) jSHInicio.getValue()));
     }
     
     public void setHoraFinHorario(){
-        horario.setHoraFin(String.valueOf(jSHFin.getValue()));
+        horario.setHoraFin(SAUtils.getFormattedTime((Date) jSHFin.getValue()));
     }
     
     public void setFechaHorario(){
@@ -98,8 +103,8 @@ public class ActividadView extends javax.swing.JFrame {
         jTFIdInstructorActividad.setText(instructor.getIdInstructor());
     }
     
-    public String getSelectedInstructor(int row){
-        return String.valueOf(row != -1 ? jTRInstructores.getValueAt(row, 0) : "");
+    public Object getSelectedInstructor(int row){
+        return row != -1 ? jTRInstructores.getValueAt(row, 0) : null;
     }
     
     public String getIdActividad(){
@@ -174,6 +179,7 @@ public class ActividadView extends javax.swing.JFrame {
         if(actividad == null)
             return;
         this.actividad = actividad;
+        horario.setActividadFk(actividad);
         if(jTFIdActividad.getText().toLowerCase().trim().compareTo(actividad.getIdActividad().toLowerCase().trim()) != 0)
             jTFIdActividad.setText(actividad.getIdActividad());
         jTFNombreActividad.setText(actividad.getNombre());
@@ -198,6 +204,14 @@ public class ActividadView extends javax.swing.JFrame {
         jDCFechaHorario.setDate(horario.getFecha());
     }
 
+    public JButton getjBtnClean() {
+        return jBtnClean;
+    }
+
+    public void setjBtnClean(JButton jBtnClean) {
+        this.jBtnClean = jBtnClean;
+    }
+    
     public JButton getjBtnAdmAlumnoView() {
         return jBtnAdmAlumnoView;
     }
@@ -382,12 +396,15 @@ public class ActividadView extends javax.swing.JFrame {
         jTFIdHorario = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jSHInicio = new javax.swing.JSpinner();
+        SAUtils.initSpinnerHourEditor(jSHInicio);
         jLabel13 = new javax.swing.JLabel();
         jSHFin = new javax.swing.JSpinner();
+        SAUtils.initSpinnerHourEditor(jSHFin);
         jLabel11 = new javax.swing.JLabel();
         jTFLugarHorario = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jDCFechaHorario = new com.toedter.calendar.JDateChooser();
+        jBtnClean = new javax.swing.JButton();
         jPActividades = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTQActividades = new javax.swing.JTable();
@@ -792,6 +809,7 @@ public class ActividadView extends javax.swing.JFrame {
 
         jSHInicio.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
         jSHInicio.setBorder(null);
+        jSHInicio.setEnabled(false);
 
         jLabel13.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
@@ -799,6 +817,7 @@ public class ActividadView extends javax.swing.JFrame {
 
         jSHFin.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
         jSHFin.setBorder(null);
+        jSHFin.setEnabled(false);
 
         jLabel11.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
@@ -806,6 +825,7 @@ public class ActividadView extends javax.swing.JFrame {
 
         jTFLugarHorario.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
         jTFLugarHorario.setBorder(null);
+        jTFLugarHorario.setEnabled(false);
         jTFLugarHorario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTFLugarHorarioActionPerformed(evt);
@@ -816,7 +836,22 @@ public class ActividadView extends javax.swing.JFrame {
         jLabel10.setForeground(new java.awt.Color(255, 255, 255));
         jLabel10.setText("FECHA:");
 
+        jDCFechaHorario.setEnabled(false);
         jDCFechaHorario.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
+
+        jBtnClean.setBackground(new java.awt.Color(0, 0, 153));
+        jBtnClean.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
+        jBtnClean.setForeground(new java.awt.Color(255, 255, 255));
+        jBtnClean.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sa/images/CLOSE.png"))); // NOI18N
+        jBtnClean.setToolTipText("modificar");
+        jBtnClean.setBorder(null);
+        jBtnClean.setBorderPainted(false);
+        jBtnClean.setContentAreaFilled(false);
+        jBtnClean.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnClean.setFocusPainted(false);
+        jBtnClean.setFocusable(false);
+        jBtnClean.setRequestFocusEnabled(false);
+        jBtnClean.setVerifyInputWhenFocusTarget(false);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -830,7 +865,9 @@ public class ActividadView extends javax.swing.JFrame {
                 .addComponent(jBtnModificarHorario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBtnEliminarHorario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jBtnClean)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -857,12 +894,15 @@ public class ActividadView extends javax.swing.JFrame {
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBtnRegistrarHorario)
-                    .addComponent(jBtnEliminarHorario)
-                    .addComponent(jBtnModificarHorario)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jBtnModificarHorario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jBtnEliminarHorario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jBtnRegistrarHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jBtnClean, javax.swing.GroupLayout.Alignment.LEADING))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTFLugarHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1143,6 +1183,7 @@ public class ActividadView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtnAdmAlumnoView;
     private javax.swing.JButton jBtnAdmInstructorView;
+    private javax.swing.JButton jBtnClean;
     private javax.swing.JButton jBtnClose;
     private javax.swing.JButton jBtnEliminarActividad;
     private javax.swing.JButton jBtnEliminarHorario;

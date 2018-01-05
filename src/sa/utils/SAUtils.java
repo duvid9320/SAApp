@@ -50,12 +50,19 @@ import sa.model.to.AlumnoTO;
  * @author Dave
  */
 public class SAUtils {
-    private static final String MYSQL_DATE_FORMAT;
-    private static final String MYSQL_TIME_FORMAT;
-    
+    public static final String MYSQL_DATE_FORMAT;
+    public static final String MYSQL_TIME_FORMAT;
+    public static final Long ZERO_HOUR;
     static{
         MYSQL_DATE_FORMAT = "YYYY-MM-dd";
-        MYSQL_TIME_FORMAT = "";
+        MYSQL_TIME_FORMAT = "HH:mm:ss";
+        ZERO_HOUR = 21600000L;
+    }
+    
+    public static void sout(Object... os){
+        Arrays.stream(os)
+                .filter(o -> o != null)
+                .forEach(System.out::println);
     }
     
     public static void addDocumentListener(LinkedHashMap<JTextComponent, Consumer> jtfcs, Consumer alwaysDo){
@@ -164,7 +171,7 @@ public class SAUtils {
     }
     
     public static void initSpinnerHourEditor(JSpinner jsp){
-        jsp.setModel(new SpinnerDateModel(new Date(), null, null, Calendar.HOUR_OF_DAY));
+        jsp.setModel(new SpinnerDateModel(new Date(ZERO_HOUR), null, null, Calendar.HOUR_OF_DAY));
         jsp.setEditor(new JSpinner.DateEditor(jsp, MYSQL_TIME_FORMAT));
     }
     

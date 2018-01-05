@@ -61,16 +61,10 @@ public class ActividadController {
     }
     
     private void initView(){
-        initSpinners();
         addDocumentListener();
         addItemListener();
         addListSelectionListeners();
         addButtonListeners();
-    }
-    
-    private void initSpinners(){
-        SAUtils.initSpinnerHourEditor(view.getjSHInicio());
-        SAUtils.initSpinnerHourEditor(view.getjSHFin());
     }
     
     private void addButtonListeners(){
@@ -97,11 +91,11 @@ public class ActividadController {
     }
     
     private void doSelectedInstructor(ListSelectionEvent e){
-        String []ids = (String[]) Arrays.stream(view.getjTRInstructores().getSelectedRows()).filter(r -> r != -1).mapToObj(r -> view.getSelectedInstructor(r)).toArray();
+        Object []ids = Arrays.stream(view.getjTRInstructores().getSelectedRows()).mapToObj(r -> view.getSelectedInstructor(r)).filter(s -> s != null).toArray();
         if(ids == null)
             return;
         else if(ids.length == 1)
-            view.setInstructorActividad(instructorDAO.getInstructor(ids[0]));
+            view.setInstructorActividad(instructorDAO.getInstructor(String.valueOf(ids[0])));
         else 
             view.resetActividadView();
         enableButtons();
@@ -115,6 +109,7 @@ public class ActividadController {
             view.setActividad(actividadDAO.getActividad(String.valueOf(ids[0])));
         else
             view.resetActividadView();
+        horarioController.showHorarioQuery(view.getHorario().getHorarioActividadQuery());
     }
     
     private void addItemListener(){
@@ -130,6 +125,14 @@ public class ActividadController {
         view.getjBtnRegistrarActividad().setEnabled(view.getActividad().isValid() && actividad == null);
         view.getjBtnEliminarActividad().setEnabled(actividad != null);
         view.getjBtnModificarActividad().setEnabled(actividad != null);
+        enableHorarioEdit(actividad != null);
+    }
+    
+    private void enableHorarioEdit(boolean trigger){
+        view.getjSHInicio().setEnabled(trigger);
+        view.getjSHFin().setEnabled(trigger);
+        view.getjTFLugarHorario().setEnabled(trigger);
+        view.getjDCFechaHorario().setEnabled(trigger);
     }
     
     private void addDocumentListener(){
@@ -157,6 +160,7 @@ public class ActividadController {
             view.setActividad(actividad);
         else 
             view.setIdActividad();
+        horarioController.showHorarioQuery(view.getHorario().getHorarioActividadQuery());
     }
     
     private void showActividadQuery(String query){
