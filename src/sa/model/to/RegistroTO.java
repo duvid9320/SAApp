@@ -51,6 +51,9 @@ public class RegistroTO implements GenericTO{
         this.horasAsistidas = horasAsistidas;
     }
 
+    public RegistroTO() {
+    }
+
     public ActividadTO getActividadFk() {
         return actividadFk;
     }
@@ -77,26 +80,64 @@ public class RegistroTO implements GenericTO{
 
     @Override
     public String getInsertSQL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return String.format(
+                "INSERT INTO Registro VALUES ('%s', '%s', %d)", 
+                actividadFk.getIdActividad(),
+                alumnoFk.getNumeroControl(),
+                0
+        );
     }
 
     @Override
     public String getUpdateSQL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return String.format(
+                "UPDATE Registro SET HorasAsistidas = %d WHERE ActividadFk = '%s' AND AlumnoFk = '%s'", 
+                horasAsistidas,
+                actividadFk.getIdActividad(),
+                alumnoFk.getNumeroControl()
+        );
     }
 
     @Override
     public String getQuerySQL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return String.format(
+                "SELECT * FROM Registro WHERE ActividadFk = '%s' AND AlumnoFk = '%s'", 
+                actividadFk != null ? actividadFk.getIdActividad() : "",
+                alumnoFk != null ? alumnoFk.getNumeroControl() : ""
+        );
     }
 
     @Override
     public String getDeleteSQL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return String.format(
+                "DELETE Registro WHERE ActividadFk = '%s' AND AlumnoFk = '%s'", 
+                actividadFk != null ? actividadFk.getIdActividad() : "",
+                alumnoFk != null ? alumnoFk.getNumeroControl() : ""
+        );
+    }
+    
+    public String getIdActividadesRegistradas(){
+        return String.format(
+                "SELECT IdActividad "
+                        + "FROM Registro AS r INNER JOIN Actividad AS ac ON r.ActividadFk = ac.IdActividad INNER JOIN Alumno AS al ON r.AlumnoFk = al.NumeroControl "
+                        + "WHERE AlumnoFk = '%s'", 
+                alumnoFk != null ? alumnoFk.getNumeroControl() : ""
+        );
+    }
+    
+    public String getActividadesAlumnoQuery(){
+        String sql = String.format(
+                "SELECT ac.IdActividad, al.NumeroControl, ac.Nombre, ac.Tipo, ac.Horas, CONCAT(al.Nombres, ' ', al.ApellidoPaterno, ' ', al.ApellidoMaterno) AS 'Alumno'"
+                        + " FROM Registro as r INNER JOIN Actividad AS ac ON r.ActividadFk = ac.IdActividad INNER JOIN Alumno AS al ON r.AlumnoFk = al.NumeroControl "
+                        + "WHERE r.AlumnoFk = '%s'", 
+                alumnoFk != null ? alumnoFk.getNumeroControl() : ""
+        );
+        System.out.println(sql);
+        return sql;
     }
 
     @Override
     public boolean isValid() {
-        return actividadFk.isValid() && alumnoFk.isValid() && horasAsistidas != -1;
+        return actividadFk != null && actividadFk.isValid() && alumnoFk != null && alumnoFk.isValid() && horasAsistidas != -1;
     }
 }

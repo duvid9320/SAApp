@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package sa.controller.impl;
+package sa.controller;
 
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
@@ -47,13 +47,13 @@ import sa.view.InstructorView;
  *
  * @author dave
  */
-public class AlumnoControllerImpl{
+public class AlumnoController{
     
     private final AlumnoView view;
     private final AlumnoDAO alumnoDAO;
     private final CarreraDAO carreraDAO;
     
-    public AlumnoControllerImpl(AlumnoView view, AlumnoDAO alumnoDAO, CarreraDAO carreraDAO) {
+    public AlumnoController(AlumnoView view, AlumnoDAO alumnoDAO, CarreraDAO carreraDAO) {
         this.view = view;
         this.alumnoDAO = alumnoDAO;
         this.carreraDAO = carreraDAO;

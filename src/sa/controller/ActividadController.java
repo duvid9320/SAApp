@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package sa.controller.impl;
+package sa.controller;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -47,7 +47,7 @@ import sa.view.InstructorView;
  */
 public class ActividadController {    
     private final ActividadView view;
-    private final HorarioControllerImpl horarioController;
+    private final HorarioController horarioController;
     private final InstructorDAO instructorDAO;
     private final ActividadDAO actividadDAO;
     
@@ -55,7 +55,7 @@ public class ActividadController {
         this.view = view;
         this.instructorDAO = instructorDAO;
         this.actividadDAO = actividadDAO;
-        horarioController = new HorarioControllerImpl(this.view, this.actividadDAO, this.instructorDAO, HorarioDAO.getInstance());
+        horarioController = new HorarioController(this.view, this.actividadDAO, this.instructorDAO, HorarioDAO.getInstance());
         initView();
         this.view.setVisible(true);
     }
@@ -71,7 +71,7 @@ public class ActividadController {
         view.getjBtnRegistrarActividad().addActionListener(e -> {actividadDAO.createActividad(view.getActividad()); cleanActividadView();});
         view.getjBtnModificarActividad().addActionListener(e -> {actividadDAO.updateActividad(view.getActividad()); cleanActividadView();}); 
         view.getjBtnEliminarActividad().addActionListener(e -> {actividadDAO.deleteActividad(view.getActividad()); cleanActividadView();});
-        view.getjBtnAdmAlumnoView().addActionListener(e -> {new AlumnoControllerImpl(new AlumnoView(), AlumnoDAO.getInstance(), CarreraDAO.getInstance()); view.dispose();});
+        view.getjBtnAdmAlumnoView().addActionListener(e -> {new AlumnoController(new AlumnoView(), AlumnoDAO.getInstance(), CarreraDAO.getInstance()); view.dispose();});
         view.getjBtnAdmInstructorView().addActionListener(e -> {new InstructorController(new InstructorView(), InstructorDAO.getInstance()); view.dispose();});
         view.getjBtnClose().addActionListener(e -> {view.dispose(); MySQLManager.getInstance().close();});
         view.getjBtnMaximize().addActionListener(e -> view.setExtendedState(view.getExtendedState() == JFrame.NORMAL ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));

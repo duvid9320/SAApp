@@ -86,7 +86,7 @@ public class SAUtils {
                 jtfcs.entrySet().stream()
                                     .filter(a -> SAUtils.isJTComponentEdited(e, a.getKey()))
                                     .findFirst()
-                                    .ifPresent(a -> a.getValue().andThen(alwaysDo).accept(a));
+                                    .ifPresent(a -> a.getValue().andThen(alwaysDo != null ? alwaysDo : x -> {}).accept(a));
             }
         };
         jtfcs.entrySet().forEach(j -> j.getKey().getDocument().addDocumentListener(dc));        

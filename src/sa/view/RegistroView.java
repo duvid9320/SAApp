@@ -23,16 +23,209 @@
  */
 package sa.view;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
+import sa.model.to.ActividadTO;
+import sa.model.to.AlumnoTO;
+import sa.model.to.RegistroTO;
+import sa.utils.SAUtils;
+
 
 public class RegistroView extends javax.swing.JFrame {
-
+    
+    public static final String NC = "<N. CONTROL>";
+    public static final String NOM = "<NOMBRE COMPLETO>";
+    public static final String CAR = "<CARRERA>";
+    public static final String SEM = "<SEMESTRE>";
+    public static final String ACT = "<ACTIVIDAD>";
+    public static final String HRS = "<HORAS>";
+    
+    private RegistroTO registro;
+    private int x,y;
+    
     public RegistroView() {
         initComponents();
         setLocationRelativeTo(null);
+        registro = new RegistroTO();
     }
     
-    //posción del mouse
-    int x,y;
+    public String getSelectedRegistroActividad(int row){
+        return String.valueOf(row != -1 ? jTRegistro.getValueAt(row, 0) : "");
+    }
+    
+    public String getSelectedRegistroAlumno(int row){
+        return String.valueOf(row != -1 ? jTRegistro.getValueAt(row, 1) : "");
+    }
+    
+    public void resetView(){
+        jTFQNControl.setText("");
+        jTActividades.getSelectionModel().clearSelection();
+    }
+    
+    public void setActividad(ActividadTO actividad){
+        if(actividad != null){
+            registro.setActividadFk(actividad);
+            jLActividad.setText(actividad.getNombre().toUpperCase());
+            jLHoras.setText(String.valueOf(actividad.getHoras()));
+        }else{
+            jLActividad.setText(ACT);
+            jLHoras.setText(HRS);
+        }
+    }
+    
+    public String getSelectedActividad(int row){
+        return String.valueOf(row != -1 ? jTActividades.getValueAt(row, 0) : ""); 
+    }
+    
+    public void resetActividad(){
+         jLActividad.setText(ACT);
+         jLHoras.setText(HRS);
+    }
+    
+    public String getQueryActividad(){
+        return getExceptActividadQuery(
+                SAUtils.getQuery(getActividadFields(), "Actividad AS a INNER JOIN Instructor AS i ON a.InstructorFk = i.IdInstructor ", getActividadConditions())
+        );
+    }
+    
+    public String getExceptActividadQuery(String query){
+        return query += String.format(" %s IdActividad NOT IN (%s)", query.contains("WHERE") ? " AND " : " WHERE ",registro.getIdActividadesRegistradas());
+    }
+    
+    public HashMap<String, JTextComponent> getActividadConditions(){
+        HashMap<String, JTextComponent> conditions = new HashMap<>();
+        conditions.put("IdActividad", jTFQIdActividad);
+        conditions.put("Nombre", jTFQNActividad);
+        conditions.put("Tipo", jTFQTActividad);
+        conditions.put("Horas", jTFQHActividad);
+        return conditions;
+    }
+    
+    public LinkedHashMap<String, String> getActividadFields(){
+        LinkedHashMap<String, String> fields = new LinkedHashMap<>();
+        fields.put("IdActividad", "Id");
+        fields.put("Nombre", "Actividad");
+        fields.put("Tipo", "");
+        fields.put("Horas", "");
+        fields.put("CONCAT(i.Nombres, ' ', i.Apellidos)", "Instructor");
+        return fields;
+    }
+    
+    public void setAlumno(AlumnoTO alumno){
+        if(alumno == null){
+            jLNcontrol.setText(NC);
+            jLNombre.setText(NOM);
+            jLCarrera.setText(CAR);
+            jLSemestre.setText(SEM);
+        }else{
+            registro.setAlumnoFk(alumno);
+            jLNcontrol.setText(alumno.getNumeroControl().toUpperCase());
+            jLNombre.setText((alumno.getNombres()+" "+alumno.getApellidoPaterno()+" "+alumno.getApellidoMaterno()).toUpperCase());
+            jLCarrera.setText(alumno.getCarrera().getNombre().toUpperCase());
+            jLSemestre.setText(String.valueOf(alumno.getSemestre()));
+        }
+    }
+    
+    public String getNumeroControl(){
+        return jTFQNControl.getText().trim();
+    }
+
+    public RegistroTO getRegistro() {
+        return registro;
+    }
+
+    public void setRegistro(RegistroTO registro) {
+        this.registro = registro;
+    }
+
+    public JButton getjBtnBuscar() {
+        return jBtnBuscar;
+    }
+
+    public JLabel getjLActividad() {
+        return jLActividad;
+    }
+
+    public JLabel getjLHoras() {
+        return jLHoras;
+    }
+    
+    public JButton getjBtnClose() {
+        return jBtnClose;
+    }
+
+    public JButton getjBtnEliminarRegistro() {
+        return jBtnEliminarRegistro;
+    }
+
+    public JButton getjBtnMaximize() {
+        return jBtnMaximize;
+    }
+
+    public JButton getjBtnMinimize() {
+        return jBtnMinimize;
+    }
+
+    public JButton getjBtnQActividad() {
+        return jBtnQActividad;
+    }
+
+    public JButton getjBtnQAlumno() {
+        return jBtnBuscar;
+    }
+
+    public JButton getjBtnRegistrar() {
+        return jBtnRegistrar;
+    }
+
+    public JLabel getjLCarrera() {
+        return jLCarrera;
+    }
+
+    public JLabel getjLNcontrol() {
+        return jLNcontrol;
+    }
+
+    public JLabel getjLNombre() {
+        return jLNombre;
+    }
+
+    public JLabel getjLSemestre() {
+        return jLSemestre;
+    }
+
+    public JTable getjTActividades() {
+        return jTActividades;
+    }
+
+    public JTextField getjTFQHActividad() {
+        return jTFQHActividad;
+    }
+
+    public JTextField getjTFQIdActividad() {
+        return jTFQIdActividad;
+    }
+
+    public JTextField getjTFQNActividad() {
+        return jTFQNActividad;
+    }
+
+    public JTextField getjTFQNControl() {
+        return jTFQNControl;
+    }
+
+    public JTextField getjTFQTActividad() {
+        return jTFQTActividad;
+    }
+
+    public JTable getjTRegistro() {
+        return jTRegistro;
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -50,19 +243,18 @@ public class RegistroView extends javax.swing.JFrame {
         jTActividades = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTFQIdActividad = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jTFQNActividad = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        jTFQTActividad = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        jTFQHActividad = new javax.swing.JTextField();
         jBtnQActividad = new javax.swing.JButton();
         jBtnRegistrar = new javax.swing.JButton();
-        jBtnGuardar = new javax.swing.JButton();
         jBtnEliminarRegistro = new javax.swing.JButton();
         jBtnBuscar = new javax.swing.JButton();
-        jTFBuscar = new javax.swing.JTextField();
+        jTFQNControl = new javax.swing.JTextField();
         jpUsuario = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -72,6 +264,7 @@ public class RegistroView extends javax.swing.JFrame {
         jLNombre = new javax.swing.JLabel();
         jLCarrera = new javax.swing.JLabel();
         jLSemestre = new javax.swing.JLabel();
+        jLActividad = new javax.swing.JLabel();
         jLHoras = new javax.swing.JLabel();
         jBtnMinimize = new javax.swing.JButton();
         jBtnMaximize = new javax.swing.JButton();
@@ -123,6 +316,7 @@ public class RegistroView extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ACTIVIDADES", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Calibri Light", 0, 12), new java.awt.Color(255, 255, 255))); // NOI18N
         jPanel1.setLayout(new java.awt.BorderLayout());
 
+        jTActividades.setAutoCreateRowSorter(true);
         jTActividades.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -131,39 +325,40 @@ public class RegistroView extends javax.swing.JFrame {
 
             }
         ));
+        jTActividades.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTActividades);
 
         jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         jLabel1.setText("Id");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        jTFQIdActividad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                jTFQIdActividadActionPerformed(evt);
             }
         });
 
         jLabel2.setText("Nombre");
 
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        jTFQNActividad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                jTFQNActividadActionPerformed(evt);
             }
         });
 
         jLabel3.setText("Tipo");
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        jTFQTActividad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                jTFQTActividadActionPerformed(evt);
             }
         });
 
         jLabel4.setText("Horas");
 
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        jTFQHActividad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+                jTFQHActividadActionPerformed(evt);
             }
         });
 
@@ -177,19 +372,19 @@ public class RegistroView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .addComponent(jTFQIdActividad, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .addComponent(jTFQNActividad, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .addComponent(jTFQTActividad, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .addComponent(jTFQHActividad, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jBtnQActividad)
                 .addContainerGap())
@@ -200,13 +395,13 @@ public class RegistroView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFQIdActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFQNActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFQTActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFQHActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBtnQActividad))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -222,27 +417,11 @@ public class RegistroView extends javax.swing.JFrame {
         jBtnRegistrar.setBorderPainted(false);
         jBtnRegistrar.setContentAreaFilled(false);
         jBtnRegistrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnRegistrar.setEnabled(false);
         jBtnRegistrar.setFocusPainted(false);
         jBtnRegistrar.setFocusable(false);
         jBtnRegistrar.setRequestFocusEnabled(false);
         jBtnRegistrar.setVerifyInputWhenFocusTarget(false);
-
-        jBtnGuardar.setBackground(new java.awt.Color(0, 0, 153));
-        jBtnGuardar.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
-        jBtnGuardar.setForeground(new java.awt.Color(255, 255, 255));
-        jBtnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sa/images/SAVE.png"))); // NOI18N
-        jBtnGuardar.setToolTipText("modificar");
-        jBtnGuardar.setBorder(null);
-        jBtnGuardar.setBorderPainted(false);
-        jBtnGuardar.setContentAreaFilled(false);
-        jBtnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jBtnGuardar.setFocusable(false);
-        jBtnGuardar.setVerifyInputWhenFocusTarget(false);
-        jBtnGuardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBtnGuardarActionPerformed(evt);
-            }
-        });
 
         jBtnEliminarRegistro.setBackground(new java.awt.Color(0, 0, 153));
         jBtnEliminarRegistro.setFont(new java.awt.Font("Calibri Light", 0, 12)); // NOI18N
@@ -253,6 +432,7 @@ public class RegistroView extends javax.swing.JFrame {
         jBtnEliminarRegistro.setBorderPainted(false);
         jBtnEliminarRegistro.setContentAreaFilled(false);
         jBtnEliminarRegistro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBtnEliminarRegistro.setEnabled(false);
         jBtnEliminarRegistro.setFocusable(false);
         jBtnEliminarRegistro.setVerifyInputWhenFocusTarget(false);
         jBtnEliminarRegistro.addActionListener(new java.awt.event.ActionListener() {
@@ -278,49 +458,44 @@ public class RegistroView extends javax.swing.JFrame {
             }
         });
 
-        jTFBuscar.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
-        jTFBuscar.setBorder(null);
+        jTFQNControl.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        jTFQNControl.setBorder(null);
 
         javax.swing.GroupLayout jpActividadesLayout = new javax.swing.GroupLayout(jpActividades);
         jpActividades.setLayout(jpActividadesLayout);
         jpActividadesLayout.setHorizontalGroup(
             jpActividadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpActividadesLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jpActividadesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jBtnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBtnEliminarRegistro)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBtnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jBtnBuscar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTFBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTFQNControl, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jpActividadesLayout.setVerticalGroup(
             jpActividadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpActividadesLayout.createSequentialGroup()
                 .addGroup(jpActividadesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jTFBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTFQNControl, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBtnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBtnEliminarRegistro)
-                    .addComponent(jBtnGuardar)
                     .addComponent(jBtnRegistrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE))
         );
 
         jspContenido.setLeftComponent(jpActividades);
 
         jpUsuario.setBackground(new java.awt.Color(0, 0, 153));
 
-        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setDividerLocation(300);
 
-        jTRegistro.setBackground(new java.awt.Color(0, 0, 153));
+        jTRegistro.setAutoCreateRowSorter(true);
         jTRegistro.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -329,36 +504,43 @@ public class RegistroView extends javax.swing.JFrame {
 
             }
         ));
+        jTRegistro.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(jTRegistro);
 
         jSplitPane1.setRightComponent(jScrollPane3);
 
         jpPerfil.setBackground(new java.awt.Color(0, 0, 153));
+        jpPerfil.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "NUEVO REGISTRO", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 255, 255))); // NOI18N
 
         jLNcontrol.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
         jLNcontrol.setForeground(new java.awt.Color(255, 255, 255));
-        jLNcontrol.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLNcontrol.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLNcontrol.setText("<N. CONTROL>");
 
         jLNombre.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
         jLNombre.setForeground(new java.awt.Color(255, 255, 255));
-        jLNombre.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLNombre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLNombre.setText("<NOMBRE COMPLETO>");
 
         jLCarrera.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
         jLCarrera.setForeground(new java.awt.Color(255, 255, 255));
-        jLCarrera.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLCarrera.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLCarrera.setText("<CARRERA>");
 
         jLSemestre.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
         jLSemestre.setForeground(new java.awt.Color(255, 255, 255));
-        jLSemestre.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLSemestre.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLSemestre.setText("<SEMESTRE>");
+
+        jLActividad.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        jLActividad.setForeground(new java.awt.Color(255, 255, 255));
+        jLActividad.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLActividad.setText("<ACTIVIDAD>");
 
         jLHoras.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
         jLHoras.setForeground(new java.awt.Color(255, 255, 255));
-        jLHoras.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLHoras.setText("<TOTAL HORAS>");
+        jLHoras.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLHoras.setText("<HORAS>");
 
         javax.swing.GroupLayout jpPerfilLayout = new javax.swing.GroupLayout(jpPerfil);
         jpPerfil.setLayout(jpPerfilLayout);
@@ -368,10 +550,11 @@ public class RegistroView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jpPerfilLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLNcontrol, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                    .addComponent(jLNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                     .addComponent(jLCarrera, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLSemestre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLHoras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLActividad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLHoras, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jpPerfilLayout.setVerticalGroup(
@@ -379,16 +562,20 @@ public class RegistroView extends javax.swing.JFrame {
             .addGroup(jpPerfilLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLNcontrol)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLNombre)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLCarrera)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLSemestre)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLActividad)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLHoras)
-                .addContainerGap(120, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
+
+        jpPerfilLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLActividad, jLCarrera, jLHoras, jLNcontrol, jLNombre, jLSemestre});
 
         jSplitPane1.setLeftComponent(jpPerfil);
 
@@ -409,11 +596,11 @@ public class RegistroView extends javax.swing.JFrame {
         jpContenido.setLayout(jpContenidoLayout);
         jpContenidoLayout.setHorizontalGroup(
             jpContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jspContenido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jspContenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jpContenidoLayout.setVerticalGroup(
             jpContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jspContenido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jspContenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jBtnMinimize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sa/images/MINIMIZE.png"))); // NOI18N
@@ -478,8 +665,8 @@ public class RegistroView extends javax.swing.JFrame {
                         .addComponent(jBtnMaximize)
                         .addComponent(jBtnClose)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jpContenido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jpContenido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -520,36 +707,32 @@ public class RegistroView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jBtnBuscarActionPerformed
 
-    private void jBtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnGuardarActionPerformed
+    private void jTFQIdActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFQIdActividadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jBtnGuardarActionPerformed
+    }//GEN-LAST:event_jTFQIdActividadActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void jTFQNActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFQNActividadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_jTFQNActividadActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void jTFQTActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFQTActividadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_jTFQTActividadActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void jTFQHActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFQHActividadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
-
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    }//GEN-LAST:event_jTFQHActividadActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Logo;
     private javax.swing.JButton jBtnBuscar;
     private javax.swing.JButton jBtnClose;
     private javax.swing.JButton jBtnEliminarRegistro;
-    private javax.swing.JButton jBtnGuardar;
     private javax.swing.JButton jBtnMaximize;
     private javax.swing.JButton jBtnMinimize;
     private javax.swing.JButton jBtnQActividad;
     private javax.swing.JButton jBtnRegistrar;
+    private javax.swing.JLabel jLActividad;
     private javax.swing.JLabel jLCarrera;
     private javax.swing.JLabel jLHoras;
     private javax.swing.JLabel jLNcontrol;
@@ -567,12 +750,12 @@ public class RegistroView extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTActividades;
-    private javax.swing.JTextField jTFBuscar;
+    private javax.swing.JTextField jTFQHActividad;
+    private javax.swing.JTextField jTFQIdActividad;
+    private javax.swing.JTextField jTFQNActividad;
+    private javax.swing.JTextField jTFQNControl;
+    private javax.swing.JTextField jTFQTActividad;
     private javax.swing.JTable jTRegistro;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JPanel jpActividades;
     private javax.swing.JPanel jpContenido;
     private javax.swing.JPanel jpFondo;

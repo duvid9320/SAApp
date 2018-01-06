@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package sa.controller.impl;
+package sa.controller;
 
 
 import java.awt.event.ActionEvent;
@@ -96,7 +96,7 @@ public class InstructorController {
     }
     
     private void showAlumnoView(ActionEvent e){
-        new AlumnoControllerImpl(new AlumnoView(), AlumnoDAO.getInstance(), CarreraDAO.getInstance());
+        new AlumnoController(new AlumnoView(), AlumnoDAO.getInstance(), CarreraDAO.getInstance());
         view.dispose();
     }
     

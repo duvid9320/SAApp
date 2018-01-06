@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package sa.controller.impl;
+package sa.controller;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -39,13 +39,13 @@ import sa.view.ActividadView;
  *
  * @author dave
  */
-public class HorarioControllerImpl{
+public class HorarioController{
     private final ActividadView view;
     private final ActividadDAO actividadDAO;
     private final InstructorDAO instructorDAO;
     private final HorarioDAO horarioDAO;
 
-    public HorarioControllerImpl(ActividadView view, ActividadDAO actividadDAO, InstructorDAO instructorDAO, HorarioDAO horarioDAO) {
+    public HorarioController(ActividadView view, ActividadDAO actividadDAO, InstructorDAO instructorDAO, HorarioDAO horarioDAO) {
         this.actividadDAO = actividadDAO;
         this.instructorDAO = instructorDAO;
         this.horarioDAO = horarioDAO;

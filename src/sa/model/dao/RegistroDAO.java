@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License
  *
  * Copyright 2018 David Rodríguez <duvid9320@gmail.com>.
@@ -21,30 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package sa;
-import sa.connection.MySQLManager;
-import sa.controller.ActividadController;
-import sa.controller.RegistroController;
-import sa.model.dao.ActividadDAO;
-import sa.model.dao.AlumnoDAO;
-import sa.model.dao.InstructorDAO;
-import sa.model.dao.RegistroDAO;
-import sa.view.ActividadView;
-import sa.view.RegistroView;
+package sa.model.dao;
+
+import javax.swing.table.DefaultTableModel;
+import sa.model.to.RegistroTO;
+import sa.utils.SAInputOutput;
 
 /**
  *
- * @author David Rodríguez
+ * @author David Rodríguez <duvid9320@gmail.com>
  */
-public class SemanaAcademica {
-    
-    static {
-        new Thread(() -> MySQLManager.getInstance()).start();
+public class RegistroDAO extends GenericDAO<RegistroTO>{
+    private static RegistroDAO instance;
+
+    private RegistroDAO() {
+    }
+
+    public static RegistroDAO getInstance() {
+        return instance == null ? (instance = new RegistroDAO()) : instance;
     }
     
-    public static void main(String[] args) {
-        //new ActividadController(new ActividadView(), InstructorDAO.getInstance(), ActividadDAO.getInstance());
-        new RegistroController(new RegistroView(), RegistroDAO.getInstance(), AlumnoDAO.getInstance(), ActividadDAO.getInstance());
+    public DefaultTableModel getDTM(String query){
+        return getDefaultTableModel(query);
+    }
+
+    public RegistroTO getRegistro(RegistroTO registroView) {
+        return read(registroView, data -> new RegistroTO(data));
     }
     
+    public void createRegistro(RegistroTO registro){
+        if(create(registro))
+            SAInputOutput.showInformationMessage("Registro exitoso");
+        else 
+            SAInputOutput.showErrorMessage("No se pudo registrar");
+    }
 }
