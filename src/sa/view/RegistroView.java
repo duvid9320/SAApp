@@ -63,13 +63,13 @@ public class RegistroView extends javax.swing.JFrame {
     }
     
     public void resetView(){
-        jTFQNControl.setText("");
         jTActividades.getSelectionModel().clearSelection();
+        setActividad(null);
     }
     
     public void setActividad(ActividadTO actividad){
+        registro.setActividadFk(actividad);
         if(actividad != null){
-            registro.setActividadFk(actividad);
             jLActividad.setText(actividad.getNombre().toUpperCase());
             jLHoras.setText(String.valueOf(actividad.getHoras()));
         }else{
@@ -117,13 +117,13 @@ public class RegistroView extends javax.swing.JFrame {
     }
     
     public void setAlumno(AlumnoTO alumno){
+        registro.setAlumnoFk(alumno);
         if(alumno == null){
             jLNcontrol.setText(NC);
             jLNombre.setText(NOM);
             jLCarrera.setText(CAR);
             jLSemestre.setText(SEM);
         }else{
-            registro.setAlumnoFk(alumno);
             jLNcontrol.setText(alumno.getNumeroControl().toUpperCase());
             jLNombre.setText((alumno.getNombres()+" "+alumno.getApellidoPaterno()+" "+alumno.getApellidoMaterno()).toUpperCase());
             jLCarrera.setText(alumno.getCarrera().getNombre().toUpperCase());
@@ -173,10 +173,6 @@ public class RegistroView extends javax.swing.JFrame {
 
     public JButton getjBtnQActividad() {
         return jBtnQActividad;
-    }
-
-    public JButton getjBtnQAlumno() {
-        return jBtnBuscar;
     }
 
     public JButton getjBtnRegistrar() {

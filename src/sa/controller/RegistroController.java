@@ -25,8 +25,10 @@ package sa.controller;
 
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
+import javax.swing.JFrame;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.text.JTextComponent;
+import sa.connection.MySQLManager;
 import sa.model.dao.ActividadDAO;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.RegistroDAO;
@@ -42,10 +44,10 @@ import sa.view.RegistroView;
  */
 public class RegistroController {
     
-    private RegistroView view;
-    private RegistroDAO registroDAO;
-    private AlumnoDAO alumnoDAO;
-    private ActividadDAO actividadDAO;
+    private final RegistroView view;
+    private final RegistroDAO registroDAO;
+    private final AlumnoDAO alumnoDAO;
+    private final ActividadDAO actividadDAO;
 
     public RegistroController(RegistroView view, RegistroDAO registroDAO, AlumnoDAO alumnoDAO, ActividadDAO actividadDAO) {
         this.view = view;
@@ -64,11 +66,18 @@ public class RegistroController {
     
     private void addButtonListeners(){
         view.getjBtnRegistrar().addActionListener(e -> {registroDAO.createRegistro(view.getRegistro()); cleanView();});
+        view.getjBtnClose().addActionListener(e -> {view.dispose(); MySQLManager.getInstance().close();});
+        view.getjBtnEliminarRegistro().addActionListener(e -> {registroDAO.deleteRegistro(view.getRegistro()); cleanView();});
+        view.getjBtnBuscar().addActionListener(e -> showQuerys());
+        view.getjBtnMaximize().addActionListener(e -> view.setExtendedState(view.getExtendedState() == JFrame.NORMAL ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL));
+        view.getjBtnMinimize().addActionListener(e -> view.setExtendedState(JFrame.ICONIFIED));
+        view.getjBtnQActividad().addActionListener(e -> showQuerys());
     }
     
     private void cleanView(){
         showQuerys();
         view.resetView();
+        enableButtons();
     }
     
     private void showRegistroQuery(RegistroTO registro){
@@ -133,6 +142,7 @@ public class RegistroController {
     private void showAlumno(){
         AlumnoTO alumno = alumnoDAO.getAlumno(view.getNumeroControl());
         view.setAlumno(alumnoDAO.getAlumno(view.getNumeroControl()));
+        showRegistroQuery(view.getRegistro());
         if(alumno != null)
             showQuerys();
     }

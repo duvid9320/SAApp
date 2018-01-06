@@ -55,4 +55,18 @@ public class RegistroDAO extends GenericDAO<RegistroTO>{
         else 
             SAInputOutput.showErrorMessage("No se pudo registrar");
     }
+
+    public void deleteRegistro(RegistroTO registro) {
+        if(!SAInputOutput.showDeleteConfirmation(String.format("Eliminar Registro de la Actividad %s del Alumno con NC %s", 
+                                                        registro.getActividadFk().getNombre(),
+                                                        registro.getAlumnoFk().getNumeroControl())
+                                                )
+                )
+            SAInputOutput.showInformationMessage("Operación cancelada por el usuario");
+        else if(delete(registro))
+            SAInputOutput.showInformationMessage("El registro se eliminó correctamente");
+        else
+            SAInputOutput.showErrorMessage("No se pudo eliminar");
+            
+    }
 }

@@ -110,7 +110,7 @@ public class RegistroTO implements GenericTO{
     @Override
     public String getDeleteSQL() {
         return String.format(
-                "DELETE Registro WHERE ActividadFk = '%s' AND AlumnoFk = '%s'", 
+                "DELETE FROM Registro WHERE ActividadFk = '%s' AND AlumnoFk = '%s'", 
                 actividadFk != null ? actividadFk.getIdActividad() : "",
                 alumnoFk != null ? alumnoFk.getNumeroControl() : ""
         );
