@@ -24,12 +24,15 @@
 package sa;
 import sa.connection.MySQLManager;
 import sa.controller.ActividadController;
+import sa.controller.AsistenciaController;
 import sa.controller.RegistroController;
 import sa.model.dao.ActividadDAO;
 import sa.model.dao.AlumnoDAO;
+import sa.model.dao.AsistenciaDAO;
 import sa.model.dao.InstructorDAO;
 import sa.model.dao.RegistroDAO;
 import sa.view.ActividadView;
+import sa.view.AsistenciaView;
 import sa.view.RegistroView;
 
 /**
@@ -44,7 +47,8 @@ public class SemanaAcademica {
     
     public static void main(String[] args) {
         //new ActividadController(new ActividadView(), InstructorDAO.getInstance(), ActividadDAO.getInstance());
-        new RegistroController(new RegistroView(), RegistroDAO.getInstance(), AlumnoDAO.getInstance(), ActividadDAO.getInstance());
+        //new RegistroController(new RegistroView(), RegistroDAO.getInstance(), AlumnoDAO.getInstance(), ActividadDAO.getInstance());
+        new AsistenciaController(ActividadDAO.getInstance(),new AsistenciaView(), AsistenciaDAO.getInstance(), AlumnoDAO.getInstance(), RegistroDAO.getInstance());
     }
     
 }

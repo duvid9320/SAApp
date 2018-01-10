@@ -41,12 +41,15 @@ public class AsistenciaTO implements GenericTO{
     private String horaLlegada;
     private String horaSalida;
 
+    public AsistenciaTO() {
+    }
+
     public AsistenciaTO(HashMap<String, Object> data) {
         this(
                 Integer.parseInt(String.valueOf(data.get("IdAsistencia"))), 
                 ActividadDAO.getInstance().getActividad(String.valueOf(data.get("ActividadFk"))), 
                 AlumnoDAO.getInstance().getAlumno(String.valueOf(data.get("AlumnoFk"))), 
-                new Date(String.valueOf(data.get("Fecha"))), 
+                SAUtils.getDateFromString(String.valueOf(data.get("Fecha"))), 
                 String.valueOf(data.get("HoraLlegada")), 
                 String.valueOf(data.get("HoraSalida"))
         );
@@ -61,24 +64,118 @@ public class AsistenciaTO implements GenericTO{
         this.horaSalida = horaSalida;
     }
 
+    public int getIdAsistencia() {
+        return idAsistencia;
+    }
+
+    public void setIdAsistencia(int idAsistencia) {
+        this.idAsistencia = idAsistencia;
+    }
+
+    public ActividadTO getActividadFk() {
+        return actividadFk;
+    }
+
+    public void setActividadFk(ActividadTO actividadFk) {
+        this.actividadFk = actividadFk;
+    }
+
+    public AlumnoTO getAlumnoFk() {
+        return alumnoFk;
+    }
+
+    public void setAlumnoFk(AlumnoTO alumnoFk) {
+        this.alumnoFk = alumnoFk;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getHoraLlegada() {
+        return horaLlegada;
+    }
+
+    public void setHoraLlegada(String horaLlegada) {
+        this.horaLlegada = horaLlegada;
+    }
+
+    public String getHoraSalida() {
+        return horaSalida;
+    }
+
+    public void setHoraSalida(String horaSalida) {
+        this.horaSalida = horaSalida;
+    }
+
+    
+    
     @Override
     public String getInsertSQL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return String.format(
+                "INSERT INTO Asistencia (ActividadFk, AlumnoFk, Fecha, HoraLlegada)"
+                                + "VALUES ('%s', '%s', '%s', '%s')", 
+                actividadFk.getIdActividad(),
+                alumnoFk.getNumeroControl(),
+                SAUtils.getFormattedDate((fecha = new Date())),
+                (horaLlegada = SAUtils.getFormattedTime(fecha))
+        );
     }
 
     @Override
     public String getUpdateSQL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(idAsistencia != 0)
+            return String.format(
+                    "UPDATE Asistencia "
+                        + "SET HoraSalida = '%s' "
+                        + "WHERE IdAsistencia = %d ",
+                    idAsistencia
+            );
+        return String.format(
+                    "UPDATE Asistencia "
+                        + "SET HoraSalida = '%s' "
+                        + "WHERE ActividadFk = '%s' AND AlumnoFk = '%s' AND Fecha = '%s' ",
+                    actividadFk.getIdActividad(),
+                    alumnoFk.getNumeroControl(),
+                    SAUtils.getFormattedDate(fecha)
+        );
     }
 
     @Override
     public String getQuerySQL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(idAsistencia != 0)
+            return String.format(
+                    "SELECT * FROM Asistencia "
+                            + "WHERE IdAsistencia = %d", 
+                    idAsistencia
+            );
+        return String.format(
+                "SELECT * FROM Asistencia "
+                        + "WHERE ActividadFk = '%s' AND AlumnoFk = '%s' AND Fecha = '%s'", 
+                actividadFk.getIdActividad(),
+                alumnoFk.getNumeroControl(),
+                fecha != null ? SAUtils.getFormattedDate(fecha) : ""
+        );
     }
 
     @Override
     public String getDeleteSQL() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(idAsistencia != 0)
+            return String.format(
+                    "DELETE FROM Asistencia WHERE IdAsistencia = %d", 
+                    idAsistencia
+            );
+        return String.format(
+                "DELETE FROM Asistencia "
+                        + "WHERE ActividadFk = '%s' AND AlumnoFk = '%s' AND Fecha = '%s' ", 
+                actividadFk.getIdActividad(),
+                alumnoFk.getNumeroControl(),
+                SAUtils.getFormattedDate(fecha)
+        );
     }
 
     @Override
