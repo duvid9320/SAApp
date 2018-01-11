@@ -61,6 +61,10 @@ public class HorarioDAO extends GenericDAO<HorarioTO>{
         return getDefaultTableModel(query);
     }
 
+    public HorarioTO getHorario(ActividadTO actividad){
+        return getHorario(new HorarioTO(actividad));
+    }
+    
     public HorarioTO getHorario(int id) {
         return getHorario(new HorarioTO(id, null, null, null, null, null));
     }

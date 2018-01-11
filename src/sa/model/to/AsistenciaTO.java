@@ -41,7 +41,15 @@ public class AsistenciaTO implements GenericTO{
     private String horaLlegada;
     private String horaSalida;
 
-    public AsistenciaTO() {
+    public AsistenciaTO(RegistroTO registro) {
+        this(
+                0, 
+                registro.getActividadFk(), 
+                registro.getAlumnoFk(), 
+                new Date(), 
+                SAUtils.getFormattedTime(new Date()), 
+                ""
+        );
     }
 
     public AsistenciaTO(HashMap<String, Object> data) {
@@ -111,8 +119,6 @@ public class AsistenciaTO implements GenericTO{
     public void setHoraSalida(String horaSalida) {
         this.horaSalida = horaSalida;
     }
-
-    
     
     @Override
     public String getInsertSQL() {
@@ -121,8 +127,8 @@ public class AsistenciaTO implements GenericTO{
                                 + "VALUES ('%s', '%s', '%s', '%s')", 
                 actividadFk.getIdActividad(),
                 alumnoFk.getNumeroControl(),
-                SAUtils.getFormattedDate((fecha = new Date())),
-                (horaLlegada = SAUtils.getFormattedTime(fecha))
+                SAUtils.getFormattedDate(fecha),
+                horaLlegada
         );
     }
 
@@ -133,6 +139,7 @@ public class AsistenciaTO implements GenericTO{
                     "UPDATE Asistencia "
                         + "SET HoraSalida = '%s' "
                         + "WHERE IdAsistencia = %d ",
+                    horaSalida,
                     idAsistencia
             );
         return String.format(

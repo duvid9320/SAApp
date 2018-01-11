@@ -24,6 +24,8 @@
 package sa.model.dao;
 
 import javax.swing.table.DefaultTableModel;
+import sa.model.to.ActividadTO;
+import sa.model.to.AlumnoTO;
 import sa.model.to.RegistroTO;
 import sa.utils.SAInputOutput;
 
@@ -49,6 +51,10 @@ public class RegistroDAO extends GenericDAO<RegistroTO>{
         return read(registroView, data -> new RegistroTO(data));
     }
     
+    public RegistroTO getRegistro(AlumnoTO alumno, ActividadTO actividad){
+        return getRegistro(new RegistroTO(actividad, alumno, 0));
+    }
+    
     public void createRegistro(RegistroTO registro){
         if(create(registro))
             SAInputOutput.showInformationMessage("Registro exitoso");
@@ -68,5 +74,12 @@ public class RegistroDAO extends GenericDAO<RegistroTO>{
         else
             SAInputOutput.showErrorMessage("No se pudo eliminar");
             
+    }
+
+    public void updateRegistro(RegistroTO registro) {
+        if(update(registro))
+            SAInputOutput.showInformationMessage("Asistencia confirmada");
+        else
+            SAInputOutput.showErrorMessage("No se pudo confirmar la asistencia");
     }
 }

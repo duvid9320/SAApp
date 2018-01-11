@@ -23,6 +23,7 @@
  */
 package sa.controller;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
 import javax.swing.event.ListSelectionEvent;
@@ -30,10 +31,12 @@ import javax.swing.text.JTextComponent;
 import sa.model.dao.ActividadDAO;
 import sa.model.dao.AlumnoDAO;
 import sa.model.dao.AsistenciaDAO;
+import sa.model.dao.HorarioDAO;
 import sa.model.dao.RegistroDAO;
 import sa.model.to.AlumnoTO;
 import sa.model.to.AsistenciaTO;
 import sa.model.to.RegistroTO;
+import sa.utils.SAInputOutput;
 import sa.utils.SAUtils;
 import sa.view.AsistenciaView;
 
@@ -47,9 +50,11 @@ public class AsistenciaController {
     private final AsistenciaDAO asistenciaDAO;
     private final AlumnoDAO alumnoDAO;
     private final RegistroDAO registroDAO;
+    private final HorarioDAO horarioDAO;
 
-    public AsistenciaController(ActividadDAO actividadDAO, AsistenciaView view, AsistenciaDAO asistenciaDAO, AlumnoDAO alumnoDAO, RegistroDAO registroDAO) {
+    public AsistenciaController(HorarioDAO horarioDAO,ActividadDAO actividadDAO, AsistenciaView view, AsistenciaDAO asistenciaDAO, AlumnoDAO alumnoDAO, RegistroDAO registroDAO) {
         this.view = view;
+        this.horarioDAO = horarioDAO;
         this.asistenciaDAO = asistenciaDAO;
         this.alumnoDAO = alumnoDAO;
         this.registroDAO = registroDAO;
@@ -65,8 +70,8 @@ public class AsistenciaController {
     }
     
     private void addButtonListeners(){
-        view.getjBtnEntrada().addActionListener(e -> {asistenciaDAO.createAsistencia(view.getAsistencia()); cleanView();});
-        view.getjBtnSalida().addActionListener(e -> {asistenciaDAO.updateAsistencia(view.getAsistencia());});
+        view.getjBtnEntrada().addActionListener(e -> {asistenciaDAO.createAsistencia(registroDAO.getRegistro(view.getAlumno(), view.getActividad())); cleanView();});
+        view.getjBtnSalida().addActionListener(e -> {asistenciaDAO.updateAsistencia(asistenciaDAO.getAsistencia(view.getAlumno(), view.getActividad()));});
     }
     
     private void cleanView(){
@@ -81,6 +86,7 @@ public class AsistenciaController {
         int row = view.getjTActividades().getSelectedRow();
         if(row != -1)
             view.setActividad(actividadDAO.getActividad(view.getSelectedActividad(row)));
+        view.getjTFQNControl().setEnabled(view.getActividad() != null);
     }
     
     private void addDocumentListeners(){
@@ -89,10 +95,11 @@ public class AsistenciaController {
     
     private void enableButtons(){
         AsistenciaTO asistencia = null;
-        if(view.getAsistencia().getAlumnoFk() != null && view.getAsistencia().getActividadFk() != null)
-            asistencia = asistenciaDAO.getAsistencia(view.getAsistencia());
-        view.getjBtnEntrada().setEnabled(asistencia == null);
-        view.getjBtnSalida().setEnabled(asistencia != null);
+        boolean isValid = view.getAlumno() != null && view.getActividad() != null;
+        if(isValid)
+            asistencia = asistenciaDAO.getAsistencia(view.getAlumno(), view.getActividad());
+        view.getjBtnEntrada().setEnabled(asistencia == null && isValid);
+        view.getjBtnSalida().setEnabled(asistencia != null && isValid);
     }
     
     private LinkedHashMap<JTextComponent, Consumer> getTextEditActions(){
@@ -109,14 +116,32 @@ public class AsistenciaController {
         AlumnoTO alumno = alumnoDAO.getAlumno(view.getNumeroControl());
         if(alumno == null)
             return;
-        RegistroTO rview = view.getRegistro();
-        rview.setAlumnoFk(alumno);
-//        RegistroTO registro = registroDAO.getRegistro(view.getRegistro());
-//        if(registro != null)
-//            view.setAlumno(alumno);
+        RegistroTO registro = registroDAO.getRegistro(alumno, view.getActividad());
+        AsistenciaTO asistencia = registro != null ? asistenciaDAO.getAsistencia(alumno, view.getActividad()) : null;
+        if(registro == null)
+            SAInputOutput.showErrorMessage("El alumno no esta registrado a esta actividad");
+        else if(asistencia != null)
+            terminarAsistencia(asistencia, registro);
+        else if(!SAUtils.isOnTime(SAUtils.getTimeFromString(horarioDAO.getHorario(view.getActividad()).getHoraInicio()), new Date()))
+            SAInputOutput.showErrorMessage(String.format("El alumno con NC %s no llegó a tiempo, no se toma asistencia", alumno.getNumeroControl()));
+        else if(asistenciaDAO.createAsistencia(registro))
+            SAInputOutput.showInformationMessage("Se tomó asistencia del alumno");
+        else 
+            SAInputOutput.showErrorMessage("No se pudo tomar asistencia");
+    }
+    
+    private void terminarAsistencia(AsistenciaTO asistencia, RegistroTO registro){
+        if(!asistencia.getHoraSalida().trim().isEmpty()){
+            SAInputOutput.showErrorMessage("El alumno ya dio salida");
+            return;
+        }
+        asistencia.setHoraSalida(SAUtils.getFormattedTime(new Date()));
+        registro.setHorasAsistidas(registro.getHorasAsistidas() + SAUtils.getAsistedHours(asistencia.getHoraLlegada(), asistencia.getHoraSalida()));
+        registroDAO.updateRegistro(registro);
+        asistenciaDAO.updateAsistencia(asistencia);
     }
     
     private void showActividadQuery(){
-        view.getjTActividades().setModel(asistenciaDAO.getDTM(view.getQueryActividad()));
+        view.getjTActividades().setModel(asistenciaDAO.getDTM(view.getQueryActividadesNow()));
     }
 }

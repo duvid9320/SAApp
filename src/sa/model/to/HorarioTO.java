@@ -39,6 +39,10 @@ public class HorarioTO implements GenericTO{
     private String horaInicio;
     private String horaFin;
     private String lugar;
+    
+    public HorarioTO(ActividadTO actividad){
+        this(0, actividad, new Date(), "", "", "");
+    }
 
     public HorarioTO(HashMap<String, Object> data) {
         this(
@@ -140,11 +144,9 @@ public class HorarioTO implements GenericTO{
         if(idHorario > 0)
             return String.format("SELECT * FROM Horario WHERE IdHorario = %d", idHorario);
         return String.format("SELECT * FROM Horario WHERE ActividadFk = '%s' "
-                + "AND Fecha = '%s' AND HoraInicio = '%s' AND HoraFin = '%s'", 
+                + "AND Fecha = '%s'", 
                 actividadFk != null ? actividadFk.getIdActividad() : "",
-                fecha != null ? SAUtils.getFormattedDate(fecha) : "",
-                horaInicio,
-                horaFin
+                fecha != null ? SAUtils.getFormattedDate(fecha) : ""
         );
     }
 

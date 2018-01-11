@@ -46,30 +46,15 @@ public class AsistenciaView extends javax.swing.JFrame {
     public static final String ACT = "<ACTIVIDAD>";
     public static final String HRS = "<HORAS>";
     
-    private RegistroTO registro;
-    private AsistenciaTO asistencia;
     private int x,y;
+    private AlumnoTO alumno;
+    private ActividadTO actividad;
     
     public AsistenciaView() {
         initComponents();
         setLocationRelativeTo(null);
-        registro = new RegistroTO();
-        asistencia = new AsistenciaTO();
-    }
-
-    public AsistenciaTO getAsistencia() {
-        return asistencia;
     }
     
-    public LinkedHashMap<String, String> getActividadFields(){
-        LinkedHashMap<String, String> fields = new LinkedHashMap<>();
-        fields.put("IdActividad", "Id");
-        fields.put("Nombre", "Actividad");
-        fields.put("Tipo", "");
-        fields.put("Horas", "");
-        fields.put("CONCAT(i.Nombres, ' ', i.Apellidos)", "Instructor");
-        return fields;
-    }
     public String getSelectedRegistroActividad(int row){
         return String.valueOf(row != -1 ? jTRegistro.getValueAt(row, 0) : "");
     }
@@ -84,9 +69,7 @@ public class AsistenciaView extends javax.swing.JFrame {
     }
     
     public void setActividad(ActividadTO actividad){
-        jTFQNControl.setEnabled(actividad != null);
-        registro.setActividadFk(actividad);
-        asistencia.setActividadFk(actividad);
+        this.actividad = actividad;
         if(actividad != null){
             jLActividad.setText(actividad.getNombre().toUpperCase());
             jLHoras.setText(String.valueOf(actividad.getHoras()));
@@ -106,7 +89,28 @@ public class AsistenciaView extends javax.swing.JFrame {
     }
     
     public String getQueryActividad(){
-        return SAUtils.getQuery(getActividadFields(), "Actividad AS a INNER JOIN Instructor AS i ON a.InstructorFk = i.IdInstructor ", getActividadConditions());
+        return SAUtils.getQuery(
+                getActividadFields(), 
+                "Actividad AS a INNER JOIN Instructor AS i ON a.InstructorFk = i.IdInstructor "
+                        + "INNER JOIN Horario AS h ON a.IdActividad = h.ActividadFk", 
+                getActividadConditions()
+        );
+    }
+    
+    public String getQueryActividadesNow(){
+        String query =  getQueryActividad();
+        query += (query.contains("WHERE") ? " AND " : " WHERE ") + "h.Fecha = CURDATE()";
+        return query;
+    }
+    
+    public LinkedHashMap<String, String> getActividadFields(){
+        LinkedHashMap<String, String> fields = new LinkedHashMap<>();
+        fields.put("IdActividad", "Id");
+        fields.put("Nombre", "Actividad");
+        fields.put("Tipo", "");
+        fields.put("Horas", "");
+        fields.put("CONCAT(i.Nombres, ' ', i.Apellidos)", "Instructor");
+        return fields;
     }
     
     public HashMap<String, JTextComponent> getActividadConditions(){
@@ -119,8 +123,7 @@ public class AsistenciaView extends javax.swing.JFrame {
     }
     
     public void setAlumno(AlumnoTO alumno){
-        registro.setAlumnoFk(alumno);
-        asistencia.setAlumnoFk(alumno);
+        this.alumno = alumno;
         if(alumno == null){
             jLNcontrol.setText(NC);
             jLNombre.setText(NOM);
@@ -133,19 +136,19 @@ public class AsistenciaView extends javax.swing.JFrame {
             jLSemestre.setText(String.valueOf(alumno.getSemestre()));
         }
     }
+
+    public AlumnoTO getAlumno() {
+        return alumno;
+    }
+
+    public ActividadTO getActividad() {
+        return actividad;
+    }
     
     public String getNumeroControl(){
         return jTFQNControl.getText().trim();
     }
-
-    public RegistroTO getRegistro() {
-        return registro;
-    }
-
-    public void setRegistro(RegistroTO registro) {
-        this.registro = registro;
-    }
-
+    
     public JButton getjBtnBuscar() {
         return jBtnBuscar;
     }
@@ -461,6 +464,7 @@ public class AsistenciaView extends javax.swing.JFrame {
 
         jTFQNControl.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
         jTFQNControl.setBorder(null);
+        jTFQNControl.setEnabled(false);
 
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("ENTRADA");

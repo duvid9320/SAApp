@@ -23,8 +23,12 @@
  */
 package sa.model.dao;
 
+import java.util.Date;
 import javax.swing.table.DefaultTableModel;
+import sa.model.to.ActividadTO;
+import sa.model.to.AlumnoTO;
 import sa.model.to.AsistenciaTO;
+import sa.model.to.RegistroTO;
 import sa.utils.SAInputOutput;
 
 /**
@@ -45,20 +49,25 @@ public class AsistenciaDAO extends GenericDAO<AsistenciaTO>{
         return read(asistencia, data -> new AsistenciaTO(data));
     }
     
+    public AsistenciaTO getAsistencia(AlumnoTO alumno, ActividadTO actividad){
+        return getAsistencia(new AsistenciaTO(0, actividad, alumno, new Date(), "", ""));
+    }
+    
     public DefaultTableModel getDTM(String query){
         return getDefaultTableModel(query);
     }
+    
+    public boolean createAsistencia(RegistroTO registro){
+        return createAsistencia(new AsistenciaTO(registro));
+    }
 
-    public void createAsistencia(AsistenciaTO asistencia) {
-        if(create(asistencia))
-            SAInputOutput.showInformationMessage(String.format("Se registro el alumno con NC %s en la actividad %s", asistencia.getAlumnoFk().getNumeroControl(), asistencia.getActividadFk().getNombre()));
-        else
-            SAInputOutput.showErrorMessage("No se pudo registrar");
+    public boolean createAsistencia(AsistenciaTO asistencia) {
+        return create(asistencia);
     }
 
     public void updateAsistencia(AsistenciaTO asistencia) {
         if(update(asistencia))
-            SAInputOutput.showInformationMessage("Asistencia modificada");
+            SAInputOutput.showInformationMessage(String.format("Salida de alumno con NC %s", asistencia.getAlumnoFk().getNumeroControl()));
         else
             SAInputOutput.showErrorMessage("No se pudo modificar la asistencia");
     }

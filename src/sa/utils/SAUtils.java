@@ -53,10 +53,25 @@ public class SAUtils {
     public static final String MYSQL_DATE_FORMAT;
     public static final String MYSQL_TIME_FORMAT;
     public static final Long ZERO_HOUR;
+    public static final int MINUTES = 15; //tolerancia
+    public static final float LAPSO = 55 * 60000;
     static{
         MYSQL_DATE_FORMAT = "YYYY-MM-dd";
         MYSQL_TIME_FORMAT = "HH:mm:ss";
         ZERO_HOUR = 21600000L;
+    }
+    
+    public static boolean isOnTime(Date horario, Date entrada){
+        int horarioMinutes = (horario.getHours() * 60) + horario.getMinutes();
+        int entradaMinutes = (entrada.getHours() * 60) + entrada.getMinutes();
+        System.out.println((entradaMinutes - horarioMinutes));
+        return (entradaMinutes - horarioMinutes) <= MINUTES;
+    }
+    
+    public static int getAsistedHours(String in, String out){
+        Date dIn = getTimeFromString(in);
+        Date dOut = getTimeFromString(out);
+        return (int)Math.round((dOut.getTime() - dIn.getTime()) / LAPSO);
     }
     
     public static void sout(Object... os){
